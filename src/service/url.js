@@ -14,3 +14,13 @@ export const GET_ALL_FAQ = '/faq/getAll';
 export const CREATE_CONTACT_US = '/contactUs/create';
 export const UPLOAD_USER_DOCUMENT = '/userDocument/uploadUserDocument';
 export const UPLOAD_IMAGE = '/user/upload-image';
+
+// Admin APIs
+export const GET_ALL_USERS = '/user/getAllUsers';
+export const GET_ALL_IB_REQUESTS = '/ibUser/getAllIbUserRequest';
+export const UPDATE_IB_REQUEST = '/ibUser/updateIbUserRequest';
+export const GET_ALL_KYC_DOCUMENTS = '/userDocument/getAllDocument';
+export const UPDATE_KYC_DOCUMENT = '/userDocument/updateUserDocument';
+export const GET_ALL_WITHDRAW_REQUESTS = '/withdraw/getAllWithdrawRequest';
+export const UPDATE_WITHDRAW_REQUEST = '/withdraw/updateWithdrawRequest';
+export const BLOCK_USER = '/user/blockUser';

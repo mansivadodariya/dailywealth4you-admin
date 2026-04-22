@@ -1,5 +1,3 @@
-@use '../../../scss/main.scss' as *;
-
 .overlay {
   position: fixed;
   inset: 0;
@@ -22,7 +20,6 @@
   position: relative;
 }
 
-/* ── Header ── */
 .header {
   display: flex;
   align-items: flex-start;
@@ -74,7 +71,6 @@
   }
 }
 
-/* ── Info grid ── */
 .infoGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -96,7 +92,6 @@
   }
 }
 
-/* ── MT5 section ── */
 .sectionTitle {
   color: rgba(255, 255, 255, 0.5);
   font-size: 13px;
@@ -169,7 +164,6 @@
   }
 }
 
-/* ── Actions ── */
 .actions {
   display: flex;
   gap: 12px;
@@ -210,11 +204,4 @@
     transition: background 0.2s;
     &:hover { background: rgba(255, 255, 255, 0.05); }
   }
-}
-
-.errorText {
-  display: block;
-  margin-top: 4px;
-  color: #f87171;
-  font-size: 12px;
 }

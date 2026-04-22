@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import KycModal from '@/components/modal/KycModal';
 import KycFinalModal from '@/components/modal/KycFinalModal';
+import Loader from '@/components/loader';
 
 export default function KycGuard({ children }) {
   const user = useSelector((state) => state.login.user);
@@ -18,7 +19,7 @@ export default function KycGuard({ children }) {
 
 
   if (!user) {
-    return <div style={{ color: '#fff' }}>Loading...</div>;
+    return <Loader fullScreen />;
   }
 
   const kycStatus = user?.isKYCVerified;

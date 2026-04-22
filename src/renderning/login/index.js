@@ -9,7 +9,7 @@ import Link from 'next/link';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useDispatch, useSelector } from 'react-redux';
-import { loginUser } from '@/store/reducers';
+import { adminLoginUser } from '@/store/reducers';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 
@@ -38,7 +38,7 @@ export default function Login() {
     initialValues,
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
-      const result = await dispatch(loginUser(values));
+      const result = await dispatch(adminLoginUser(values));
 
       if (result.meta.requestStatus === 'fulfilled') {
         toast.success('Login Successfully');

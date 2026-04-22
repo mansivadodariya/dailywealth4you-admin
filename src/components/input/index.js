@@ -33,7 +33,15 @@ export default function Input({
           placeholderWhite ? styles.placeholderWhite : ''
         )}
       >
-        <input type={inputType} placeholder={placeholder} {...props} />
+        <input
+          type={inputType}
+          placeholder={placeholder}
+          {...props}
+          onChange={(e) => {
+            e.target.value = e.target.value.trimStart();
+            props.onChange?.(e);
+          }}
+        />
         {leftIcon && (
           <div className={styles.leftIcon}>
             <img src={leftIcon} alt={leftIcon} />

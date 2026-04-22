@@ -45,19 +45,15 @@ export default function Header() {
         <div className={styles.rightAlignment}>
           <img src={BellIcon} alt="BellIcon" />
           <div className={styles.line}></div>
-          <AuthButton
-            text="Add MT5 Account"
-            icon={PlusIcon}
-            onClick={() => setIsMt5ModalOpen(true)}
-          />
-          <img src={UserIcon} alt="UserIcon" />
+     
+          {/* <img src={UserIcon} alt="UserIcon" /> */}
         </div>
       </header>
 
       {/* Render Modal conditionally */}
-      {isMt5ModalOpen && (
+      {/* {isMt5ModalOpen && (
         <Mt5Account onClose={() => setIsMt5ModalOpen(false)} />
-      )}
+      )} */}
     </>
   );
 }

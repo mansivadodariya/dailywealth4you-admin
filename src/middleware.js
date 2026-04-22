@@ -15,14 +15,14 @@ export function middleware(request) {
   // Define the routes that strictly require authentication
   const protectedRoutes = [
     '/dashboard',
-    '/accounts',
-    '/profit-sharing',
-    '/contact-us',
-    '/faqs',
-    '/tutorials',
-    '/economic-Calendar',
-    '/transactions',
-    
+    '/users',
+    '/withdraw-requests',
+    '/deposits',
+    '/ib-requests',
+    '/send-notifications',
+    '/kyc-requests',
+    '/sub-admins',
+    '/settings',
   ];
 
   const token = request.cookies.get('auth_user')?.value;

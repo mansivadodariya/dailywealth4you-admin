@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import moment from 'moment';
-import styles from './KycModal.module.scss';
+import styles from './UserViewModal.module.scss';
 import ManualEntryModal from '@/components/modal/ManualEntryModal';
 import BlockUserModal from '@/components/modal/BlockUserModal';
 
-export default function KycModal({ user, onClose }) {
+export default function UserViewModal({ user, onClose }) {
   const [openAccountId, setOpenAccountId] = useState(null);
   const [showManual, setShowManual] = useState(false);
   const [showBlock, setShowBlock] = useState(false);
@@ -18,15 +18,10 @@ export default function KycModal({ user, onClose }) {
     <>
       <div className={styles.overlay}>
         <div className={styles.modal}>
-
-          {/* Header */}
           <div className={styles.header}>
             <div className={styles.headerLeft}>
-              <button
-                className={styles.blockBtn}
-                onClick={() => setShowBlock(true)}
-                aria-label="Block user"
-              >
+              <button className={styles.blockBtn} onClick={() => setShowBlock(true)} aria-label="Block user">
+                {/* red block icon */}
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="#ff4444" strokeWidth="2" />
                   <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#ff4444" strokeWidth="2" strokeLinecap="round" />
@@ -40,7 +35,6 @@ export default function KycModal({ user, onClose }) {
             <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
           </div>
 
-          {/* Info grid */}
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <label>Date Joined</label>
@@ -60,7 +54,6 @@ export default function KycModal({ user, onClose }) {
             </div>
           </div>
 
-          {/* MT5 Accounts */}
           {accounts.length > 0 && (
             <>
               <div className={styles.sectionTitle}>MT5 Accounts</div>
@@ -70,10 +63,7 @@ export default function KycModal({ user, onClose }) {
                 const pnlNum = parseFloat(pnl);
                 return (
                   <div key={acc.id} className={styles.accountCard}>
-                    <div
-                      className={styles.accountHeader}
-                      onClick={() => setOpenAccountId(isOpen ? null : acc.id)}
-                    >
+                    <div className={styles.accountHeader} onClick={() => setOpenAccountId(isOpen ? null : acc.id)}>
                       <div>
                         <div className={styles.accountNo}>Account No: {acc.accountNumber ?? acc.id}</div>
                         <div className={styles.accountBalance}>${acc.balance ?? acc.equity ?? '0'}</div>
@@ -83,18 +73,14 @@ export default function KycModal({ user, onClose }) {
                     {isOpen && (
                       <div className={styles.accountDetails}>
                         <div className={styles.detailRow}>
-                          <span>Broker</span>
-                          <span className={styles.dots} />
-                          <span>{acc.broker?.name ?? acc.brokerName ?? '—'}</span>
+                          <span>Broker</span><span className={styles.dots} /><span>{acc.broker?.name ?? acc.brokerName ?? '—'}</span>
                         </div>
                         <div className={styles.detailRow}>
-                          <span>Date Added</span>
-                          <span className={styles.dots} />
+                          <span>Date Added</span><span className={styles.dots} />
                           <span>{acc.createdAt ? moment(acc.createdAt).format('DD-MM-YYYY hh:mm A') : '—'}</span>
                         </div>
                         <div className={`${styles.detailRow} ${!isNaN(pnlNum) ? (pnlNum >= 0 ? styles.pnlPositive : styles.pnlNegative) : ''}`}>
-                          <span>P&L</span>
-                          <span className={styles.dots} />
+                          <span>P&L</span><span className={styles.dots} />
                           <span>{pnl != null ? `${pnlNum >= 0 ? '+' : ''}${pnl}%` : '—'}</span>
                         </div>
                       </div>
@@ -105,12 +91,10 @@ export default function KycModal({ user, onClose }) {
             </>
           )}
 
-          {/* Actions */}
           <div className={styles.actions}>
             <button className={styles.btnUpload}>Upload Excel ↑</button>
             <button className={styles.btnManual} onClick={() => setShowManual(true)}>Manual Entry →</button>
           </div>
-
         </div>
       </div>
 
