@@ -1,0 +1,47 @@
+@use '../../scss/main.scss' as *;
+@use '../../scss/breakpoints/breakpoints.scss' as *;
+
+.authbutton {
+  &.outlineButton {
+    button {
+      border: 1px solid var(--Lime, #dbe64c);
+      color: #fff;
+      background-color: transparent;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+
+  button {
+    color: #030f0f;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+    border-radius: 8px;
+    background: #02df82;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    justify-content: center;
+    transition: 0.3s ease-in-out;
+    cursor: pointer;
+
+    &:hover {
+      background-color: #fff;
+
+      img {
+        transform: translateX(5px);
+      }
+    }
+
+    img {
+      transition: 0.3s ease-in-out;
+    }
+  }
+}
