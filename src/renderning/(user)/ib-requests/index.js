@@ -9,15 +9,23 @@ import { exportToExcel } from '@/utils/exportToExcel';
 import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import StatCard from '@/components/statCard';
+import Pagination from '@/components/pagination';
+import FilterModal, { ibRequestStatusOptions } from '@/components/modal/FilterModal';
 
 export default function IBRequests() {
   const dispatch = useDispatch();
-  const { ibRequests, loading } = useSelector((state) => state.admin);
+  const { ibRequests, ibRequestsTotalPages, loading } = useSelector((state) => state.admin);
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
+  const [activeFilters, setActiveFilters] = useState({});
+  const [actionLoading, setActionLoading] = useState(null); // { id, action }
+
+  useEffect(() => { setPage(1); }, [search]);
 
   useEffect(() => {
-    dispatch(fetchIbRequests({ search }));
-  }, [dispatch, search]);
+    dispatch(fetchIbRequests({ search, page, limit: 10, ...activeFilters }));
+  }, [dispatch, search, page, activeFilters]);
 
   const filtered = ibRequests || [];
 
@@ -25,8 +33,10 @@ export default function IBRequests() {
   const approved = filtered.filter((r) => r.status === 'approved').length;
 
   const handleAction = (id, status) => {
-    dispatch(updateIbRequest({ id, status })).then(() => {
-      dispatch(fetchIbRequests());
+    setActionLoading({ id, action: status });
+    dispatch(updateIbRequest({ id, status })).finally(() => {
+      setActionLoading(null);
+      dispatch(fetchIbRequests({ search, page, limit: 10, ...activeFilters }));
     });
   };
 
@@ -62,17 +72,21 @@ export default function IBRequests() {
         <div className={styles.actionBtns}>
           <button
             className={styles.btnApprove}
-            disabled={r.status === 'approved'}
+            disabled={r.status === 'approved' || actionLoading?.id === r.id}
             onClick={() => handleAction(r.id, 'approved')}
           >
-            Approve
+            {actionLoading?.id === r.id && actionLoading?.action === 'approved'
+              ? <span className={styles.btnSpinner} />
+              : 'Approve'}
           </button>
           <button
             className={styles.btnReject}
-            disabled={r.status === 'rejected'}
-            onClick={() => handleAction(r.id, 'rejected')}
+            disabled={r.status === 'cancel' || actionLoading?.id === r.id}
+            onClick={() => handleAction(r.id, 'cancel')}
           >
-            Reject
+            {actionLoading?.id === r.id && actionLoading?.action === 'cancel'
+              ? <span className={styles.btnSpinner} />
+              : 'Reject'}
           </button>
         </div>
       ),
@@ -90,17 +104,28 @@ export default function IBRequests() {
         search={search}
         onSearchChange={setSearch}
         actions={[
-          { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => {} },
+          { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
         ]}
       />
 
+      {showFilter && (
+        <FilterModal
+          fields={['dateRange', 'status']}
+          statusChoices={ibRequestStatusOptions}
+          initialFilters={activeFilters}
+          onApply={setActiveFilters}
+          onClose={() => setShowFilter(false)}
+        />
+      )}
+
       <DataTable
         columns={columns}
         data={filtered}
-        loading={loading}
+        loading={loading && !actionLoading}
         emptyMessage="No IB requests found."
       />
+      <Pagination page={page} totalPages={ibRequestsTotalPages} onPageChange={setPage} />
     </div>
   );
 }

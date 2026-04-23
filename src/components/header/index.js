@@ -19,6 +19,8 @@ const routeTitles = {
   '/faqs': 'FAQs',
   '/tutorials': 'Tutorials',
   '/economic-calendar': 'Economic Calendar',
+  '/ib-requests': 'IB Requests',
+  '/kyc': 'KYC',
 };
 
 function getTitleFromPath(pathname) {

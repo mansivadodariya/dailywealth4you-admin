@@ -36,7 +36,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
           disabled={page === 1}
           aria-label="Previous page"
         >
-          &#8249;
+         <img src="./assets/icons/RightArrowPage.svg"/> 
         </button>
 
         {pages.map((p, i) =>
@@ -59,7 +59,8 @@ export default function Pagination({ page, totalPages, onPageChange }) {
           disabled={page === totalPages}
           aria-label="Next page"
         >
-          &#8250;
+         <img src="./assets/icons/LeftArrowPage.svg"/> 
+
         </button>
       </div>
 
@@ -70,6 +71,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
           min={1}
           max={totalPages}
           value={goTo}
+          placeholder={String(page)}
           onChange={(e) => setGoTo(e.target.value)}
           aria-label="Go to page"
         />
@@ -81,8 +83,8 @@ export default function Pagination({ page, totalPages, onPageChange }) {
 function buildPages(current, total) {
   if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
 
-  if (current <= 3) return [1, 2, 3, '...', total - 1, total];
-  if (current >= total - 2) return [1, 2, '...', total - 2, total - 1, total];
+  if (current <= 4) return [1, 2, 3, '...', total - 2, total - 1, total];
+  if (current >= total - 3) return [1, 2, 3, '...', total - 2, total - 1, total];
 
-  return [1, 2, '...', current - 1, current, current + 1, '...', total - 1, total];
+  return [1, '...', current - 1, current, current + 1, '...', total];
 }

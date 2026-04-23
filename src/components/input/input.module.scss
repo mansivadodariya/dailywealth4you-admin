@@ -50,7 +50,7 @@
       font-size: 14px;
       padding-left: 40px;
       padding-right: 16px;
-      height: 48px;
+      height: 40px;
       font-weight: 500;
       outline: none;
       position: relative;
@@ -59,6 +59,36 @@
 
       &::placeholder {
         color: #8e8e8e;
+      }
+    }
+
+    &.plain {
+      input {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: 12px;
+        padding-left: 16px;
+        padding-right: 16px;
+        height: 40px;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.25);
+        }
+
+        &:focus {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.12);
+        }
+      }
+
+      &::before {
+        display: none;
+      }
+    }
+
+    &.plain.hasLeftIcon {
+      input {
+        padding-left: 40px;
       }
     }
 

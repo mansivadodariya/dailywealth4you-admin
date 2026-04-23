@@ -10,6 +10,7 @@ import FilterModal from '@/components/modal/FilterModal';
 import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import UserViewModal from '@/components/modal/UserViewModal';
+import Pagination from '@/components/pagination';
 
 const defaultFilters = {
   dateFrom: '',
@@ -24,15 +25,19 @@ const defaultFilters = {
 
 export default function Users() {
   const dispatch = useDispatch();
-  const { users, loading } = useSelector((state) => state.admin);
+  const { users, usersTotalPages, loading } = useSelector((state) => state.admin);
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [showFilter, setShowFilter] = useState(false);
   const [activeFilters, setActiveFilters] = useState(defaultFilters);
   const [selectedUser, setSelectedUser] = useState(null);
 
+  // reset to page 1 when search or filters change
+  useEffect(() => { setPage(1); }, [search, activeFilters]);
+
   useEffect(() => {
-    dispatch(fetchAllUsers({ ...activeFilters, search }));
-  }, [dispatch, activeFilters, search]);
+    dispatch(fetchAllUsers({ ...activeFilters, search, page, limit: 10 }));
+  }, [dispatch, activeFilters, search, page]);
 
   const filtered = users || [];
 
@@ -90,6 +95,7 @@ export default function Users() {
     { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
     { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
   ];
+  console.log(usersTotalPages,"totalPages");
 
   return (
     <>
@@ -105,6 +111,8 @@ export default function Users() {
           loading={loading}
           emptyMessage="No users found."
         />
+        
+        <Pagination page={page} totalPages={usersTotalPages} onPageChange={setPage} />
       </div>
 
       {showFilter && (

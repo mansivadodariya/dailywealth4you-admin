@@ -1,5 +1,9 @@
 .wrapper {
   padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 .statsRow {
@@ -19,9 +23,9 @@
   border-radius: 99px;
   border: 1px solid var(--Primary, #02df82);
   background: rgba(2, 223, 130, 0.1);
-  color: var(--Primary, #02df82);
-  font-size: 13px;
-  font-weight: 500;
+  color: var(--Primary, #ffffff);
+  font-size: 14px;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.2s;
 
@@ -40,9 +44,9 @@
   border-radius: 99px;
   border: 1px solid rgba(255, 80, 80, 0.6);
   background: rgba(255, 80, 80, 0.1);
-  color: #ff6464;
-  font-size: 13px;
-  font-weight: 500;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 400;
   cursor: pointer;
   transition: all 0.2s;
 
@@ -54,4 +58,18 @@
     opacity: 0.35;
     cursor: not-allowed;
   }
+}
+
+.btnSpinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }

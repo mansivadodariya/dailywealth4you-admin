@@ -13,6 +13,7 @@ export default function Input({
   spacingRemove,
   leftSpacingRemove,
   placeholderWhite,
+  plain,
   type = 'text',
   ...props
 }) {
@@ -30,7 +31,9 @@ export default function Input({
           rightIcon ? styles.rightspacingAdded : '',
           spacingRemove ? styles.spacingRemove : '',
           leftSpacingRemove ? styles.leftSpacingRemove : '',
-          placeholderWhite ? styles.placeholderWhite : ''
+          placeholderWhite ? styles.placeholderWhite : '',
+          plain ? styles.plain : '',
+          leftIcon ? styles.hasLeftIcon : ''
         )}
       >
         <input

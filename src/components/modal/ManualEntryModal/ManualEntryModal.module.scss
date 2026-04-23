@@ -10,7 +10,7 @@
 }
 
 .modal {
-  background: #0d1f1f;
+  background: #030F0F;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   width: 480px;
@@ -37,9 +37,11 @@
     border: none;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.5);
-    font-size: 20px;
-    line-height: 1;
-    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    border-radius: 4px;
     transition: color 0.2s;
     &:hover { color: #fafafa; }
   }
@@ -92,6 +94,10 @@
     font-size: 14px;
     font-weight: 600;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     transition: opacity 0.2s;
     &:hover { opacity: 0.88; }
   }
@@ -100,13 +106,17 @@
     flex: 1;
     padding: 13px;
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid #c8b84a;
     background: transparent;
     color: #fafafa;
     font-size: 14px;
     font-weight: 500;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
     transition: background 0.2s;
-    &:hover { background: rgba(255, 255, 255, 0.05); }
+    &:hover { background: rgba(200, 184, 74, 0.08); }
   }
 }

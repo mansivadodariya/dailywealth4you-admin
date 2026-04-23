@@ -25,6 +25,8 @@ import adminReducer, {
   fetchWithdrawRequests,
   updateWithdrawRequest,
   blockUser,
+  fetchAllSubAdmins,
+  addSubAdmin,
   clearAdminState,
 } from '@/store/slice/adminSlice';
 
@@ -56,6 +58,8 @@ export {
   fetchWithdrawRequests,
   updateWithdrawRequest,
   blockUser,
+  fetchAllSubAdmins,
+  addSubAdmin,
   clearAdminState,
 };
 

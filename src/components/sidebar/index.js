@@ -2,6 +2,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { useDispatch } from 'react-redux';
+import { logout } from '@/store/reducers';
 import styles from './sidebar.module.scss';
 import RightIcon from '@/icons/rightIcon';
 
@@ -25,14 +27,22 @@ const sidebarData = [
   { id: 'send-notifications',   label: 'Send Notifications',  icon: '/assets/icons/SendNotifications.svg',     route: '/send-notifications' },
   { id: 'kyc-requests',         label: 'KYC Requests',        icon: '/assets/icons/KYCRequests.svg',           route: '/kyc-requests' },
   { id: 'sub-admins',           label: 'Sub-Admins',          icon: '/assets/icons/Sub-Admins.svg',            route: '/sub-admins' },
+  { id: 'manage-tutorials',     label: 'Manage Tutorials',    icon: '/assets/icons/ManageTutorials.svg',       route: '/manage-tutorials' },
+  { id: 'manage-brokers',       label: 'Manage Brokers',      icon: '/assets/icons/ManageBrokers.svg',         route: '/manage-brokers' },
   { id: 'settings',             label: 'Settings',            icon: '/assets/icons/Settings.svg',              route: '/settings' },
 ];
 
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [openParent, setOpenParent] = useState(null);
+
+  const handleLogout = () => {
+    dispatch(logout());
+    router.push('/');
+  };
 
   useEffect(() => {
     // find active among flat items and children
@@ -130,6 +140,19 @@ export default function Sidebar() {
               </div>
             );
           })}
+        </div>
+      </div>
+
+      <div className={styles.logoutWrapper}>
+        <div className={styles.logoutDivider} />
+        <div className={`${styles.menu} ${styles.logoutMenu}`} onClick={handleLogout}>
+          <div className={styles.leftAlignment}>
+            <img src="/assets/icons/Logout.svg" alt="Logout" />
+            <span>Logout</span>
+          </div>
+          <div className={styles.rightAlignment}>
+            <RightIcon />
+          </div>
         </div>
       </div>
     </aside>

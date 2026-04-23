@@ -6,6 +6,8 @@
   height: 100dvh;
   position: sticky;
   top: 0;
+  display: flex;
+  flex-direction: column;
   background: linear-gradient(
     180deg,
     rgba(255, 255, 255, 0.08) 9.62%,
@@ -13,7 +15,7 @@
   );
 
   .scroll {
-    height: calc(100dvh - 71px);
+    flex: 1;
     overflow: auto;
     scrollbar-width: none;
 
@@ -38,11 +40,6 @@
 
   .sidebarBody {
     padding: 15px;
-
-    .line {
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 5px 0 0 0;
-    }
 
     .children {
       margin-bottom: 12px;
@@ -115,8 +112,10 @@
         }
 
         .leftAlignment {
+          display: flex;
+          align-items: center;
           span {
-            color: #fff;
+            color: #fff ;
           }
 
           img {
@@ -163,42 +162,57 @@
     }
   }
 
-  .sidebarFooter {
-    padding: 0 15px 15px 15px;
 
-    p {
-      color: #8e8e8e;
-      font-size: 12px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: normal;
-      margin: 0 0 18px 0;
+}
+
+.logoutWrapper {
+  padding: 0 15px 15px;
+
+  .logoutDivider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 12px;
+  }
+
+  .logoutMenu {
+    margin-bottom: 0 !important;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
     }
 
-    .allgrid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-
-      .grid:nth-child(2) {
-        grid-template-columns: 1fr;
-      }
-
-      .grid:last-child {
-        grid-template-columns: 1fr 70px;
-      }
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 70px 1fr;
+    .leftAlignment {
+      display: flex;
+      align-items: center;
       gap: 12px;
 
       img {
-        display: block;
-        cursor: pointer;
-        width: 100%;
+        width: 20px;
+        height: 20px;
+        filter: brightness(0) invert(1);
       }
+
+      span {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: normal;
+      }
+    }
+
+    .rightAlignment {
+      color: #fff;
+      display: flex;
+      align-items: center;
     }
   }
 }

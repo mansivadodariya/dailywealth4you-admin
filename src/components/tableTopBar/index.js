@@ -30,13 +30,13 @@ export default function TableTopBar({
   return (
     <div className={styles.topBar}>
       <div className={styles.searchBox}>
-        <img src="/assets/icons/search.svg" alt="search" />
         <input
           type="text"
           placeholder={searchPlaceholder}
           value={raw}
           onChange={(e) => setRaw(e.target.value.trimStart())}
         />
+        <img src="/assets/icons/SearchWhite.svg" alt="search" />
       </div>
 
       {actions.length > 0 && (
@@ -47,8 +47,8 @@ export default function TableTopBar({
               className={variant === 'primary' ? styles.btnPrimary : styles.btnOutline}
               onClick={onClick}
             >
-              {icon && <img src={icon} alt={label} />}
               {label}
+              {icon && <img src={icon} alt={label} />}
             </button>
           ))}
         </div>

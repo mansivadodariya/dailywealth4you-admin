@@ -38,7 +38,9 @@ export default function DataTable({
           {loading ? (
             <tr>
               <td colSpan={columns.length} className={styles.loading}>
-                <Loader />
+                <div className={styles.loadingInner}>
+                  <Loader />
+                </div>
               </td>
             </tr>
           ) : data.length === 0 ? (

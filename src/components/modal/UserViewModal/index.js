@@ -5,6 +5,8 @@ import moment from 'moment';
 import styles from './UserViewModal.module.scss';
 import ManualEntryModal from '@/components/modal/ManualEntryModal';
 import BlockUserModal from '@/components/modal/BlockUserModal';
+import Image from 'next/image';
+import CloseIcon from '@/icons/closeIcon';
 
 export default function UserViewModal({ user, onClose }) {
   const [openAccountId, setOpenAccountId] = useState(null);
@@ -18,27 +20,32 @@ export default function UserViewModal({ user, onClose }) {
     <>
       <div className={styles.overlay}>
         <div className={styles.modal}>
+
+          {/* Header: name/email left, block+close right */}
           <div className={styles.header}>
-            <div className={styles.headerLeft}>
+            <div className={styles.nameBlock}>
+              <h2>{name}</h2>
+              <p>{user?.email ?? '—'}</p>
+            </div>
+            <div className={styles.headerRight}>
               <button className={styles.blockBtn} onClick={() => setShowBlock(true)} aria-label="Block user">
-                {/* red block icon */}
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="#ff4444" strokeWidth="2" />
                   <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#ff4444" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </button>
-              <div className={styles.nameBlock}>
-                <h2>{name}</h2>
-                <p>{user?.email ?? '—'}</p>
-              </div>
+              <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
+<Image src="/assets/icons/WhiteClose.svg" alt="arrow right" width={24} height={24} />              </button>
             </div>
-            <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
           </div>
 
+          <div className={styles.divider} />
+
+          {/* Info grid */}
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <label>Date Joined</label>
-              <span>{user?.createdAt ? moment(user.createdAt).format('DD-MM-YYYY hh:mm A') : '—'}</span>
+              <span>{user?.createdAt ? moment(user.createdAt).format('DD-MM-YYYY | hh:mm A') : '—'}</span>
             </div>
             <div className={styles.infoItem}>
               <label>IB Status</label>
@@ -54,6 +61,7 @@ export default function UserViewModal({ user, onClose }) {
             </div>
           </div>
 
+          {/* MT5 Accounts */}
           {accounts.length > 0 && (
             <>
               <div className={styles.sectionTitle}>MT5 Accounts</div>
@@ -63,25 +71,36 @@ export default function UserViewModal({ user, onClose }) {
                 const pnlNum = parseFloat(pnl);
                 return (
                   <div key={acc.id} className={styles.accountCard}>
-                    <div className={styles.accountHeader} onClick={() => setOpenAccountId(isOpen ? null : acc.id)}>
+                    <div
+                      className={styles.accountHeader}
+                      onClick={() => setOpenAccountId(isOpen ? null : acc.id)}
+                    >
                       <div>
                         <div className={styles.accountNo}>Account No: {acc.accountNumber ?? acc.id}</div>
                         <div className={styles.accountBalance}>${acc.balance ?? acc.equity ?? '0'}</div>
                       </div>
-                      <span className={`${styles.chevron} ${isOpen ? styles.open : ''}`}>⌄</span>
+                      <span className={`${styles.chevron} ${isOpen ? styles.open : ''}`}>&#x2304;</span>
                     </div>
                     {isOpen && (
                       <div className={styles.accountDetails}>
                         <div className={styles.detailRow}>
-                          <span>Broker</span><span className={styles.dots} /><span>{acc.broker?.name ?? acc.brokerName ?? '—'}</span>
+                          <span className={styles.label}>Broker:</span>
+                          <span className={styles.dots} />
+                          <span className={styles.value}>{acc.broker?.name ?? acc.brokerName ?? '—'}</span>
                         </div>
                         <div className={styles.detailRow}>
-                          <span>Date Added</span><span className={styles.dots} />
-                          <span>{acc.createdAt ? moment(acc.createdAt).format('DD-MM-YYYY hh:mm A') : '—'}</span>
+                          <span className={styles.label}>Date Added</span>
+                          <span className={styles.dots} />
+                          <span className={styles.value}>
+                            {acc.createdAt ? moment(acc.createdAt).format('DD-MM-YYYY | hh:mm A') : '—'}
+                          </span>
                         </div>
                         <div className={`${styles.detailRow} ${!isNaN(pnlNum) ? (pnlNum >= 0 ? styles.pnlPositive : styles.pnlNegative) : ''}`}>
-                          <span>P&L</span><span className={styles.dots} />
-                          <span>{pnl != null ? `${pnlNum >= 0 ? '+' : ''}${pnl}%` : '—'}</span>
+                          <span className={styles.label}>P&amp;L</span>
+                          <span className={styles.dots} />
+                          <span className={styles.value}>
+                            {pnl != null ? `${pnlNum >= 0 ? '+' : ''}${pnl}%` : '—'}
+                          </span>
                         </div>
                       </div>
                     )}
@@ -91,10 +110,16 @@ export default function UserViewModal({ user, onClose }) {
             </>
           )}
 
+          {/* Actions */}
           <div className={styles.actions}>
-            <button className={styles.btnUpload}>Upload Excel ↑</button>
-            <button className={styles.btnManual} onClick={() => setShowManual(true)}>Manual Entry →</button>
+            <button className={styles.btnUpload}>
+              Upload Excel <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
+            </button>
+            <button className={styles.btnManual} onClick={() => setShowManual(true)}>
+              Manual Entry <Image src="/assets/icons/WhiteRight.svg" alt="arrow right" width={18} height={18} />
+            </button>
           </div>
+
         </div>
       </div>
 

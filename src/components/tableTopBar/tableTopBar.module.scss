@@ -10,31 +10,33 @@
 .searchBox {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 8px;
-  padding: 8px 14px;
+  border-radius: 12px;
+  padding: 8px 16px;
   flex: 1;
-  max-width: 320px;
+  max-width: 370px;
 
   input {
     background: transparent;
     border: none;
     outline: none;
     color: var(--Text-Primary, #fafafa);
-    font-size: 14px;
+    font-size: 16px;
+    font-weight: 500;
     width: 100%;
 
     &::placeholder {
-      color: rgba(255, 255, 255, 0.3);
+    color: var(--Text-Primary, #fafafa);
     }
   }
 
   img {
-    width: 18px;
-    height: 18px;
-    opacity: 0.4;
+    width: 20px;
+    height: 20px;
+    // opacity: 0.7;
+    flex-shrink: 0;
   }
 }
 
@@ -58,8 +60,8 @@
   color: var(--Text-Primary, #fafafa);
 
   img {
-    width: 16px;
-    height: 16px;
+    width: 20px;
+    height: 20px;
   }
 
   &:hover {

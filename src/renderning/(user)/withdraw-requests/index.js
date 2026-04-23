@@ -9,15 +9,22 @@ import { exportToExcel } from '@/utils/exportToExcel';
 import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import StatCard from '@/components/statCard';
+import Pagination from '@/components/pagination';
+import FilterModal, { withdrawStatusOptions } from '@/components/modal/FilterModal';
 
 export default function WithdrawRequests() {
   const dispatch = useDispatch();
-  const { withdrawRequests, loading } = useSelector((state) => state.admin);
+  const { withdrawRequests, withdrawRequestsTotalPages, loading } = useSelector((state) => state.admin);
+  const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [showFilter, setShowFilter] = useState(false);
+  const [activeFilters, setActiveFilters] = useState({});
+
+  useEffect(() => { setPage(1); }, [search]);
 
   useEffect(() => {
-    dispatch(fetchWithdrawRequests({ search }));
-  }, [dispatch, search]);
+    dispatch(fetchWithdrawRequests({ search, page, limit: 10, ...activeFilters }));
+  }, [dispatch, search, page, activeFilters]);
 
   const filtered = withdrawRequests || [];
 
@@ -125,10 +132,20 @@ export default function WithdrawRequests() {
         search={search}
         onSearchChange={setSearch}
         actions={[
-          { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => {} },
+          { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
         ]}
       />
+
+      {showFilter && (
+        <FilterModal
+          fields={['dateRange', 'withdrawalAmount', 'status']}
+          statusChoices={withdrawStatusOptions}
+          initialFilters={activeFilters}
+          onApply={setActiveFilters}
+          onClose={() => setShowFilter(false)}
+        />
+      )}
 
       <DataTable
         columns={columns}
@@ -136,6 +153,7 @@ export default function WithdrawRequests() {
         loading={loading}
         emptyMessage="No withdraw requests found."
       />
+      <Pagination page={page} totalPages={withdrawRequestsTotalPages} onPageChange={setPage} />
     </div>
   );
 }
