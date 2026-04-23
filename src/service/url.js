@@ -1,0 +1,31 @@
+export const SIGNUP = '/user/signup';
+export const LOGIN = '/user/login';
+export const ADMIN_LOGIN = '/user/adminLogin';
+export const SEND_OTP = '/user/send-otp';
+export const VERIFY_OTP = '/user/verify-otp';
+export const FORGOT_PASSWORD = '/user/forgot-password';
+export const RESET_PASSWORD = '/user/reset-password';
+export const GET_ALL_BROKERS = 'broker/getAllBroker';
+export const GET_ALL_TRADING_ACCOUNTS = 'tradingAccount/getAllTradingAccount';
+export const CREATE_TRADING_ACCOUNT = 'tradingAccount/create';
+export const UPDATE_TRADING_ACCOUNT = 'tradingAccount/updateTradingAccount';
+export const DELETE_TRADING_ACCOUNT = 'tradingAccount/deleteTradingAccount';
+export const GET_ALL_FAQ = '/faq/getAll';
+export const CREATE_CONTACT_US = '/contactUs/create';
+export const UPLOAD_USER_DOCUMENT = '/userDocument/uploadUserDocument';
+export const UPLOAD_IMAGE = '/user/upload-image';
+
+// Admin APIs
+export const GET_ALL_USERS = '/user/getAllUsers';
+export const GET_ALL_IB_REQUESTS = '/ibUser/getAllIbUserRequest';
+export const UPDATE_IB_REQUEST = '/ibUser/updateIbUserRequest';
+export const GET_ALL_KYC_DOCUMENTS = '/userDocument/getAllDocument';
+export const UPDATE_KYC_DOCUMENT = '/userDocument/updateUserDocument';
+export const GET_ALL_WITHDRAW_REQUESTS = '/withdraw/getAllWithdrawRequest';
+export const UPDATE_WITHDRAW_REQUEST = '/withdraw/updateWithdrawRequest';
+export const BLOCK_USER = '/user/blockUser';
+export const ADD_SUB_ADMIN = '/user/addSubAdmin';
+export const GET_ALL_SUB_ADMINS = '/user/getAllSubAdmin';
+export const CREATE_NOTIFICATION = '/notification/createNewNotification';
+export const GET_SETTING = '/utilitySetting/getSetting';
+export const UPDATE_SETTING = '/utilitySetting/updateSetting';

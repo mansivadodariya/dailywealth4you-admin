@@ -1,0 +1,68 @@
+.wrapper {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.viewBtn {
+  position: relative;
+  cursor: pointer;
+  padding: 4px 16px;
+  border: none;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--Text-Primary, #fafafa);
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 99px;
+    padding: 1px;
+    background: linear-gradient(
+      97.52deg,
+      rgba(255, 255, 255, 0.2) 0.15%,
+      rgba(255, 255, 255, 0.04) 11.93%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+.badgeYes {
+  padding: 2px 12px;
+  border-radius: 18px;
+  border: 0.5px solid var(--Primary, #02df82);
+  background: rgba(2, 223, 130, 0.1);
+  color: var(--Text-Primary, #fafafa);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.badgeNo {
+  padding: 2px 12px;
+  border-radius: 18px;
+  border: 0.5px solid rgba(255, 100, 100, 0.6);
+  background: rgba(255, 100, 100, 0.1);
+  color: var(--Text-Primary, #fafafa);
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}

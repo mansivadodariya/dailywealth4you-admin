@@ -1,0 +1,218 @@
+@use '../../scss/main.scss' as *;
+@use '../../scss/breakpoints/breakpoints.scss' as *;
+
+.sidebar {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  height: 100dvh;
+  position: sticky;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 9.62%,
+    rgba(255, 255, 255, 0) 70%
+  );
+
+  .scroll {
+    flex: 1;
+    overflow: auto;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .logo {
+    padding: 15px 15px 0 15px;
+
+    .logoimage {
+      padding: 0 0 15px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+      img {
+        display: block;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .sidebarBody {
+    padding: 15px;
+
+    .children {
+      margin-bottom: 12px;
+
+      .childRow {
+        display: flex;
+        align-items: stretch;
+        padding-left: 15px;
+
+        .treeLine {
+          flex-shrink: 0;
+          width: 16px;
+          border-left: 1px solid rgba(255, 255, 255, 0.15);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+          border-radius: 0 0 0 6px;
+          margin-bottom: 12px;
+          margin-top: -6px;
+
+          &.treeLineLast {
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+          }
+        }
+
+        .menu {
+          flex: 1;
+          margin-bottom: 12px;
+        }
+      }
+    }
+
+    .menu {
+      position: relative;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      margin: 0 0 12px 0 !important;
+      cursor: pointer;
+      justify-content: space-between;
+      transition: all 0.3s ease-in-out;
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 5px;
+        height: 0;
+        background: #02df82;
+        border-radius: 0 4px 4px 0;
+        transition: all 0.3s ease-in-out;
+        opacity: 0;
+        filter: drop-shadow(0 0 6px rgba(2, 223, 130, 0.8));
+      }
+
+      &.active,
+      &:hover {
+        border-radius: 8px;
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        box-shadow: 6px 0 4px 0 rgba(2, 223, 130, 0.15) inset;
+
+        &::before {
+          height: 28px;
+          opacity: 1;
+        }
+
+        .leftAlignment {
+          display: flex;
+          align-items: center;
+          span {
+            color: #fff ;
+          }
+
+          img {
+            filter: brightness(0) invert(1);
+          }
+        }
+
+        .rightAlignment {
+          color: #fff;
+        }
+      }
+
+      &:last-child {
+        margin: 0;
+      }
+
+      .rightAlignment {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: #8e8e8e;
+        transition: all 0.3s ease-in-out;
+      }
+
+      .leftAlignment {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+
+        img {
+          transition: all 0.3s ease-in-out;
+        }
+
+        span {
+          color: #8e8e8e;
+          font-size: 14px;
+          font-weight: 600;
+          line-height: normal;
+          display: block;
+          transition: all 0.3s ease-in-out;
+        }
+      }
+    }
+  }
+
+
+}
+
+.logoutWrapper {
+  padding: 0 15px 15px;
+
+  .logoutDivider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin-bottom: 12px;
+  }
+
+  .logoutMenu {
+    margin-bottom: 0 !important;
+    padding: 14px 16px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .leftAlignment {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      img {
+        width: 20px;
+        height: 20px;
+        filter: brightness(0) invert(1);
+      }
+
+      span {
+        color: #fff;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: normal;
+      }
+    }
+
+    .rightAlignment {
+      color: #fff;
+      display: flex;
+      align-items: center;
+    }
+  }
+}

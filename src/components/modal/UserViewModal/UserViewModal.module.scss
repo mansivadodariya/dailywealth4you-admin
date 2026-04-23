@@ -1,0 +1,224 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 15, 15, 0.65);
+  backdrop-filter: blur(15px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  background: #0d1212;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  width: 460px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* ── Header ── */
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 28px 28px 24px;
+
+  .nameBlock {
+    h2 {
+      color: #fafafa;
+      font-size: 26px;
+      font-weight: 700;
+      font-family: var(--font-red-hat-display);
+      margin: 0 0 4px;
+      line-height: 1.1;
+    }
+    p {
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 14px;
+      margin: 0;
+    }
+  }
+
+  .headerRight {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-top: 2px;
+  }
+
+  .blockBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    opacity: 0.85;
+    transition: opacity 0.2s;
+    &:hover { opacity: 1; }
+  }
+
+  .closeBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 22px;
+    line-height: 1;
+    padding: 0;
+    transition: color 0.2s;
+    &:hover { color: #fafafa; }
+  }
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.07);
+  margin: 0 28px;
+}
+
+/* ── Info grid ── */
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 16px;
+  padding: 24px 28px;
+}
+
+.infoItem {
+  label {
+    display: block;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 13px;
+    margin-bottom: 5px;
+  }
+  span {
+    color: #fafafa;
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+/* ── MT5 section ── */
+.sectionTitle {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  padding: 0 28px 12px;
+}
+
+.accountCard {
+  background: #111818;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  margin: 0 28px 10px;
+  overflow: hidden;
+}
+
+.accountHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  cursor: pointer;
+
+  .accountNo {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    margin-bottom: 4px;
+  }
+
+  .accountBalance {
+    color: #fafafa;
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .chevron {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 20px;
+    transition: transform 0.2s;
+    line-height: 1;
+    &.open { transform: rotate(180deg); }
+  }
+}
+
+.accountDetails {
+  padding: 0 18px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  .detailRow {
+    display: flex;
+    align-items: center;
+    padding: 7px 0;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    gap: 6px;
+
+    .label { white-space: nowrap; }
+
+    .dots {
+      flex: 1;
+      border-bottom: 1px dotted rgba(255, 255, 255, 0.2);
+    }
+
+    .value {
+      color: #fafafa;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    &.pnlPositive .value { color: #02df82; }
+    &.pnlNegative .value { color: #ff6464; }
+  }
+}
+
+/* ── Actions ── */
+.actions {
+  display: flex;
+  gap: 12px;
+  padding: 20px 28px 28px;
+
+  .btnUpload {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    border: none;
+    background: #02df82;
+    color: #000;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.2s;
+    &:hover { opacity: 0.88; }
+  }
+
+  .btnManual {
+    flex: 1;
+    padding: 14px;
+    border-radius: 8px;
+    border: 1px solid #c8b84a;
+    background: transparent;
+    color: #fafafa;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s;
+    &:hover { background: rgba(200, 184, 74, 0.08); }
+  }
+}

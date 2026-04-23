@@ -1,0 +1,60 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-radius: 12px;
+ background: linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.12) 0.15%,
+      rgba(255, 255, 255, 0.03) 60%
+      );  flex: 1;
+  min-width: 200px;
+  position: relative;
+  overflow: hidden;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 12px;
+    padding: 1px;
+    background: linear-gradient(
+      97.52deg,
+      rgba(255, 255, 255, 0.12) 0.15%,
+      rgba(255, 255, 255, 0.03) 60%
+      );
+      -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+      
+    }
+  }
+  
+  .label {
+    padding: 0  24px 0 20px;
+    margin-top: 24px;
+    color: rgb(255, 255, 255);
+    font-size: 13px;
+    border-left: 3px solid var(--Primary, #DBE64C);
+    border-radius: 2px;
+        font-weight: 500;
+  }
+  
+  .value {
+    font-size: 28px;
+    color: var(--Text-Primary, #fafafa);
+  font-weight: 700;
+    padding: 0 20px  24px 20px ;
+
+  line-height: 1.1;
+}
+
+.sub {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-weight: 400;
+  margin-top: 2px;
+}

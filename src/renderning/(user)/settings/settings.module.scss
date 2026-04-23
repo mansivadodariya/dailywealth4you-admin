@@ -1,0 +1,152 @@
+.wrapper {
+  padding: 8px 0;
+}
+
+.layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  max-width: 860px;
+  margin: 32px auto 0;
+}
+
+/* ── Left menu ── */
+.menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );  
+  border: 1px solid rgba(255, 255, 255, 0);
+  border-radius: 14px; 
+
+  padding: 8px;
+  min-width: 230px;
+  flex-shrink: 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 14px;
+  border-radius: 10px;
+  border: none;
+  background: transparent;
+  color: #555;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  width: 100%;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.04);
+    color: #aaa;
+  }
+}
+
+.menuItemActive {
+  background: rgba(2, 223, 130, 0.08);
+  color: #fff;
+
+  .menuIcon { opacity: 1; filter: brightness(1.4); }
+  .menuChevron { color: var(--Primary, #02df82); }
+}
+
+.menuIcon {
+  width: 16px;
+  height: 16px;
+  opacity: 0.4;
+  flex-shrink: 0;
+}
+
+.menuChevron {
+  margin-left: auto;
+  font-size: 20px;
+  color: #333;
+  line-height: 1;
+}
+
+/* ── Right panel ── */
+.panel {
+  flex: 1;
+
+}
+
+.card {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );  border: 1px solid rgba(255, 255, 255, 0);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    color: #ccc;
+    font-weight: 500;
+  }
+}
+
+/* ── Buttons ── */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.btnSave {
+  flex: 1;
+  padding: 13px 20px;
+  border-radius: 8px;
+  border: none;
+  background: var(--Primary, #02df82);
+  color: #030f0f;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: opacity 0.2s;
+
+  &:hover { opacity: 0.88; }
+}
+
+.btnCancel {
+  flex: 1;
+  padding: 13px 20px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: transparent;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+
+  &:hover { background: rgba(255, 255, 255, 0.05); }
+}
