@@ -1,5 +1,5 @@
-import React from 'react';
+import IBIncome from '@/renderning/(user)/commission/ib-income';
 
-export default function IbIncomePage() {
-  return <div>IB Income</div>;
+export default function Page() {
+  return <IBIncome />;
 }

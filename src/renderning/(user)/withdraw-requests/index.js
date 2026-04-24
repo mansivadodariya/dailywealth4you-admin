@@ -20,7 +20,15 @@ export default function WithdrawRequests() {
   const [showFilter, setShowFilter] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
 
-  useEffect(() => { setPage(1); }, [search]);
+  const handleSearchChange = (val) => {
+    setSearch(val);
+    setPage(1);
+  };
+
+  const handleFilterApply = (f) => {
+    setActiveFilters(f);
+    setPage(1);
+  };
 
   useEffect(() => {
     dispatch(fetchWithdrawRequests({ search, page, limit: 10, ...activeFilters }));
@@ -130,7 +138,7 @@ export default function WithdrawRequests() {
 
       <TableTopBar
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={handleSearchChange}
         actions={[
           { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
@@ -142,7 +150,7 @@ export default function WithdrawRequests() {
           fields={['dateRange', 'withdrawalAmount', 'status']}
           statusChoices={withdrawStatusOptions}
           initialFilters={activeFilters}
-          onApply={setActiveFilters}
+          onApply={handleFilterApply}
           onClose={() => setShowFilter(false)}
         />
       )}

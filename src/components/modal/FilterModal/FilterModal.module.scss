@@ -81,20 +81,26 @@
 .input {
   flex: 1;
   background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
   border-radius: 8px;
   padding: 10px 14px;
   color: #fafafa;
   font-size: 14px;
+  font-weight: 500;
   outline: none;
   width: 100%;
+  position: relative;
+  transition: all 0.3s ease;
+
+  // gradient border via box-shadow to mimic the Input component's ::before trick
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
 
   &::placeholder {
-    color: rgba(255, 255, 255, 0.25);
+    color: #8e8e8e;
   }
 
   &:focus {
-    border-color: rgba(2, 223, 130, 0.4);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
   }
 
   &:disabled {

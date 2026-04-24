@@ -82,7 +82,7 @@
 
   label {
     font-size: 13px;
-    color: #aaa;
+    color: #ffffff;
     font-weight: 500;
   }
 }
@@ -138,12 +138,16 @@
 
 .btnReject {
   flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
   padding: 12px;
   border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid #DBE64C;
   background: transparent;
   color: #fff;
-  font-size: 14px;
+  font-size: 14p  x;
   font-weight: 600;
   cursor: pointer;
   transition: background 0.2s;
@@ -170,7 +174,7 @@
 .lightboxOverlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.61);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -178,18 +182,20 @@
 }
 
 .lightbox {
-  background: #1a1a1a;
+  background: #030F0F;  
   border-radius: 12px;
   overflow: hidden;
+  width: 600px;
   max-width: 90vw;
   max-height: 90vh;
   display: flex;
   flex-direction: column;
 
   img {
-    max-width: 80vw;
+    width: 95%;
     max-height: 80vh;
     object-fit: contain;
+    margin: 20px auto ;
     display: block;
   }
 }
@@ -199,10 +205,10 @@
   justify-content: space-between;
   align-items: center;
   padding: 10px 16px;
-  background: #222;
+  background: #030F0F;
   font-size: 13px;
   color: #ccc;
-
+  
   button {
     background: none;
     border: none;

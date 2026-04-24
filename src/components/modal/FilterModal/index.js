@@ -221,7 +221,7 @@ export default function FilterModal({ onApply, onClose, initialFilters, fields, 
             onClick={handleApply}
             disabled={!!dateRangeInvalid}
           >
-            Apply Filters <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} />
+            Apply Filters <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 13, height: 13 }} />
           </button>
           <button className={styles.btnCancel} onClick={handleCancel}>
             Cancel <CloseIcon color="#ffffff" size={16} />

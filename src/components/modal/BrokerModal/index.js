@@ -1,0 +1,146 @@
+'use client';
+
+import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { createBroker, updateBroker, deleteBroker } from '@/store/reducers';
+import styles from './BrokerModal.module.scss';
+import CloseIcon from '@/icons/closeIcon';
+
+export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
+  const dispatch = useDispatch();
+  const isAdd = mode === 'add';
+  const fileInputRef = useRef(null);
+
+  const [name, setName] = useState(broker?.name ?? '');
+  const [description, setDescription] = useState(broker?.description ?? '');
+  const [redirectURL, setRedirectURL] = useState(broker?.redirectURL ?? '');
+  const [supportsFundTransferApi, setSupportsFundTransferApi] = useState(
+    broker?.supportsFundTransferApi ?? false
+  );
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(broker?.logo ?? '');
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  const deletionStarted = useRef(false);
+  // auto-trigger delete if opened in delete mode
+  useEffect(() => {
+    if (mode === 'delete' && broker?.id && !deletionStarted.current) {
+      deletionStarted.current = true;
+      handleDelete();
+    }
+  }, []);
+
+  const validate = () => {
+    const e = {};
+    if (!name.trim()) e.name = 'Name is required.';
+    if (!description.trim()) e.description = 'Description is required.';
+    if (!redirectURL.trim()) e.redirectURL = 'Redirect URL is required.';
+    if (isAdd && !imageFile) e.image = 'Image is required.';
+    return e;
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validation: Only images are allowed
+    if (!file.type.startsWith('image/')) {
+      setErrors((p) => ({ ...p, image: 'Only image files are allowed.' }));
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    setErrors((p) => ({ ...p, image: '' }));
+  };
+
+  const handleSubmit = () => {
+    const e = validate();
+    if (Object.keys(e).length) { setErrors(e); return; }
+    setErrors({});
+    setLoading(true);
+    const action = isAdd
+      ? createBroker({ name, description, redirectURL, supportsFundTransferApi, file: imageFile })
+      : updateBroker({ id: broker.id, original: broker, name, description, redirectURL, supportsFundTransferApi, file: imageFile });
+    dispatch(action).then((res) => {
+      setLoading(false);
+      if (res.meta.requestStatus === 'fulfilled') { onDone?.(); onClose(); }
+    });
+  };
+
+  const handleDelete = () => {
+    setDeleting(true);
+    dispatch(deleteBroker(broker.id)).then((res) => {
+      setDeleting(false);
+      if (res.meta.requestStatus === 'fulfilled') { onDone?.(); onClose(); }
+    });
+  };
+
+  if (mode === 'delete') return null;
+
+  return (
+    <div className={styles.overlay} onClick={onClose}>
+      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.header}>
+          <h2>{isAdd ? 'Add Broker' : 'Edit Broker'}</h2>
+          <button className={styles.closeBtn} onClick={onClose}><CloseIcon color="#fff" size={18} /></button>
+        </div>
+        <div className={styles.divider} />
+        <div className={styles.body}>
+          {/* Image upload */}
+          <div className={styles.fieldGroup}>
+            <label>Image</label>
+            <div
+              className={`${styles.uploadBox}${errors.image ? ` ${styles.uploadBoxError}` : ''}`}
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <input ref={fileInputRef} type="file" accept="image/png,image/jpeg" style={{ display: 'none' }} onChange={handleImageChange} />
+              {imagePreview
+                ? <img src={imagePreview} alt="preview" className={styles.previewImg} />
+                : <span className={styles.uploadHint}>Click to upload image</span>}
+            </div>
+            {errors.image && <span className={styles.errorText}>{errors.image}</span>}
+          </div>
+
+          {[
+            { label: 'Name', value: name, set: setName, key: 'name' },
+            { label: 'Description', value: description, set: setDescription, key: 'description' },
+            { label: 'Redirect URL', value: redirectURL, set: setRedirectURL, key: 'redirectURL', placeholder: 'https://' },
+          ].map(({ label, value, set, key, placeholder }) => (
+            <div className={styles.fieldGroup} key={key}>
+              <label>{label}</label>
+              <input
+                className={`${styles.input}${errors[key] ? ` ${styles.inputError}` : ''}`}
+                value={value}
+                placeholder={placeholder ?? ''}
+                onChange={(e) => { set(e.target.value); setErrors((p) => ({ ...p, [key]: '' })); }}
+              />
+              {errors[key] && <span className={styles.errorText}>{errors[key]}</span>}
+            </div>
+          ))}
+
+          <label className={styles.checkItem}>
+            <input type="checkbox" checked={supportsFundTransferApi} onChange={(e) => setSupportsFundTransferApi(e.target.checked)} />
+            <span>Supports Fund Transfer API</span>
+          </label>
+        </div>
+
+        <div className={styles.actions}>
+          <button className={styles.btnSave} onClick={handleSubmit} disabled={loading}>
+            {loading ? <span className={styles.spinner} /> : <>{isAdd ? 'Add Broker' : 'Save Changes'} <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /></>}
+          </button>
+          {!isAdd && (
+            <button className={styles.btnDelete} onClick={handleDelete} disabled={deleting}>
+              {deleting ? <span className={styles.spinner} /> : 'Delete Broker'}
+            </button>
+          )}
+          <button className={styles.btnCancel} onClick={onClose}>
+            Cancel <CloseIcon color="#fff" size={14} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

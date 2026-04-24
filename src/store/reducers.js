@@ -6,6 +6,10 @@ import loginReducer, {
   resetPassword,
   clearLoginState,
   logout,
+  markAllRead,
+  addNotification,
+  fetchNotifications,
+  updateNotification,
 } from '@/store/slice/loginSlice';
 
 import accountReducer, {
@@ -28,12 +32,28 @@ import adminReducer, {
   fetchAllSubAdmins,
   addSubAdmin,
   clearAdminState,
+  fetchIbClients,
+  fetchAllContactUs,
+  fetchAdminIbIncome,
+  fetchAdminProfitSharing,
 } from '@/store/slice/adminSlice';
+
+import contentReducer, {
+  fetchBrokersAdmin,
+  createBroker,
+  updateBroker,
+  deleteBroker,
+  fetchTutorials,
+  createTutorial,
+  updateTutorial,
+  deleteTutorial,
+} from '@/store/slice/contentSlice';
 
 const reducer = combineReducers({
   login: loginReducer,
   account: accountReducer,
   admin: adminReducer,
+  content: contentReducer,
 });
 
 export {
@@ -43,6 +63,10 @@ export {
   resetPassword,
   clearLoginState,
   logout,
+  markAllRead,
+  addNotification,
+  fetchNotifications,
+  updateNotification,
   // account
   fetchBrokers,
   fetchTradingAccounts,
@@ -61,6 +85,19 @@ export {
   fetchAllSubAdmins,
   addSubAdmin,
   clearAdminState,
+  fetchIbClients,
+  fetchAllContactUs,
+  fetchAdminIbIncome,
+  fetchAdminProfitSharing,
+  // content
+  fetchBrokersAdmin,
+  createBroker,
+  updateBroker,
+  deleteBroker,
+  fetchTutorials,
+  createTutorial,
+  updateTutorial,
+  deleteTutorial,
 };
 
 export default reducer;

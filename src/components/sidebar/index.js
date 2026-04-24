@@ -27,6 +27,7 @@ const sidebarData = [
   { id: 'send-notifications',   label: 'Send Notifications',  icon: '/assets/icons/SendNotifications.svg',     route: '/send-notifications' },
   { id: 'kyc-requests',         label: 'KYC Requests',        icon: '/assets/icons/KYCRequests.svg',           route: '/kyc-requests' },
   { id: 'sub-admins',           label: 'Sub-Admins',          icon: '/assets/icons/Sub-Admins.svg',            route: '/sub-admins' },
+  { id: 'contact-us',           label: 'Contact Us',          icon: '/assets/icons/Settings.svg',              route: '/contact-us' },
   { id: 'manage-tutorials',     label: 'Manage Tutorials',    icon: '/assets/icons/ManageTutorials.svg',       route: '/manage-tutorials' },
   { id: 'manage-brokers',       label: 'Manage Brokers',      icon: '/assets/icons/ManageBrokers.svg',         route: '/manage-brokers' },
   { id: 'settings',             label: 'Settings',            icon: '/assets/icons/Settings.svg',              route: '/settings' },

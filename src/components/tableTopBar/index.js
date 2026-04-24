@@ -48,6 +48,7 @@ export default function TableTopBar({
               onClick={onClick}
             >
               {label}
+              {variant === 'primary' && !icon && <span className={styles.plusIcon}>+</span>}
               {icon && <img src={icon} alt={label} />}
             </button>
           ))}

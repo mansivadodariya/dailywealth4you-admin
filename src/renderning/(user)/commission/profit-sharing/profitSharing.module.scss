@@ -1,0 +1,152 @@
+.wrapper {
+  padding: 8px 0 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  border-radius: 12px;
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 700px;
+}
+
+.thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #0B1616; // Solid background for sticky header
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    padding: 1px;
+    background: linear-gradient(
+      97.52deg,
+      rgba(255, 255, 255, 0.2) 0.15%,
+      rgba(255, 255, 255, 0.04) 11.93%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  th {
+    color: var(--Text-Primary, #fafafa);
+    font-size: 16px;
+    padding: 20px;
+    text-align: left;
+    font-weight: 600;
+    line-height: normal;
+    background: rgba(255, 255, 255, 0.04);
+    white-space: nowrap;
+
+    &:first-child {
+      border-top-left-radius: 8px;
+      border-bottom-left-radius: 8px;
+    }
+
+    &:last-child {
+      border-top-right-radius: 8px;
+      border-bottom-right-radius: 8px;
+    }
+  }
+}
+
+.tbody {
+  tr {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    td {
+      color: var(--Text-Primary, #fafafa);
+      font-size: 14px;
+      font-weight: 400;
+      line-height: normal;
+      padding: 16px 20px;
+      white-space: nowrap;
+    }
+  }
+}
+
+.viewBtn {
+  cursor: pointer;
+  padding: 6px;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+}
+
+.arrowClosed {
+  transition: transform 0.25s ease;
+  transform: rotate(0deg);
+}
+
+.arrowOpen {
+  transition: transform 0.25s ease;
+  transform: rotate(180deg);
+}
+
+.expandedRow {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.expandedContent {
+  padding: 24px;
+}
+
+.symbolTag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: rgba(2, 223, 130, 0.1);
+  color: #02df82;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.pnlPositive { color: #02df82 !important; }
+.pnlNegative { color: #ff5c5c !important; }
+
+.loading, .empty {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  vertical-align: middle;
+}

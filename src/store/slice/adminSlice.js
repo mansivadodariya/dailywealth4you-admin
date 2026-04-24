@@ -13,8 +13,15 @@ import {
   ADD_SUB_ADMIN,
   GET_ALL_SUB_ADMINS,
   CREATE_NOTIFICATION,
+  CREATE_POPUP,
+  GET_POPUP,
   GET_SETTING,
   UPDATE_SETTING,
+  UPLOAD_IMAGE,
+  GET_IB_CLIENTS,
+  GET_ADMIN_IB_INCOME,
+  GET_ALL_CONTACT_US,
+  GET_ADMIN_PROFIT_SHARING,
 } from '@/service/url';
 
 export const fetchAllUsers = createAsyncThunk(
@@ -209,6 +216,41 @@ export const createNotification = createAsyncThunk(
   }
 );
 
+export const createPopup = createAsyncThunk(
+  'admin/createPopup',
+  async ({ link, file }, thunkApi) => {
+    try {
+      // Step 1: upload image via multipart, get back the image URL
+      const formData = new FormData();
+      formData.append('image', file);
+      const uploadRes = await api.post(UPLOAD_IMAGE, formData);
+      const imageUrl = uploadRes?.payload;
+
+      if (!imageUrl) throw new Error('Image upload failed: no URL returned.');
+
+      // Step 2: send popup as JSON with the returned image URL
+      const response = await api.post(CREATE_POPUP, { link, image: imageUrl });
+      toast.success('Popup sent.');
+      return response;
+    } catch (error) {
+      toast.error(typeof error === 'string' ? error : error?.message || 'Something went wrong.');
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchPopup = createAsyncThunk(
+  'admin/fetchPopup',
+  async (_, thunkApi) => {
+    try {
+      return await api.get(GET_POPUP);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
 export const fetchSetting = createAsyncThunk(
   'admin/fetchSetting',
   async (_, thunkApi) => {
@@ -235,6 +277,70 @@ export const updateSetting = createAsyncThunk(
   }
 );
 
+export const fetchAllContactUs = createAsyncThunk(
+  'admin/fetchAllContactUs',
+  async ({ search = '', page, limit } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (page)   params.append('page', page);
+      if (limit)  params.append('limit', limit);
+      const query = params.toString();
+      return await api.get(query ? `${GET_ALL_CONTACT_US}?${query}` : GET_ALL_CONTACT_US);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchAdminIbIncome = createAsyncThunk(
+  'admin/fetchAdminIbIncome',
+  async ({ search = '', page, limit } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (page)   params.append('page', page);
+      if (limit)  params.append('limit', limit);
+      const query = params.toString();
+      return await api.get(query ? `${GET_ADMIN_IB_INCOME}?${query}` : GET_ADMIN_IB_INCOME);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+
+export const fetchAdminProfitSharing = createAsyncThunk(
+  'admin/fetchAdminProfitSharing',
+  async ({ search = '', page, limit } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (page)   params.append('page', page);
+      if (limit)  params.append('limit', limit);
+      const query = params.toString();
+      return await api.get(query ? `${GET_ADMIN_PROFIT_SHARING}?${query}` : GET_ADMIN_PROFIT_SHARING);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchIbClients = createAsyncThunk(
+  'admin/fetchIbClients',
+  async (userId, thunkApi) => {
+    try {
+      return await api.get(`${GET_IB_CLIENTS}?userId=${userId}`);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
@@ -248,7 +354,16 @@ const adminSlice = createSlice({
     kycDocumentsTotalPages: 1,
     withdrawRequests: [],
     withdrawRequestsTotalPages: 1,
+    ibClients: [],
+    ibClientsLoading: false,
+    contactUs: [],
+    contactUsTotalPages: 1,
+    ibIncome: [],
+    ibIncomeTotalPages: 1,
+    profitSharing: [],
+    profitSharingTotalPages: 1,
     setting: null,
+    popup: null,
     loading: false,
     error: null,
   },
@@ -386,7 +501,68 @@ const adminSlice = createSlice({
         const updated = payload?.data || payload;
         if (updated) state.setting = updated;
       })
-      .addCase(updateSetting.rejected, rejected);
+      .addCase(updateSetting.rejected, rejected)
+
+      .addCase(createPopup.pending, pending)
+      .addCase(createPopup.fulfilled, (state) => { state.loading = false; })
+      .addCase(createPopup.rejected, rejected)
+
+
+      .addCase(fetchPopup.pending, pending)
+      .addCase(fetchPopup.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
+        state.popup = payload?.data || payload;
+      })
+      .addCase(fetchPopup.rejected, rejected)
+
+      .addCase(fetchAllContactUs.pending, pending)
+      .addCase(fetchAllContactUs.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
+        state.contactUs = payload?.data || (Array.isArray(payload) ? payload : []);
+        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
+        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
+        const limit = payload?.limit ?? payload?.perPage ?? 10;
+        state.contactUsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+      })
+      .addCase(fetchAllContactUs.rejected, rejected)
+
+      .addCase(fetchAdminIbIncome.pending, pending)
+      .addCase(fetchAdminIbIncome.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
+        state.ibIncome = payload?.data || (Array.isArray(payload) ? payload : []);
+        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
+        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
+        const limit = payload?.limit ?? payload?.perPage ?? 10;
+        state.ibIncomeTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+      })
+      .addCase(fetchAdminIbIncome.rejected, rejected)
+
+      .addCase(fetchAdminProfitSharing.pending, pending)
+      .addCase(fetchAdminProfitSharing.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
+        state.profitSharing = payload?.data || (Array.isArray(payload) ? payload : []);
+        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
+        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
+        const limit = payload?.limit ?? payload?.perPage ?? 10;
+        state.profitSharingTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+      })
+      .addCase(fetchAdminProfitSharing.rejected, rejected)
+
+      .addCase(fetchIbClients.pending, (state) => {
+        state.ibClientsLoading = true;
+      })
+      .addCase(fetchIbClients.fulfilled, (state, action) => {
+        state.ibClientsLoading = false;
+        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
+        state.ibClients = payload?.data || (Array.isArray(payload) ? payload : []);
+      })
+      .addCase(fetchIbClients.rejected, (state) => {
+        state.ibClientsLoading = false;
+      });
   },
 });
 

@@ -1,5 +1,5 @@
-import React from 'react';
+import ProfitSharing from '@/renderning/(user)/commission/profit-sharing';
 
-export default function ProfitSharingPage() {
-  return <div>Profit Sharing</div>;
+export default function Page() {
+  return <ProfitSharing />;
 }

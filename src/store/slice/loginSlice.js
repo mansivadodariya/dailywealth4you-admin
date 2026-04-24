@@ -6,8 +6,40 @@ import {
   getUserFromCookie,
   setAuthCookies,
 } from '@/service/cookies';
-import { ADMIN_LOGIN, LOGIN, RESET_PASSWORD } from '@/service/url';
+import { ADMIN_LOGIN, LOGIN, RESET_PASSWORD, GET_ALL_NOTIFICATIONS, UPDATE_NOTIFICATION } from '@/service/url';
 import { toast } from 'react-toastify';
+
+export const fetchNotifications = createAsyncThunk(
+  'login/fetchNotifications',
+  async (_, thunkApi) => {
+    try {
+      const response = await api.get(GET_ALL_NOTIFICATIONS);
+      return response;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateNotification = createAsyncThunk(
+  'notification/updateNotification',
+  async (arg, thunkApi) => {
+    const { notificationId = null, isReadAll = false } = arg || {};
+    try {
+      let body = {};
+      if (notificationId) {
+        body = { id: notificationId };
+      } else if (isReadAll) {
+        body = { isReadAll: true };
+      }
+      const response = await api.put(UPDATE_NOTIFICATION, body);
+      return { ...response, _notifId: notificationId };
+    } catch (error) {
+      console.error('Error updating notification', error);
+      return { error: true, message: error.message };
+    }
+  }
+);
 
 const getRoleFromUser = (user) =>
   user?.role ??
@@ -88,6 +120,9 @@ const initialState = {
   resetPasswordError: null,
   resetPasswordData: null,
   role: getRoleFromUser(initialUser),
+  notifications: [],
+  notificationsLoading: false,
+  unreadCount: 0,
 };
 
 const loginSlice = createSlice({
@@ -99,6 +134,8 @@ const loginSlice = createSlice({
       state.token = null;
       state.role = null;
       state.error = null;
+      state.notifications = [];
+      state.unreadCount = 0;
       clearAuthCookies();
     },
     clearLoginState: (state) => {
@@ -107,6 +144,16 @@ const loginSlice = createSlice({
       state.resetPasswordLoading = false;
       state.resetPasswordError = null;
       state.resetPasswordData = null;
+    },
+    markAllRead: (state) => {
+      state.notifications = state.notifications.map((n) => ({ ...n, isRead: true }));
+      state.unreadCount = 0;
+    },
+    addNotification: (state, action) => {
+      state.notifications.unshift(action.payload);
+      if (!action.payload.isRead) {
+        state.unreadCount += 1;
+      }
     },
   },
   extraReducers: (builder) => {
@@ -194,9 +241,35 @@ const loginSlice = createSlice({
       .addCase(resetPassword.rejected, (state, action) => {
         state.resetPasswordLoading = false;
         state.resetPasswordError = action.payload || 'Reset password failed';
+      })
+      .addCase(fetchNotifications.pending, (state) => {
+        state.notificationsLoading = true;
+      })
+      .addCase(fetchNotifications.fulfilled, (state, action) => {
+        state.notificationsLoading = false;
+        const data = action.payload?.data || action.payload || [];
+        const list = Array.isArray(data) ? data : data?.notifications || [];
+        state.notifications = list;
+        state.unreadCount = list.filter((n) => !n.isRead).length;
+      })
+      .addCase(fetchNotifications.rejected, (state) => {
+        state.notificationsLoading = false;
+      })
+      .addCase(updateNotification.fulfilled, (state, action) => {
+        const notifId = action.payload?._notifId;
+        if (notifId) {
+          // Mark single notification as read
+          state.notifications = state.notifications.map((n) =>
+            (n.id || n._id) === notifId ? { ...n, isRead: true } : n
+          );
+        } else {
+          // Mark all as read
+          state.notifications = state.notifications.map((n) => ({ ...n, isRead: true }));
+        }
+        state.unreadCount = state.notifications.filter((n) => !n.isRead).length;
       });
   },
 });
 
-export const { logout, clearLoginState } = loginSlice.actions;
+export const { logout, clearLoginState, markAllRead, addNotification } = loginSlice.actions;
 export default loginSlice.reducer;

@@ -21,7 +21,15 @@ export default function IBRequests() {
   const [activeFilters, setActiveFilters] = useState({});
   const [actionLoading, setActionLoading] = useState(null); // { id, action }
 
-  useEffect(() => { setPage(1); }, [search]);
+  const handleSearchChange = (val) => {
+    setSearch(val);
+    setPage(1);
+  };
+
+  const handleFilterApply = (f) => {
+    setActiveFilters(f);
+    setPage(1);
+  };
 
   useEffect(() => {
     dispatch(fetchIbRequests({ search, page, limit: 10, ...activeFilters }));
@@ -102,7 +110,7 @@ export default function IBRequests() {
 
       <TableTopBar
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={handleSearchChange}
         actions={[
           { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
@@ -114,7 +122,7 @@ export default function IBRequests() {
           fields={['dateRange', 'status']}
           statusChoices={ibRequestStatusOptions}
           initialFilters={activeFilters}
-          onApply={setActiveFilters}
+          onApply={handleFilterApply}
           onClose={() => setShowFilter(false)}
         />
       )}

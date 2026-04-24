@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllUsers } from '@/store/reducers';
+import { fetchAllUsers, fetchIbClients } from '@/store/reducers';
 import moment from 'moment';
 import styles from './users.module.scss';
 import { exportToExcel } from '@/utils/exportToExcel';
@@ -11,6 +11,7 @@ import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import UserViewModal from '@/components/modal/UserViewModal';
 import Pagination from '@/components/pagination';
+import Loader from '@/components/loader';
 
 const defaultFilters = {
   dateFrom: '',
@@ -31,13 +32,29 @@ export default function Users() {
   const [showFilter, setShowFilter] = useState(false);
   const [activeFilters, setActiveFilters] = useState(defaultFilters);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [expandedUserId, setExpandedUserId] = useState(null);
+  const { ibClients, ibClientsLoading } = useSelector((state) => state.admin);
 
-  // reset to page 1 when search or filters change
-  useEffect(() => { setPage(1); }, [search, activeFilters]);
+  const handleSearchChange = (val) => {
+    setSearch(val);
+    setPage(1);
+  };
+
+  const handleFilterApply = (f) => {
+    setActiveFilters(f);
+    setPage(1);
+  };
 
   useEffect(() => {
     dispatch(fetchAllUsers({ ...activeFilters, search, page, limit: 10 }));
   }, [dispatch, activeFilters, search, page]);
+
+  // fetch IB clients when a row is expanded
+  useEffect(() => {
+    if (expandedUserId) {
+      dispatch(fetchIbClients(expandedUserId));
+    }
+  }, [expandedUserId, dispatch]);
 
   const filtered = users || [];
 
@@ -86,7 +103,16 @@ export default function Users() {
       key: 'action',
       label: 'Action',
       render: (u) => (
-        <button className={styles.viewBtn} onClick={() => setSelectedUser(u)}>View</button>
+        <div className={styles.actionBtns}>
+          <button className={styles.viewBtn} onClick={() => setSelectedUser(u)}>View</button>
+          <button 
+            className={styles.ibBtn} 
+            onClick={() => setExpandedUserId(expandedUserId === u.id ? null : u.id)}
+            title="View IB Clients"
+          >
+            👥
+          </button>
+        </div>
       ),
     },
   ];
@@ -102,15 +128,82 @@ export default function Users() {
       <div className={styles.wrapper}>
         <TableTopBar
           search={search}
-          onSearchChange={setSearch}
+          onSearchChange={handleSearchChange}
           actions={topBarActions}
         />
-        <DataTable
-          columns={columns}
-          data={filtered}
-          loading={loading}
-          emptyMessage="No users found."
-        />
+        
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead className={styles.thead}>
+              <tr>
+                {columns.map((col) => (
+                  <th key={col.key}>{col.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className={styles.tbody}>
+              {loading ? (
+                <tr>
+                  <td colSpan={columns.length} className={styles.loading}>
+                    <Loader />
+                  </td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={columns.length} className={styles.empty}>No users found.</td>
+                </tr>
+              ) : (
+                filtered.map((user) => (
+                  <React.Fragment key={user.id}>
+                    <tr>
+                      {columns.map((col) => (
+                        <td key={col.key}>
+                          {col.render ? col.render(user) : user[col.key] ?? '—'}
+                        </td>
+                      ))}
+                    </tr>
+                    {expandedUserId === user.id && (
+                      <tr className={styles.expandedRow}>
+                        <td colSpan={columns.length}>
+                          <div className={styles.expandedContent}>
+                            {ibClientsLoading ? (
+                              <div className={styles.loaderWrap}><Loader /></div>
+                            ) : !ibClients?.length ? (
+                              <div className={styles.emptyClients}>No IB clients found.</div>
+                            ) : (
+                              <div className={styles.clientsTable}>
+                                <div className={styles.clientsHeader}>
+                                  <div className={styles.clientCol}>Join Date</div>
+                                  <div className={styles.clientCol}>User ID</div>
+                                  <div className={styles.clientCol}>Name</div>
+                                  <div className={styles.clientCol}>Email</div>
+                                  <div className={styles.clientCol}>Deposit</div>
+                                  <div className={styles.clientCol}>Profit</div>
+                                </div>
+                                {ibClients.map((client) => (
+                                  <div key={client.id} className={styles.clientsRow}>
+                                    <div className={styles.clientCol}>
+                                      {client.createdAt ? moment(client.createdAt).format('DD-MM-YYYY hh:mm A') : '—'}
+                                    </div>
+                                    <div className={styles.clientCol}>{client.id?.slice(0, 6).toUpperCase() ?? '—'}</div>
+                                    <div className={styles.clientCol}>{client.firstName} {client.lastName}</div>
+                                    <div className={styles.clientCol}>{client.email}</div>
+                                    <div className={styles.clientCol}>${client.deposit ?? '—'}</div>
+                                    <div className={styles.clientCol}>${client.commission ?? '—'}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
         
         <Pagination page={page} totalPages={usersTotalPages} onPageChange={setPage} />
       </div>
@@ -118,7 +211,7 @@ export default function Users() {
       {showFilter && (
         <FilterModal
           initialFilters={activeFilters}
-          onApply={(f) => setActiveFilters(f)}
+          onApply={handleFilterApply}
           onClose={() => setShowFilter(false)}
         />
       )}

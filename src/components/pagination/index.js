@@ -36,7 +36,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
           disabled={page === 1}
           aria-label="Previous page"
         >
-         <img src="./assets/icons/RightArrowPage.svg"/> 
+         <img src="/assets/icons/RightArrowPage.svg" alt="Previous" /> 
         </button>
 
         {pages.map((p, i) =>
@@ -59,7 +59,7 @@ export default function Pagination({ page, totalPages, onPageChange }) {
           disabled={page === totalPages}
           aria-label="Next page"
         >
-         <img src="./assets/icons/LeftArrowPage.svg"/> 
+         <img src="/assets/icons/LeftArrowPage.svg" alt="Next" />
 
         </button>
       </div>

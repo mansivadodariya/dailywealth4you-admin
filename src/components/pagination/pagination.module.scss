@@ -2,11 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 4px 4px;
+  padding: 16px 24px;
   position: sticky;
   bottom: 0;
   background: #030f0f;
-  z-index: 10;
+  z-index: 100;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin-top: auto;
 }
 
 .left {

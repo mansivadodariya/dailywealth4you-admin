@@ -12,20 +12,20 @@ export const selectStyles = {
   control: (provided, state) => ({
     ...provided,
     background: 'rgba(255, 255, 255, 0.04)',
-    border: state.isFocused
-      ? '1px solid rgba(2, 223, 130, 0.4)'
-      : '1px solid rgba(255, 255, 255, 0.1)',
+    border: '1px solid transparent',
     borderRadius: '8px',
     minHeight: '40px',
     height: '40px',
     color: '#fafafa',
     fontSize: '14px',
     fontWeight: '500',
-    boxShadow: 'none',
+    boxShadow: state.isFocused
+      ? 'inset 0 0 0 1px rgba(255, 255, 255, 0.35)'
+      : 'inset 0 0 0 1px rgba(255, 255, 255, 0.15)',
     '&:hover': {
-      border: state.isFocused
-        ? '1px solid rgba(2, 223, 130, 0.4)'
-        : '1px solid rgba(255, 255, 255, 0.2)',
+      boxShadow: state.isFocused
+        ? 'inset 0 0 0 1px rgba(255, 255, 255, 0.35)'
+        : 'inset 0 0 0 1px rgba(255, 255, 255, 0.25)',
     },
     cursor: 'pointer',
     paddingLeft: '6px',

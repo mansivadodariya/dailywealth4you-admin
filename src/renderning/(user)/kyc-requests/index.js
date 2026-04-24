@@ -22,7 +22,15 @@ export default function KycRequests() {
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [actionLoading, setActionLoading] = useState(null);
 
-  useEffect(() => { setPage(1); }, [search]);
+  const handleSearchChange = (val) => {
+    setSearch(val);
+    setPage(1);
+  };
+
+  const handleFilterApply = (f) => {
+    setActiveFilters(f);
+    setPage(1);
+  };
 
   useEffect(() => {
     dispatch(fetchAllKycDocuments({ search, page, limit: 10, ...activeFilters }));
@@ -86,7 +94,7 @@ export default function KycRequests() {
     <div className={styles.wrapper}>
       <TableTopBar
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={handleSearchChange}
         actions={[
           { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
@@ -97,7 +105,7 @@ export default function KycRequests() {
         <FilterModal
           fields={['dateRange']}
           initialFilters={activeFilters}
-          onApply={setActiveFilters}
+          onApply={handleFilterApply}
           onClose={() => setShowFilter(false)}
         />
       )}

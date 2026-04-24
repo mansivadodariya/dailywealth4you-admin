@@ -54,13 +54,13 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
     <div className={styles.docsGrid}>
       {DOC_FIELDS.map((group) => (
         <div key={group.title} className={styles.groupSection}>
-          <h4 className={styles.groupTitle}>{group.title}</h4>
+          {/* <h4 className={styles.groupTitle}>{group.title}</h4> */}
 
           <div className={styles.groupGrid}>
             {group.fields.map(({ key, label }) =>
               doc[key] ? (
                 <div key={key} className={styles.docSection}>
-                  <label>{label}</label>
+                  <label>{group.title} ({label})</label>
 
                   <div
                     className={styles.imgWrapper}
@@ -103,7 +103,8 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
                 ? <span className={styles.btnSpinner} />
                 : doc?.status === 'rejected'
                 ? 'Rejected'
-                : 'Reject KYC  ✕'}
+                : 
+                <> Reject KYC <img src="/assets/icons/WhiteClose.svg" alt="" style={{ width: 18, height: 18 }} /> </>}                
             </button>
           </div>
 

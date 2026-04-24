@@ -1,18 +1,27 @@
 .tableWrapper {
   overflow-x: auto;
+  overflow-y: auto;
   border-radius: 12px;
   position: relative;
-  overflow: hidden;
   flex: 1;
+  min-height: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  scrollbar-width: none;
+  &::-webkit-scrollbar { display: none; }
 }
 
 .table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   min-width: 700px;
 
   thead {
-    position: relative;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: #0B1616; // Solid background for sticky header
 
     &::after {
       content: '';
@@ -36,7 +45,7 @@
     th {
       color: var(--Text-Primary, #fafafa);
       font-size: 16px;
-      padding: 14px;
+      padding: 20px;
       text-align: left;
       font-weight: 600;
       line-height: normal;
@@ -73,7 +82,7 @@
         font-size: 14px;
         font-weight: 400;
         line-height: normal;
-        padding: 14px;
+        padding: 16px 20px;
         white-space: nowrap;
       }
     }

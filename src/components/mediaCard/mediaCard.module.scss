@@ -1,0 +1,106 @@
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  /* no overflow:hidden here — dropdown needs to escape the card */
+  cursor: default;
+}
+
+.imageBox {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: rgba(255,255,255,0.04);
+  overflow: hidden;
+  border-radius: 12px 12px 0 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.placeholder {
+  width: 100%;
+  height: 100%;
+  background: rgba(255,255,255,0.06);
+}
+
+.footer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 12px 14px 14px;
+}
+
+.title {
+  font-size: 13px;
+  color: #e0e0e0;
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
+  /* clamp to 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.menuWrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dotsBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: center;
+
+  span {
+    display: block;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #aaa;
+  }
+
+  &:hover span { background: #fff; }
+}
+
+.dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: #1a2424;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 8px;
+  z-index: 100;
+  min-width: 120px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+
+  button {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+
+    &:hover { background: rgba(255,255,255,0.06); }
+  }
+}
+
+.deleteItem {
+  color: #ff5c5c !important;
+}

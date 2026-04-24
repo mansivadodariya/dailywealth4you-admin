@@ -29,7 +29,7 @@ export default function RootLayout({ children }) {
       <body>
         <StoreProvider>
           {children}
-          <ToastContainer position="top-right" autoClose={2500} />
+          <ToastContainer position="top-right" autoClose={2500} theme="dark" />
         </StoreProvider>
       </body>
     </html>

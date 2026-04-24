@@ -18,11 +18,14 @@ export default function SubAdmins() {
   const [showAdd, setShowAdd] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
 
-  useEffect(() => { setPage(1); }, [search]);
+  const handleSearchChange = (val) => {
+    setSearch(val);
+    setPage(1);
+  };
 
   useEffect(() => {
-    dispatch(fetchAllSubAdmins({ page, limit: 10 }));
-  }, [dispatch, page]);
+    dispatch(fetchAllSubAdmins({ page, limit: 10, search }));
+  }, [dispatch, page, search]);
 
   const refresh = () => dispatch(fetchAllSubAdmins({ page, limit: 10 }));
 
@@ -64,11 +67,11 @@ export default function SubAdmins() {
     <div className={styles.wrapper}>
       <TableTopBar
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={handleSearchChange}
         actions={[
           { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => {} },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: () => {} },
-          { label: 'Add New Sub-Admin  +', onClick: () => setShowAdd(true), variant: 'primary' },
+          { label: 'Add New Sub-Admin ', onClick: () => setShowAdd(true), variant: 'primary' },
         ]}
       />
 

@@ -105,10 +105,44 @@
   padding: 32px 16px;
   cursor: pointer;
   transition: border-color 0.2s;
+  min-height: 120px;
 
   &:hover {
     border-color: rgba(2, 223, 130, 0.3);
   }
+}
+
+.previewWrapper {
+  position: relative;
+  width: 100%;
+  line-height: 0;
+
+  .removeBtn {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: #fff;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+
+    &:hover { background: rgba(0, 0, 0, 0.85); }
+  }
+}
+
+.previewImg {
+  width: 100%;
+  max-height: 180px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .uploadIcon {
@@ -173,4 +207,18 @@
   transition: background 0.2s;
 
   &:hover { background: rgba(255, 255, 255, 0.05); }
+}
+
+.errorText {
+  font-size: 12px;
+  color: #ff5c5c;
+  margin-top: 2px;
+}
+
+.inputError {
+  border-color: #ff5c5c !important;
+}
+
+.uploadBoxError {
+  border-color: #ff5c5c !important;
 }
