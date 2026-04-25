@@ -65,7 +65,7 @@ export default function NotificationDropdown({ onClose }) {
     try {
       const hasUnread = notificationsRef.current.some((n) => !n.isRead);
       if (!hasUnread) return;
-      await dispatch(updateNotification(null, true)).unwrap();
+      await dispatch(updateNotification({ isReadAll: true })).unwrap();
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
       getSocket()?.emit('check-notification', {});
     } catch (error) {
@@ -73,21 +73,21 @@ export default function NotificationDropdown({ onClose }) {
     }
   };
 
-  const markOneAsRead = async (notification) => {
-    if (notification.isRead) return;
-    const notifId = notification.id || notification._id;
-    try {
-      await dispatch(updateNotification({ notificationId: notifId })).unwrap();
-      setNotifications((prev) =>
-        prev.map((n) =>
-          (n.id || n._id) === notifId ? { ...n, isRead: true } : n
-        )
-      );
-      getSocket()?.emit('check-notification', {});
-    } catch (error) {
-      console.error('Error marking notification as read:', error);
-    }
-  };
+//   const markOneAsRead = async (notification) => {
+//     if (notification.isRead) return;
+//     const notifId = notification.id || notification._id;
+//     try {
+//       await dispatch(updateNotification({ notificationId: notifId })).unwrap();
+//       setNotifications((prev) =>
+//         prev.map((n) =>
+//           (n.id || n._id) === notifId ? { ...n, isRead: true } : n
+//         )
+//       );
+//       getSocket()?.emit('check-notification', {});
+//     } catch (error) {
+//       console.error('Error marking notification as read:', error);
+//     }
+//   };
 
   const unreadCount = notifications.filter((n) => !n.isRead).length;
 
@@ -125,7 +125,7 @@ export default function NotificationDropdown({ onClose }) {
             <div
               key={notifId || i}
               className={`${styles.item} ${!notif?.isRead ? styles.unread : ''}`}
-              onClick={() => markOneAsRead(notif)}
+            //   onClick={() => markOneAsRead(notif)}
             >
               {/* Icon */}
               <div>

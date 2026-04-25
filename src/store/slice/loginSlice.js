@@ -23,16 +23,11 @@ export const fetchNotifications = createAsyncThunk(
 
 export const updateNotification = createAsyncThunk(
   'notification/updateNotification',
-  async (arg, thunkApi) => {
+  async (arg) => {
     const { notificationId = null, isReadAll = false } = arg || {};
     try {
-      let body = {};
-      if (notificationId) {
-        body = { id: notificationId };
-      } else if (isReadAll) {
-        body = { isReadAll: true };
-      }
-      const response = await api.put(UPDATE_NOTIFICATION, body);
+      const url = `${UPDATE_NOTIFICATION}?id=${notificationId}&isReadAll=${isReadAll}`;
+      const response = await api.put(url, { isRead: true });
       return { ...response, _notifId: notificationId };
     } catch (error) {
       console.error('Error updating notification', error);

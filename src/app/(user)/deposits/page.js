@@ -1,4 +1,5 @@
-import React from 'react';
+import Deposits from "@/renderning/(user)/deposits";
+
 export default function DepositsPage() {
-  return <div>Deposits</div>;
+  return <Deposits />;
 }

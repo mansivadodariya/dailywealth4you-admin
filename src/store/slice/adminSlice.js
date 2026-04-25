@@ -7,7 +7,6 @@ import {
   UPDATE_IB_REQUEST,
   GET_ALL_KYC_DOCUMENTS,
   UPDATE_KYC_DOCUMENT,
-  GET_ALL_WITHDRAW_REQUESTS,
   UPDATE_WITHDRAW_REQUEST,
   BLOCK_USER,
   ADD_SUB_ADMIN,
@@ -22,6 +21,7 @@ import {
   GET_ADMIN_IB_INCOME,
   GET_ALL_CONTACT_US,
   GET_ADMIN_PROFIT_SHARING,
+  GET_ALL_TRANSACTIONS,
 } from '@/service/url';
 
 export const fetchAllUsers = createAsyncThunk(
@@ -93,6 +93,7 @@ export const fetchWithdrawRequests = createAsyncThunk(
   async ({ search = '', page, limit, dateFrom, dateTo, status, withdrawalMin, withdrawalMax } = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
+      params.append('type', 'withdrawal');
       if (search)        params.append('search', encodeURIComponent(search));
       if (dateFrom)      params.append('startDate', dateFrom);
       if (dateTo)        params.append('endDate', dateTo);
@@ -101,8 +102,7 @@ export const fetchWithdrawRequests = createAsyncThunk(
       if (withdrawalMax !== '' && withdrawalMax != null) params.append('amountMax', withdrawalMax);
       if (page)          params.append('page', page);
       if (limit)         params.append('limit', limit);
-      const query = params.toString();
-      return await api.get(query ? `${GET_ALL_WITHDRAW_REQUESTS}?${query}` : GET_ALL_WITHDRAW_REQUESTS);
+      return await api.get(`${GET_ALL_TRANSACTIONS}?${params.toString()}`);
     } catch (error) {
       toast.error(error);
       return thunkApi.rejectWithValue(error);
@@ -341,6 +341,23 @@ export const fetchIbClients = createAsyncThunk(
   }
 );
 
+export const fetchTransactions = createAsyncThunk(
+  'admin/fetchTransactions',
+  async ({ type = 'deposit', search = '', page, limit } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams();
+      params.append('type', type);
+      if (search) params.append('search', search);
+      if (page)   params.append('page', page);
+      if (limit)  params.append('limit', limit);
+      return await api.get(`${GET_ALL_TRANSACTIONS}?${params.toString()}`);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
@@ -366,6 +383,8 @@ const adminSlice = createSlice({
     popup: null,
     loading: false,
     error: null,
+    transactions: [],
+    transactionsTotalPages: 1,
   },
   reducers: {
     clearAdminState: (state) => {
@@ -562,7 +581,19 @@ const adminSlice = createSlice({
       })
       .addCase(fetchIbClients.rejected, (state) => {
         state.ibClientsLoading = false;
-      });
+      })
+
+      .addCase(fetchTransactions.pending, pending)
+      .addCase(fetchTransactions.fulfilled, (state, action) => {
+        state.loading = false;
+        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
+        state.transactions = payload?.data || (Array.isArray(payload) ? payload : []);
+        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
+        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
+        const limit = payload?.limit ?? payload?.perPage ?? 10;
+        state.transactionsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+      })
+      .addCase(fetchTransactions.rejected, rejected);
   },
 });
 

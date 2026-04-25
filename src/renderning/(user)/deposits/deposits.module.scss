@@ -1,0 +1,38 @@
+.wrapper {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.statsRow {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  padding: 3px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+  }
+
+  &.approved,
+  &.completed {
+    background: rgba(2, 223, 130, 0.12);
+    color: #02df82;
+  }
+
+  &.rejected {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff6464;
+  }
+}

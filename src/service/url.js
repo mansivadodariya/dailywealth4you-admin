@@ -55,3 +55,6 @@ export const GET_ALL_CONTACT_US = '/contactUs/getAll';
 // Notifications
 export const GET_ALL_NOTIFICATIONS = '/notification/getAllNotification';
 export const UPDATE_NOTIFICATION = '/notification/updateNotification';
+
+// Transactions
+export const GET_ALL_TRANSACTIONS = '/transaction/getAllTransaction';
