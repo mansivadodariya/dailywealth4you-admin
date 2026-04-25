@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAdminIbIncome } from '@/store/reducers';
 import moment from 'moment';
 import styles from './ibIncome.module.scss';
+import { exportToExcel } from '@/utils/exportToExcel';
 import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
@@ -25,6 +26,21 @@ export default function IBIncome() {
   useEffect(() => {
     dispatch(fetchAdminIbIncome({ search, page, limit: 10 }));
   }, [dispatch, search, page]);
+
+  const handleExport = () => {
+    const rows = (ibIncome || []).map((row) => {
+      const totalIncome = (row.brokers || []).reduce((acc, b) => acc + (b.totalIncome || 0), 0);
+      return {
+        'Date Joined': row?.user?.createdAt ? moment(row.user.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
+        'User ID': row.user?.id?.slice(0, 6).toUpperCase() ?? '—',
+        'Name': `${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—',
+        'Email': row.user?.email ?? '—',
+        'Lots Traded': row.user?.totalLots ?? 0,
+        'IB Income': (row.totalIncome ?? totalIncome ?? 0).toLocaleString(),
+      };
+    });
+    exportToExcel(rows, 'IB Income', 'ib_income_export.xlsx');
+  };
 
   const innerColumns = [
     { key: 'orderId', label: 'Order ID' },
@@ -104,7 +120,13 @@ export default function IBIncome() {
 
   return (
     <div className={styles.wrapper}>
-      <TableTopBar search={search} onSearchChange={handleSearchChange} actions={[]} />
+      <TableTopBar
+        search={search}
+        onSearchChange={handleSearchChange}
+        actions={[
+          { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
+        ]}
+      />
 
       <div className={styles.tableWrapper}>
         <table className={styles.table}>

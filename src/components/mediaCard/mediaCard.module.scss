@@ -2,13 +2,17 @@
   background: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 100%);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 260px;
   /* no overflow:hidden here — dropdown needs to escape the card */
   cursor: default;
 }
 
 .imageBox {
   width: 100%;
-  aspect-ratio: 16 / 9;
+  flex: 1;
+  min-height: 0;
   background: rgba(255,255,255,0.04);
   overflow: hidden;
   border-radius: 12px 12px 0 0;

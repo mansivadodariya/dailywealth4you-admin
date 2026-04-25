@@ -77,7 +77,7 @@ export default function Users() {
       label: 'Date Joined',
       render: (u) => (u.createdAt ? moment(u.createdAt).format('DD-MM-YYYY hh:mm A') : '—'),
     },
-    { key: 'id', label: 'User ID' },
+    { key: 'id', label: 'User ID', render: (u) => u.id?.slice(0, 6).toUpperCase() ?? '—' },
     {
       key: 'name',
       label: 'Name',
@@ -92,12 +92,16 @@ export default function Users() {
     {
       key: 'deposit',
       label: 'Deposit',
-      render: (u) => (u.deposit != null ? `${u.deposit}` : '—'),
+      render: (u) => (u.deposit != null ? `$${u.deposit}` : '$0'),
     },
     {
-      key: 'commission',
+      key: 'totalProfit',
       label: 'Profit',
-      render: (u) => (u.commission != null ? `${u.commission}` : '—'),
+      render: (u) => (
+        <span className={styles.profitBadge}>
+          {u.totalProfit != null ? `$${u.totalProfit}` : '$0'}
+        </span>
+      ),
     },
     {
       key: 'action',
@@ -105,12 +109,12 @@ export default function Users() {
       render: (u) => (
         <div className={styles.actionBtns}>
           <button className={styles.viewBtn} onClick={() => setSelectedUser(u)}>View</button>
-          <button 
-            className={styles.ibBtn} 
+          <button
+            className={expandedUserId === u.id ? styles.ibBtnExpanded : styles.ibBtn}
             onClick={() => setExpandedUserId(expandedUserId === u.id ? null : u.id)}
             title="View IB Clients"
           >
-            👥
+            <span className={styles.iconDown} />
           </button>
         </div>
       ),
@@ -121,7 +125,7 @@ export default function Users() {
     { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
     { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
   ];
-  console.log(usersTotalPages,"totalPages");
+  console.log(usersTotalPages, "totalPages");
 
   return (
     <>
@@ -131,7 +135,7 @@ export default function Users() {
           onSearchChange={handleSearchChange}
           actions={topBarActions}
         />
-        
+
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead className={styles.thead}>
@@ -185,11 +189,19 @@ export default function Users() {
                                     <div className={styles.clientCol}>
                                       {client.createdAt ? moment(client.createdAt).format('DD-MM-YYYY hh:mm A') : '—'}
                                     </div>
-                                    <div className={styles.clientCol}>{client.id?.slice(0, 6).toUpperCase() ?? '—'}</div>
+                                    <div className={styles.clientCol}>
+                                      <span className={styles.idBadge}>
+                                        {client.id.slice(0, 6).toUpperCase() ?? '—'}
+                                      </span>
+                                    </div>
                                     <div className={styles.clientCol}>{client.firstName} {client.lastName}</div>
                                     <div className={styles.clientCol}>{client.email}</div>
-                                    <div className={styles.clientCol}>${client.deposit ?? '—'}</div>
-                                    <div className={styles.clientCol}>${client.commission ?? '—'}</div>
+                                    <div className={styles.clientCol}>${client.deposit ?? '0'}</div>
+                                    <div className={styles.clientCol}>
+                                      <span className={styles.profitBadge}>
+                                        ${client.commission ?? '0'}
+                                      </span>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
@@ -204,7 +216,7 @@ export default function Users() {
             </tbody>
           </table>
         </div>
-        
+
         <Pagination page={page} totalPages={usersTotalPages} onPageChange={setPage} />
       </div>
 

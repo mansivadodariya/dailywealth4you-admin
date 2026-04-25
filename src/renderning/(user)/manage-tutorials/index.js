@@ -10,20 +10,7 @@ import Pagination from '@/components/pagination';
 import TutorialModal from '@/components/modal/TutorialModal';
 import Loader from '@/components/loader';
 
-// Derive a thumbnail image URL from a Cloudinary video URL.
-// e.g. https://res.cloudinary.com/.../video/upload/v123/file.mp4
-//   -> https://res.cloudinary.com/.../video/upload/so_0/v123/file.jpg
-function cloudinaryVideoThumb(videoUrl) {
-  if (!videoUrl) return null;
-  try {
-    // insert transformation "so_0" (snapshot at 0s) and swap extension
-    return videoUrl
-      .replace('/video/upload/', '/video/upload/so_0/')
-      .replace(/\.(mp4|mov|webm|mkv)$/i, '.jpg');
-  } catch {
-    return null;
-  }
-}
+
 
 export default function ManageTutorials() {
   const dispatch = useDispatch();
@@ -61,7 +48,7 @@ export default function ManageTutorials() {
             {tutorials.map((tutorial) => (
               <MediaCard
                 key={tutorial.id}
-                imageSrc={cloudinaryVideoThumb(tutorial.videoUrl)}
+                imageSrc={tutorial.thumbnail}
                 title={tutorial.description}
                 onEdit={() => setModal({ mode: 'edit', tutorial })}
                 onDelete={() => setModal({ mode: 'delete', tutorial })}

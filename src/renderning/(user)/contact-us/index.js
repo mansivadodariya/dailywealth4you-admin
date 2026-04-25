@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllContactUs } from '@/store/reducers';
 import moment from 'moment';
 import styles from './contactUs.module.scss';
+import { exportToExcel } from '@/utils/exportToExcel';
 import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
@@ -25,6 +26,18 @@ export default function ContactUs() {
   useEffect(() => {
     dispatch(fetchAllContactUs({ search, page, limit: 10 }));
   }, [dispatch, search, page]);
+
+  const contactUsData = contactUs || [];
+
+  const handleExport = () => {
+    const rows = contactUsData.map((r) => ({
+      'Date': r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
+      'Name': r.firstName ? `${r.firstName} ${r.lastName}` : '—',
+      'Email': r.email ?? '—',
+      'Message': r.description ?? '—',
+    }));
+    exportToExcel(rows, 'Contact Us', 'contact_us_export.xlsx');
+  };
 
   const columns = [
     {
@@ -60,11 +73,17 @@ export default function ContactUs() {
 
   return (
     <div className={styles.wrapper}>
-      <TableTopBar search={search} onSearchChange={handleSearchChange} actions={[]} />
+      <TableTopBar
+        search={search}
+        onSearchChange={handleSearchChange}
+        actions={[
+          { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
+        ]}
+      />
 
       <DataTable
         columns={columns}
-        data={contactUs || []}
+        data={contactUsData}
         loading={loading}
         emptyMessage="No contact requests found."
       />

@@ -146,7 +146,17 @@
 
 .loading, .empty {
   text-align: center;
-  padding: 40px;
   color: #888;
   vertical-align: middle;
+}
+
+.loading {
+  height: 300px;
+
+  > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
 }

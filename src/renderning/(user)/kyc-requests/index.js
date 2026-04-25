@@ -50,7 +50,7 @@ export default function KycRequests() {
   const handleExport = () => {
     const rows = filtered.map((d) => ({
       'Date Requested': d.createdAt ? moment(d.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
-      'User ID': d?.user?.id ?? '—',
+      'User ID': d?.user?.id?.slice(0, 6).toUpperCase() ?? '—',
       'Name': `${d?.user?.firstName ?? ''} ${d?.user?.lastName ?? ''}`.trim() || '—',
       'Email': d?.user?.email ?? '—',
       'Status': d.status ?? '—',
@@ -67,7 +67,7 @@ export default function KycRequests() {
     {
       key: 'userId',
       label: 'User ID',
-      render: (d) => d?.user?.id ?? '—',
+      render: (d) => d?.user?.id?.slice(0, 6).toUpperCase() ?? '—',
     },
     {
       key: 'name',

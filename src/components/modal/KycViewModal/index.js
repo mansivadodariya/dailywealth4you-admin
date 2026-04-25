@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import styles from './KycViewModal.module.scss';
 import CloseIcon from '@/icons/closeIcon';
+import RightIcon from '@/icons/rightIcon'; // Using RightIcon as it usually has color control or I can wrap it
 
 
 const DOC_FIELDS = [
@@ -23,7 +24,7 @@ const DOC_FIELDS = [
 ];
 
 export default function KycViewModal({ doc, onClose, onAction, actionLoading }) {
-  const [lightbox, setLightbox] = useState(null); // { src, label }
+  const [detailView, setDetailView] = useState(null); // { src, label }
 
   const name  = `${doc?.user?.firstName ?? ''} ${doc?.user?.lastName ?? ''}`.trim() || '—';
   const email = doc?.user?.email ?? '—';
@@ -36,9 +37,29 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
         <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
 
           <div className={styles.header}>
-            <div>
-              <h2>{name}</h2>
-              <p>{email}</p>
+            <div className={styles.headerTitle}>
+              {detailView && (
+                <button 
+                  className={styles.backBtn} 
+                  onClick={() => setDetailView(null)}
+                  aria-label="Back to documents"
+                >
+                  <div className={styles.backArrowWrap}>
+                    <RightIcon color="#ffffff" size={18} />
+                  </div>
+                </button>
+              )}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <h2>{detailView ? detailView.label : name}</h2>
+                  {!detailView && doc?.user?.id && (
+                    <span className={styles.idBadge}>
+                      {doc.user.id.slice(0, 6).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <p>{email}</p>
+              </div>
             </div>
             <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
               <CloseIcon color="#ffffff" size={18} />
@@ -48,39 +69,40 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
           <div className={styles.divider} />
 
          <div className={styles.body}>
-  {DOC_FIELDS.some(group =>
-    group.fields.some(field => doc[field.key])
-  ) ? (
-    <div className={styles.docsGrid}>
-      {DOC_FIELDS.map((group) => (
-        <div key={group.title} className={styles.groupSection}>
-          {/* <h4 className={styles.groupTitle}>{group.title}</h4> */}
-
-          <div className={styles.groupGrid}>
-            {group.fields.map(({ key, label }) =>
-              doc[key] ? (
-                <div key={key} className={styles.docSection}>
-                  <label>{group.title} ({label})</label>
-
-                  <div
-                    className={styles.imgWrapper}
-                    onClick={() =>
-                      setLightbox({ src: doc[key], label: `${group.title} - ${label}` })
-                    }
-                  >
-                    <img src={doc[key]} alt={label} />
+          {detailView ? (
+            <div className={styles.detailContent}>
+              <img src={detailView.src} alt={detailView.label} />
+            </div>
+          ) : DOC_FIELDS.some(group =>
+            group.fields.some(field => doc[field.key])
+          ) ? (
+            <div className={styles.docsGrid}>
+              {DOC_FIELDS.map((group) => (
+                <div key={group.title} className={styles.groupSection}>
+                  <div className={styles.groupGrid}>
+                    {group.fields.map(({ key, label }) =>
+                      doc[key] ? (
+                        <div key={key} className={styles.docSection}>
+                          <label>{group.title} ({label})</label>
+                          <div
+                            className={styles.imgWrapper}
+                            onClick={() =>
+                              setDetailView({ src: doc[key], label: `${group.title} - ${label}` })
+                            }
+                          >
+                            <img src={doc[key]} alt={label} />
+                          </div>
+                        </div>
+                      ) : null
+                    )}
                   </div>
                 </div>
-              ) : null
-            )}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className={styles.empty}>No documents uploaded.</p>
+          )}
         </div>
-      ))}
-    </div>
-  ) : (
-    <p className={styles.empty}>No documents uploaded.</p>
-  )}
-</div>
 
           <div className={styles.actions}>
             <button
@@ -110,20 +132,6 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
 
         </div>
       </div>
-
-      {lightbox && (
-        <div className={styles.lightboxOverlay} onClick={() => setLightbox(null)}>
-          <div className={styles.lightbox} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.lightboxHeader}>
-              <span>{lightbox.label}</span>
-              <button onClick={() => setLightbox(null)} aria-label="Close lightbox">
-                <CloseIcon color="#ffffff" size={16} />
-              </button>
-            </div>
-            <img src={lightbox.src} alt={lightbox.label} />
-          </div>
-        </div>
-      )}
     </>
   );
 }

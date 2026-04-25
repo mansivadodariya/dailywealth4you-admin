@@ -81,9 +81,12 @@ export default function WithdrawRequests() {
       key: 'name',
       label: 'Name',
       render: (r) =>
-        `${r.firstName ?? ''} ${r.lastName ?? ''}`.trim() || r.name || '—',
+        `${r.user.firstName ?? ''} ${r.user.lastName ?? ''}`.trim() || '—',
     },
-    { key: 'email', label: 'Email' },
+    { key: 'email', label: 'Email' ,
+       render: (r) =>
+        `${r.user.email ?? ''}`.trim() || '—',
+    },
     {
       key: 'amount',
       label: 'Withdrawal Amount',

@@ -2,9 +2,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAllSubAdmins } from '@/store/reducers';
+import { fetchAllSubAdmins, updateSubAdmin, deleteSubAdmin } from '@/store/reducers';
 import moment from 'moment';
 import styles from './subAdmins.module.scss';
+import { exportToExcel } from '@/utils/exportToExcel';
 import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
@@ -17,6 +18,8 @@ export default function SubAdmins() {
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
   const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const handleSearchChange = (val) => {
     setSearch(val);
@@ -27,9 +30,42 @@ export default function SubAdmins() {
     dispatch(fetchAllSubAdmins({ page, limit: 10, search }));
   }, [dispatch, page, search]);
 
-  const refresh = () => dispatch(fetchAllSubAdmins({ page, limit: 10 }));
+  const refresh = () => dispatch(fetchAllSubAdmins({ page, limit: 10, search }));
+
+  const handleSave = (data) => {
+    setSaving(true);
+    dispatch(updateSubAdmin(data)).then((res) => {
+      setSaving(false);
+      if (!res.error) {
+        refresh();
+        setSelectedAdmin(null);
+      }
+    });
+  };
+
+  const handleDelete = (id) => {
+    if (!window.confirm('Are you sure you want to delete this sub-admin?')) return;
+    setDeleting(true);
+    dispatch(deleteSubAdmin(id)).then((res) => {
+      setDeleting(false);
+      if (!res.error) {
+        refresh();
+        setSelectedAdmin(null);
+      }
+    });
+  };
 
   const filtered = subAdmins || [];
+
+  const handleExport = () => {
+    const rows = filtered.map((r) => ({
+      'Date Added': r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
+      'Admin ID': r.id?.slice(0, 6).toUpperCase() ?? '—',
+      'Email': r.email ?? '—',
+      'Access': (r.permissions || []).join(', ') || '—',
+    }));
+    exportToExcel(rows, 'Sub Admins', 'sub_admins_export.xlsx');
+  };
 
   const columns = [
     {
@@ -70,7 +106,7 @@ export default function SubAdmins() {
         onSearchChange={handleSearchChange}
         actions={[
           { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => {} },
-          { label: 'Export', icon: '/assets/icons/Export.svg', onClick: () => {} },
+          { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
           { label: 'Add New Sub-Admin ', onClick: () => setShowAdd(true), variant: 'primary' },
         ]}
       />
@@ -96,8 +132,10 @@ export default function SubAdmins() {
           mode="view"
           admin={selectedAdmin}
           onClose={() => setSelectedAdmin(null)}
-          onSave={() => {}}
-          onDelete={() => {}}
+          onSave={handleSave}
+          onDelete={handleDelete}
+          saving={saving}
+          deleting={deleting}
         />
       )}
     </div>

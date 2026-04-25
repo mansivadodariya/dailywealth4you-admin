@@ -29,14 +29,14 @@ export default function Deposits() {
   const columns = [
     { key: 'createdAt', label: 'Date', render: (r) => r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—' },
     { key: 'userId', label: 'User ID' },
-    { key: 'name', label: 'Name', render: (r) => `${r.firstName ?? ''} ${r.lastName ?? ''}`.trim() || r.name || '—' },
-    { key: 'email', label: 'Email' },
+    { key: 'name', label: 'Name', render: (r) => `${r.user.firstName ?? ''} ${r.user.lastName ?? ''}`.trim() || r.name || '—' },
+    { key: 'email', label: 'Email', render: (r) =>  r.user.email || '—'  },
     { key: 'amount', label: 'Deposit Amount', render: (r) => r.amount != null ? `${r.amount}` : '—' },
-    { key: 'mtsAccount', label: 'MTS Account', render: (r) => r.mtsAccount ?? '—' },
+    { key: 'mtsAccount', label: 'MT5 Account', render: (r) => r.mtsAccount ?? '—' },
     { key: 'broker', label: 'Broker', render: (r) => r.broker ?? '—' },
     {
       key: 'status', label: 'Status',
-      render: (r) => <span className={`${styles.badge} ${styles[r.status] ?? ''}`}>{r.status ?? '—'}</span>,
+      render: (r) => <span className={`${styles.badge} ${styles[r.status] ?? ''}`}>{'Deposit'}</span>,
     },
   ];
 

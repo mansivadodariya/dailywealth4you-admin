@@ -10,6 +10,8 @@ import {
   UPDATE_WITHDRAW_REQUEST,
   BLOCK_USER,
   ADD_SUB_ADMIN,
+  UPDATE_SUB_ADMIN,
+  DELETE_SUB_ADMIN,
   GET_ALL_SUB_ADMINS,
   CREATE_NOTIFICATION,
   CREATE_POPUP,
@@ -146,11 +148,12 @@ export const fetchAllKycDocuments = createAsyncThunk(
 
 export const fetchAllSubAdmins = createAsyncThunk(
   'admin/fetchAllSubAdmins',
-  async ({ page, limit } = {}, thunkApi) => {
+  async ({ page, limit, search = '' } = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
-      if (page)  params.append('page', page);
-      if (limit) params.append('limit', limit);
+      if (search) params.append('search', search);
+      if (page)   params.append('page', page);
+      if (limit)  params.append('limit', limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_SUB_ADMINS}?${query}` : GET_ALL_SUB_ADMINS);
     } catch (error) {
@@ -167,6 +170,36 @@ export const addSubAdmin = createAsyncThunk(
       const response = await api.post(ADD_SUB_ADMIN, { email, password, permissions });
       toast.success('Sub-admin created.');
       return response;
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateSubAdmin = createAsyncThunk(
+  'admin/updateSubAdmin',
+  async ({ id, password, permissions }, thunkApi) => {
+    try {
+      const data = { id, permissions };
+      if (password) data.password = password;
+      const response = await api.put(`${UPDATE_SUB_ADMIN}?id=${id}`, data);
+      toast.success('Sub-admin updated.');
+      return response;
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteSubAdmin = createAsyncThunk(
+  'admin/deleteSubAdmin',
+  async (id, thunkApi) => {
+    try {
+      await api.delete(`${DELETE_SUB_ADMIN}?id=${id}`);
+      toast.success('Sub-admin deleted.');
+      return id;
     } catch (error) {
       toast.error(error);
       return thunkApi.rejectWithValue(error);
@@ -500,6 +533,17 @@ const adminSlice = createSlice({
       .addCase(addSubAdmin.pending, pending)
       .addCase(addSubAdmin.fulfilled, (state) => { state.loading = false; })
       .addCase(addSubAdmin.rejected, rejected)
+
+      .addCase(updateSubAdmin.pending, pending)
+      .addCase(updateSubAdmin.fulfilled, (state) => { state.loading = false; })
+      .addCase(updateSubAdmin.rejected, rejected)
+
+      .addCase(deleteSubAdmin.pending, pending)
+      .addCase(deleteSubAdmin.fulfilled, (state, action) => {
+        state.loading = false;
+        state.subAdmins = state.subAdmins.filter((a) => a.id !== action.payload);
+      })
+      .addCase(deleteSubAdmin.rejected, rejected)
 
       .addCase(blockUser.pending, pending)
       .addCase(blockUser.fulfilled, (state) => { state.loading = false; })

@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchAdminProfitSharing } from '@/store/reducers';
 import moment from 'moment';
 import styles from './profitSharing.module.scss';
+import { exportToExcel } from '@/utils/exportToExcel';
 import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
@@ -25,6 +26,23 @@ export default function ProfitSharing() {
   useEffect(() => {
     dispatch(fetchAdminProfitSharing({ search, page, limit: 10 }));
   }, [dispatch, search, page]);
+
+  const handleExport = () => {
+    const rows = (profitSharing || []).map((row) => {
+      const totalLots = (row.brokers || []).reduce((acc, b) => acc + (b.totalLots || 0), 0);
+      const totalShare = (row.brokers || []).reduce((acc, b) => acc + (b.totalProfitShare || 0), 0);
+      return {
+        'Date Joined': row?.user?.createdAt ? moment(row.user.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
+        'User ID': row.user?.id?.slice(0, 6).toUpperCase() ?? '—',
+        'Name': `${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—',
+        'Email': row.user?.email ?? '—',
+        'IB User': row.user?.isIbUser ? 'Yes' : 'No',
+        "User's Profit": row.totalLots ?? totalLots ?? 0,
+        'Profit %': (row.totalProfitShare ?? totalShare ?? 0).toLocaleString(),
+      };
+    });
+    exportToExcel(rows, 'Profit Sharing', 'profit_sharing_export.xlsx');
+  };
 
   const innerColumns = [
     { key: 'orderId', label: 'Order ID' },
@@ -130,7 +148,13 @@ export default function ProfitSharing() {
 
   return (
     <div className={styles.wrapper}>
-      <TableTopBar search={search} onSearchChange={handleSearchChange} actions={[]} />
+      <TableTopBar
+        search={search}
+        onSearchChange={handleSearchChange}
+        actions={[
+          { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
+        ]}
+      />
 
       <div className={styles.tableWrapper}>
         <table className={styles.table}>

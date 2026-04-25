@@ -28,41 +28,40 @@ export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone 
     }
   }, []);
 
-  const handleVideoChange = (e) => {
+  const handleThumbnailChange = (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validation: Only videos are allowed
-    if (!file.type.startsWith('video/')) {
-      setErrors((p) => ({ ...p, video: 'Only video files are allowed.' }));
+    if (!file.type.startsWith('image/')) {
+      setErrors((p) => ({ ...p, thumbnail: 'Only image files are allowed.' }));
       return;
     }
 
     setUploading(true);
-    setErrors((p) => ({ ...p, video: '' }));
+    setErrors((p) => ({ ...p, thumbnail: '' }));
 
     const formData = new FormData();
-    formData.append('image', file); // API expects 'image' key for files
+    formData.append('image', file);
 
     dispatch(uploadImage(formData)).then((res) => {
       setUploading(false);
       if (res.meta.requestStatus === 'fulfilled') {
         const url = res.payload?.payload || res.payload;
         if (typeof url === 'string') {
-          setVideoUrl(url);
+          setThumbnail(url);
         } else {
-          setErrors((p) => ({ ...p, video: 'Invalid response from server.' }));
+          setErrors((p) => ({ ...p, thumbnail: 'Invalid response from server.' }));
         }
       } else {
-        setErrors((p) => ({ ...p, video: 'Upload failed. Please try again.' }));
+        setErrors((p) => ({ ...p, thumbnail: 'Upload failed. Please try again.' }));
       }
     });
   };
 
   const validate = () => {
     const e = {};
-    if (!videoUrl) e.video = 'Video file is required.';
-    if (!thumbnail.trim()) e.thumbnail = 'Thumbnail / title is required.';
+    if (!videoUrl.trim()) e.videoUrl = 'Video URL is required.';
+    if (!thumbnail) e.thumbnail = 'Thumbnail image is required.';
     if (!description.trim()) e.description = 'Description is required.';
     return e;
   };
@@ -92,8 +91,8 @@ export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone 
   if (mode === 'delete') return null;
 
   const fields = [
-    { label: 'Thumbnail / Title', value: thumbnail, set: setThumbnail, key: 'thumbnail', placeholder: '' },
-    { label: 'Description', value: description, set: setDescription, key: 'description', textarea: true },
+    { label: 'Video URL', value: videoUrl, set: setVideoUrl, key: 'videoUrl', placeholder: 'Enter video URL' },
+    { label: 'Title', value: description, set: setDescription, key: 'description', textarea: true },
   ];
 
   return (
@@ -105,41 +104,38 @@ export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone 
         </div>
         <div className={styles.divider} />
         <div className={styles.body}>
-          {/* Video upload */}
+          {/* Thumbnail upload */}
           <div className={styles.fieldGroup}>
-            <label>Video File</label>
+            <label>Thumbnail Image</label>
             <div
-              className={`${styles.uploadBox}${errors.video ? ` ${styles.uploadBoxError}` : ''}`}
+              className={`${styles.uploadBox}${errors.thumbnail ? ` ${styles.uploadBoxError}` : ''}`}
               onClick={() => !uploading && fileInputRef.current?.click()}
             >
               <input 
                 ref={fileInputRef} 
                 type="file" 
-                accept="video/*" 
+                accept="image/*" 
                 style={{ display: 'none' }} 
-                onChange={handleVideoChange} 
+                onChange={handleThumbnailChange} 
               />
               {uploading ? (
                 <div className={styles.uploadLoading}>
                   <div className={styles.innerSpinner} />
                   <span>Uploading...</span>
                 </div>
-              ) : videoUrl ? (
-                <div className={styles.videoPreviewHint}>
-                  <img src="/assets/icons/Video.svg" alt="" style={{ width: 32, height: 32 }} />
-                  <span>Change Video</span>
-                </div>
+              ) : thumbnail ? (
+                <img src={thumbnail} alt="Thumbnail Preview" className={styles.thumbnailPreview} />
               ) : (
                 <div className={styles.uploadPlaceholder}>
                   <div className={styles.uploadIconWrap}>
-                    <img src="/assets/icons/Video.svg" alt="" />
-                    <div className={styles.addPlus}>+</div>
+                        <img src="/assets/icons/UplaodIcon.svg" alt="" />
+                    {/* <div className={styles.addPlus}>+</div> */}
                   </div>
-                  <span className={styles.uploadTypeHint}>MP4 or MKV. Upto 50 MB</span>
+                  <span className={styles.uploadTypeHint}>JPG, PNG or WEBP</span>
                 </div>
               )}
             </div>
-            {errors.video && <span className={styles.errorText}>{errors.video}</span>}
+            {errors.thumbnail && <span className={styles.errorText}>{errors.thumbnail}</span>}
           </div>
 
           {fields.map(({ label, value, set, key, placeholder, textarea }) => (

@@ -98,7 +98,17 @@ export default function layout({ children }) {
   // Show loading or redirect if not authenticated
   if (isLoading || !isAuthenticated) {
     return (
-      <Loader />
+      <div style={{
+        position: 'fixed',
+        inset: 0,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: '#030f0f',
+        zIndex: 9999
+      }}>
+        <Loader />
+      </div>
     );
   }
   return (

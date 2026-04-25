@@ -87,6 +87,29 @@
   &:hover { opacity: 0.7; }
 }
 
+.iconDown {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #fafafa;
+  mask-image: url('/assets/icons/down.svg');
+  mask-size: contain;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  -webkit-mask-image: url('/assets/icons/down.svg');
+  -webkit-mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  transition: transform 0.3s ease;
+}
+
+.ibBtnExpanded {
+  composes: ibBtn;
+  .iconDown {
+    transform: rotate(180deg);
+  }
+}
+
 .tableWrapper {
   width: 100%;
   flex: 1;
@@ -137,8 +160,16 @@
 }
 
 .loading {
+  height: 300px;
   text-align: center;
-  padding: 40px 16px;
+  vertical-align: middle;
+
+  > * {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
 }
 
 .empty {
@@ -219,4 +250,30 @@
   .clientsHeader & {
     color: #fafafa;
   }
+}
+
+.idBadge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 4px 12px;
+  color: #fafafa;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.profitBadge {
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid #02df82;
+  background: rgba(2, 223, 130, 0.1);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
 }

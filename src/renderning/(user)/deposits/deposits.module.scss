@@ -19,20 +19,21 @@
   font-size: 12px;
   font-weight: 500;
   text-transform: capitalize;
+  color: #fafafa;
+  background-color: #02DF8233;
+  border: 1px solid #02DF82;
 
-  &.pending {
-    background: rgba(255, 193, 7, 0.15);
-    color: #ffc107;
-  }
+  // &.pending {
+  //   background: rgba(255, 193, 7, 0.15);
+  //   color: #ffc107;
+  // }
 
-  &.approved,
-  &.completed {
-    background: rgba(2, 223, 130, 0.12);
-    color: #02df82;
-  }
+  // &.approved,
+  // &.completed {
+  //   background: rgba(2, 223, 130, 0.12);
+  // }
 
-  &.rejected {
-    background: rgba(255, 80, 80, 0.12);
-    color: #ff6464;
-  }
+  // &.rejected {
+  //   background: rgba(255, 80, 80, 0.12);
+  // }
 }
