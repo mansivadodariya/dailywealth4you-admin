@@ -12,6 +12,7 @@ import DataTable from '@/components/dataTable';
 import UserViewModal from '@/components/modal/UserViewModal';
 import Pagination from '@/components/pagination';
 import Loader from '@/components/loader';
+import ViewButton from '@/components/common/viewButton';
 
 const defaultFilters = {
   dateFrom: '',
@@ -62,11 +63,11 @@ export default function Users() {
     const rows = filtered.map((u) => ({
       'Date Joined': u.createdAt ? moment(u.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
       'User ID': u.id ?? '—',
-      'Name': `${u.firstName ?? ''} ${u.lastName ?? ''}`.trim() || '—',
-      'Email': u.email ?? '—',
-      'IB User': u.isIbUser ? 'Yes' : 'No',
-      'Deposit': u.deposit ?? '—',
-      'Profit': u.commission ?? '—',
+      'Name': `${u?.user?.firstName ?? ''} ${u?.user?.lastName ?? ''}`.trim() || '—',
+      'Email': u?.user?.email ?? '—',
+      'IB User': u?.isIbUser ? 'Yes' : 'No',
+      'Deposit': u?.deposit ?? '—',
+      'Profit': u?.commission ?? '—',
     }));
     exportToExcel(rows, 'Users', 'users_export.xlsx');
   };
@@ -77,7 +78,7 @@ export default function Users() {
       label: 'Date Joined',
       render: (u) => (u.createdAt ? moment(u.createdAt).format('DD-MM-YYYY hh:mm A') : '—'),
     },
-    { key: 'id', label: 'User ID', render: (u) => u.id?.slice(0, 6).toUpperCase() ?? '—' },
+    { key: 'accNumber', label: 'User ID' },
     {
       key: 'name',
       label: 'Name',
@@ -108,7 +109,7 @@ export default function Users() {
       label: 'Action',
       render: (u) => (
         <div className={styles.actionBtns}>
-          <button className={styles.viewBtn} onClick={() => setSelectedUser(u)}>View</button>
+          <ViewButton onClick={() => setSelectedUser(u)} />
           <button
             className={expandedUserId === u.id ? styles.ibBtnExpanded : styles.ibBtn}
             onClick={() => setExpandedUserId(expandedUserId === u.id ? null : u.id)}
@@ -191,7 +192,7 @@ export default function Users() {
                                     </div>
                                     <div className={styles.clientCol}>
                                       <span className={styles.idBadge}>
-                                        {client.id.slice(0, 6).toUpperCase() ?? '—'}
+                                        {client?.accNumber ?? '—'}
                                       </span>
                                     </div>
                                     <div className={styles.clientCol}>{client.firstName} {client.lastName}</div>

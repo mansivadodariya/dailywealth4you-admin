@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchTransactions } from '@/store/reducers';
+import { fetchTransactions, updateTransaction } from '@/store/slice/adminSlice';
 import moment from 'moment';
 import styles from './deposits.module.scss';
 import { exportToExcel } from '@/utils/exportToExcel';
@@ -10,6 +10,7 @@ import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import StatCard from '@/components/statCard';
 import Pagination from '@/components/pagination';
+import ApproveDepositModal from '@/components/modal/ApproveDepositModal';
 
 export default function Deposits() {
   const dispatch = useDispatch();
@@ -17,12 +18,41 @@ export default function Deposits() {
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
+  const [showApprove, setShowApprove] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchTransactions({ type: 'deposit', search, page, limit: 10 }));
   }, [dispatch, search, page]);
 
   const deposits = transactions || [];
+
+  const handleAction = (id, status) => {
+    const request = deposits.find((r) => r.id === id);
+    if (status === 'deposit') {
+      setSelectedRequest(request);
+      setShowApprove(true);
+      return;
+    }
+    // For other status updates if needed
+    dispatch(updateTransaction({ id, status })).then(() => {
+      dispatch(fetchTransactions({ type: 'deposit', search, page, limit: 10 }));
+    });
+  };
+
+  const confirmApproval = (id, file) => {
+    setActionLoading(true);
+    dispatch(updateTransaction({ id, status: 'deposit', file })).then((res) => {
+      setActionLoading(false);
+      if (!res.error) {
+        setShowApprove(false);
+        setSelectedRequest(null);
+        dispatch(fetchTransactions({ type: 'deposit', search, page, limit: 10 }));
+      }
+    });
+  };
+
   const pendingDeposits = deposits.filter((r) => r.status === 'pending');
   const completedDeposits = deposits.filter((r) => r.status === 'approved' || r.status === 'completed');
 
@@ -30,23 +60,40 @@ export default function Deposits() {
     { key: 'createdAt', label: 'Date', render: (r) => r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—' },
     { key: 'userId', label: 'User ID' },
     { key: 'name', label: 'Name', render: (r) => `${r.user.firstName ?? ''} ${r.user.lastName ?? ''}`.trim() || r.name || '—' },
-    { key: 'email', label: 'Email', render: (r) =>  r.user.email || '—'  },
+    { key: 'email', label: 'Email', render: (r) => r.user.email || '—' },
     { key: 'amount', label: 'Deposit Amount', render: (r) => r.amount != null ? `${r.amount}` : '—' },
     { key: 'mtsAccount', label: 'MT5 Account', render: (r) => r.mtsAccount ?? '—' },
     { key: 'broker', label: 'Broker', render: (r) => r.broker ?? '—' },
     {
       key: 'status', label: 'Status',
-      render: (r) => <span className={`${styles.badge} ${styles[r.status] ?? ''}`}>{'Deposit'}</span>,
+      render: (r) => (
+        <div className={styles.actionBtns}>
+          {r.status === 'approved' ? (
+            <button
+              className={styles.btnApprove}
+              disabled={actionLoading}
+              onClick={() => handleAction(r.id, 'deposit')}
+            >
+              Deposit
+            </button>
+          ) : r.status === 'deposit' ? (
+            <span className={styles.depositText}>Deposit</span>
+          ) : (
+            '—'
+          )}
+        </div>
+      ),
     },
   ];
+
 
   const handleExport = () => {
     exportToExcel(
       deposits.map((r) => ({
         Date: r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
         'User ID': r.userId ?? '—',
-        Name: `${r.firstName ?? ''} ${r.lastName ?? ''}`.trim() || r.name || '—',
-        Email: r.email ?? '—',
+        Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',
+        Email: r?.user?.email ?? '—',
         'Deposit Amount': r.amount ?? '—',
         'MTS Account': r.mtsAccount ?? '—',
         Broker: r.broker ?? '—',
@@ -77,6 +124,19 @@ export default function Deposits() {
       />
       <DataTable columns={columns} data={deposits} loading={loading} emptyMessage="No deposit transactions found." />
       <Pagination page={page} totalPages={transactionsTotalPages} onPageChange={setPage} />
+
+      {showApprove && selectedRequest && (
+        <ApproveDepositModal
+          request={selectedRequest}
+          loading={actionLoading}
+          onClose={() => {
+            setShowApprove(false);
+            setSelectedRequest(null);
+          }}
+          onConfirm={confirmApproval}
+        />
+      )}
     </div>
+
   );
 }

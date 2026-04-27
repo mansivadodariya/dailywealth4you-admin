@@ -66,19 +66,4 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-
-.btnView {
-  padding: 4px 20px;
-  border-radius: 99px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: transparent;
-  color: #fff;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-  }
-}
+

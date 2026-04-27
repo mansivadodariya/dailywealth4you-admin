@@ -21,12 +21,12 @@ export const GET_ALL_IB_REQUESTS = '/ibUser/getAllIbUserRequest';
 export const UPDATE_IB_REQUEST = '/ibUser/updateIbUserRequest';
 export const GET_ALL_KYC_DOCUMENTS = '/userDocument/getAllDocument';
 export const UPDATE_KYC_DOCUMENT = '/userDocument/updateUserDocument';
-export const GET_ALL_WITHDRAW_REQUESTS = '/withdraw/getAllWithdrawRequest';
-export const UPDATE_WITHDRAW_REQUEST = '/withdraw/updateWithdrawRequest';
+// Transaction APIs moved to common transaction endpoints
+
 export const BLOCK_USER = '/user/blockUser';
 export const ADD_SUB_ADMIN = '/user/addSubAdmin';
-export const UPDATE_SUB_ADMIN = '/user/updateSubAdmin';
-export const DELETE_SUB_ADMIN = '/user/deleteSubAdmin';
+export const UPDATE_SUB_ADMIN = '/user/update';
+export const DELETE_SUB_ADMIN = '/user/deleteUser';
 export const GET_ALL_SUB_ADMINS = '/user/getAllSubAdmin';
 export const CREATE_NOTIFICATION = '/notification/createNewNotification';
 export const CREATE_POPUP = '/notification/createNewPopUp';
@@ -60,3 +60,4 @@ export const UPDATE_NOTIFICATION = '/notification/updateNotification';
 
 // Transactions
 export const GET_ALL_TRANSACTIONS = '/transaction/getAllTransaction';
+export const UPDATE_TRANSACTION = '/transaction/updateTransaction';

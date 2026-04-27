@@ -10,6 +10,7 @@ import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
 import Loader from '@/components/loader';
+import ViewButton from '@/components/common/viewButton';
 
 export default function IBIncome() {
   const dispatch = useDispatch();
@@ -107,12 +108,9 @@ export default function IBIncome() {
       render: (row) => {
         const id = row.user?.id || row.id;
         return (
-          <button
-            className={styles.viewBtn}
-            onClick={() => setExpandedId(expandedId === id ? null : id)}
-          >
+          <ViewButton onClick={() => setExpandedId(expandedId === id ? null : id)}>
             {expandedId === id ? 'Close' : 'View'}
-          </button>
+          </ViewButton>
         );
       },
     },

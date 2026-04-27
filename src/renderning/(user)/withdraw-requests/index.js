@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchWithdrawRequests, updateWithdrawRequest } from '@/store/reducers';
+import { fetchWithdrawRequests, updateTransaction } from '@/store/slice/adminSlice';
 import moment from 'moment';
 import styles from './withdrawRequests.module.scss';
 import { exportToExcel } from '@/utils/exportToExcel';
@@ -11,6 +11,7 @@ import DataTable from '@/components/dataTable';
 import StatCard from '@/components/statCard';
 import Pagination from '@/components/pagination';
 import FilterModal, { withdrawStatusOptions } from '@/components/modal/FilterModal';
+import ApproveWithdrawModal from '@/components/modal/ApproveWithdrawModal';
 
 export default function WithdrawRequests() {
   const dispatch = useDispatch();
@@ -19,6 +20,9 @@ export default function WithdrawRequests() {
   const [search, setSearch] = useState('');
   const [showFilter, setShowFilter] = useState(false);
   const [activeFilters, setActiveFilters] = useState({});
+  const [showApprove, setShowApprove] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [actionLoading, setActionLoading] = useState(false);
 
   const handleSearchChange = (val) => {
     setSearch(val);
@@ -51,17 +55,36 @@ export default function WithdrawRequests() {
   ).length;
 
   const handleAction = (id, status) => {
-    dispatch(updateWithdrawRequest({ id, status })).then(() => {
-      dispatch(fetchWithdrawRequests());
+    if (status === 'approved') {
+      setSelectedRequest(filtered.find(r => r.id === id));
+      setShowApprove(true);
+      return;
+    }
+    // Direct reject or other status updates
+    dispatch(updateTransaction({ id, status })).then(() => {
+      dispatch(fetchWithdrawRequests({ search, page, limit: 10, ...activeFilters }));
     });
   };
+
+  const confirmApproval = (id, file) => {
+    setActionLoading(true);
+    dispatch(updateTransaction({ id, status: 'approved', file })).then((res) => {
+      setActionLoading(false);
+      if (!res.error) {
+        setShowApprove(false);
+        setSelectedRequest(null);
+        dispatch(fetchWithdrawRequests({ search, page, limit: 10, ...activeFilters }));
+      }
+    });
+  };
+
 
   const handleExport = () => {
     const rows = filtered.map((r) => ({
       Date: r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
       'User ID': r.userId ?? '—',
-      Name: `${r.firstName ?? ''} ${r.lastName ?? ''}`.trim() || r.name || '—',
-      Email: r.email ?? '—',
+      Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',
+      Email: r?.user?.email ?? '—',
       'Withdrawal Amount': r.amount ?? '—',
       'Wallet Address': r.walletAddress ?? '—',
       Status: r.status ?? '—',
@@ -165,6 +188,18 @@ export default function WithdrawRequests() {
         emptyMessage="No withdraw requests found."
       />
       <Pagination page={page} totalPages={withdrawRequestsTotalPages} onPageChange={setPage} />
+
+      {showApprove && selectedRequest && (
+        <ApproveWithdrawModal
+          request={selectedRequest}
+          loading={actionLoading}
+          onClose={() => {
+            setShowApprove(false);
+            setSelectedRequest(null);
+          }}
+          onConfirm={confirmApproval}
+        />
+      )}
     </div>
   );
 }

@@ -10,6 +10,7 @@ import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
 import SubAdminModal from '@/components/modal/AddSubAdminModal';
+import ViewButton from '@/components/common/viewButton';
 
 export default function SubAdmins() {
   const dispatch = useDispatch();
@@ -60,9 +61,9 @@ export default function SubAdmins() {
   const handleExport = () => {
     const rows = filtered.map((r) => ({
       'Date Added': r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
-      'Admin ID': r.id?.slice(0, 6).toUpperCase() ?? '—',
-      'Email': r.email ?? '—',
-      'Access': (r.permissions || []).join(', ') || '—',
+      'Admin ID': r?.id?.slice(0, 6).toUpperCase() ?? '—',
+      'Email': r?.email ?? '—',
+      'Access': (r?.permissions || []).join(', ') || '—',
     }));
     exportToExcel(rows, 'Sub Admins', 'sub_admins_export.xlsx');
   };
@@ -94,7 +95,7 @@ export default function SubAdmins() {
       key: 'action',
       label: 'Action',
       render: (r) => (
-        <button className={styles.btnView} onClick={() => setSelectedAdmin(r)}>View</button>
+        <ViewButton onClick={() => setSelectedAdmin(r)} />
       ),
     },
   ];
@@ -107,7 +108,7 @@ export default function SubAdmins() {
         actions={[
           { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => {} },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
-          { label: 'Add New Sub-Admin ', onClick: () => setShowAdd(true), variant: 'primary' },
+          { label: 'Add New Sub-Admin ', icon: '/assets/icons/plus.svg', onClick: () => setShowAdd(true), variant: 'primary' },
         ]}
       />
 

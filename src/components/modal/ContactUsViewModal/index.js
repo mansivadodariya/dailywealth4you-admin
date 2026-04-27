@@ -8,8 +8,6 @@ import moment from 'moment';
 const FIELDS = [
   { label: 'Full Name',    render: (r) => `${r.firstName ?? ''} ${r.lastName ?? ''}`.trim() || '—' },
   { label: 'Email',        render: (r) => r.email ?? '—' },
-  { label: 'Phone',        render: (r) => r.phone ?? r.phoneNumber ?? '—' },
-  { label: 'Subject',      render: (r) => r.subject ?? '—' },
   { label: 'Date',         render: (r) => r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY | hh:mm A') : '—' },
 ];
 
@@ -46,12 +44,6 @@ export default function ContactUsViewModal({ record, onClose }) {
               <p className={styles.messageText}>{record?.description || record?.message}</p>
             </div>
           )}
-        </div>
-
-        <div className={styles.actions}>
-          <button className={styles.btnClose} onClick={onClose}>
-            Close <CloseIcon color="#ffffff" size={16} />
-          </button>
         </div>
 
       </div>

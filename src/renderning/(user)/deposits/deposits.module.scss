@@ -23,17 +23,61 @@
   background-color: #02DF8233;
   border: 1px solid #02DF82;
 
-  // &.pending {
-  //   background: rgba(255, 193, 7, 0.15);
-  //   color: #ffc107;
-  // }
+  &.pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border-color: rgba(255, 193, 7, 0.6);
+  }
 
-  // &.approved,
-  // &.completed {
-  //   background: rgba(2, 223, 130, 0.12);
-  // }
+  &.approved {
+    background: rgba(2, 223, 130, 0.12);
+    color: #02df82;
+    border-color: #02df82;
+  }
 
-  // &.rejected {
-  //   background: rgba(255, 80, 80, 0.12);
-  // }
+  &.deposit {
+    background: rgba(219, 230, 76, 0.15);
+    color: #DBE64C;
+    border-color: #DBE64C;
+  }
+
+  &.rejected {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff5050;
+    border-color: #ff5050;
+  }
 }
+
+.actionBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.btnApprove {
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--Primary, #02df82);
+  background: rgba(2, 223, 130, 0.1);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: rgba(2, 223, 130, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.depositText {
+  color: #DBE64C;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 0;
+}
+

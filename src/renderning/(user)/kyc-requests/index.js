@@ -11,6 +11,7 @@ import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
 import FilterModal from '@/components/modal/FilterModal';
 import KycViewModal from '@/components/modal/KycViewModal';
+import ViewButton from '@/components/common/viewButton';
 
 export default function KycRequests() {
   const dispatch = useDispatch();
@@ -83,9 +84,7 @@ export default function KycRequests() {
       key: 'action',
       label: 'Action',
       render: (d) => (
-        <button className={styles.btnView} onClick={() => setSelectedDoc(d)}>
-          View
-        </button>
+        <ViewButton onClick={() => setSelectedDoc(d)} />
       ),
     },
   ];

@@ -4,9 +4,9 @@
 
 .layout {
   display: flex;
-  gap: 24px;
+  gap: 14px;
   align-items: flex-start;
-  max-width: 860px;
+  max-width: 750px;
   margin: 32px auto 0;
 }
 
@@ -24,8 +24,8 @@
   border: 1px solid rgba(255, 255, 255, 0);
   border-radius: 14px; 
 
-  padding: 8px;
-  min-width: 230px;
+  padding: 14px;
+  min-width: 310px;
   flex-shrink: 0;
 }
 
@@ -33,43 +33,48 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 13px 14px;
+  padding: 10px 14px;
   border-radius: 10px;
   border: none;
   background: transparent;
-  color: #555;
-  font-size: 13px;
-  font-weight: 500;
+  color: #8E8E8E;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   text-align: left;
   width: 100%;
   transition: background 0.15s, color 0.15s;
+    .menuIcon {
+        opacity: 1;
+        filter: brightness(0.5);
+      }
 
   &:hover {
     background: rgba(255, 255, 255, 0.04);
-    color: #aaa;
+    color: #FAFAFA;
   }
 }
 
 .menuItemActive {
-  background: rgba(2, 223, 130, 0.08);
+  background: #FFFFFF0F;
+  border: 1px solid #FFFFFF1A;
   color: #fff;
 
-  .menuIcon { opacity: 1; filter: brightness(1.4); }
-  .menuChevron { color: var(--Primary, #02df82); }
+  .menuIcon { opacity: 1; filter: brightness(1); }
+  .menuChevron { color: var(--Primary, #ffffff); }
 }
 
 .menuIcon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.4;
+  width: 20px;
+  height: 20px;
+  // opacity: 0.4;
   flex-shrink: 0;
 }
 
 .menuChevron {
   margin-left: auto;
   font-size: 20px;
-  color: #333;
+  color: #8E8E8E;
   line-height: 1;
 }
 
@@ -88,7 +93,7 @@
   border-radius: 14px;
   border: 1px solid rgba(255, 255, 255, 0.06);
   border-radius: 14px;
-  padding: 24px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -97,12 +102,12 @@
 .fieldGroup {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 
   label {
-    font-size: 13px;
-    color: #ccc;
-    font-weight: 500;
+    font-size: 14px;
+    color: #FAFAFA;
+    font-weight: 600;
   }
 }
 
@@ -120,7 +125,7 @@
   border: none;
   background: var(--Primary, #02df82);
   color: #030f0f;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -136,10 +141,10 @@
   flex: 1;
   padding: 13px 20px;
   border-radius: 8px;
-  border: 1px solid rgba(255, 255, 255, 0.18);
+  border: 1px solid #DBE64C;
   background: transparent;
   color: #fff;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   display: flex;

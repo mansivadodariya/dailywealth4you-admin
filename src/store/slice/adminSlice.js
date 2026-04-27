@@ -7,7 +7,7 @@ import {
   UPDATE_IB_REQUEST,
   GET_ALL_KYC_DOCUMENTS,
   UPDATE_KYC_DOCUMENT,
-  UPDATE_WITHDRAW_REQUEST,
+  UPDATE_TRANSACTION,
   BLOCK_USER,
   ADD_SUB_ADMIN,
   UPDATE_SUB_ADMIN,
@@ -31,17 +31,17 @@ export const fetchAllUsers = createAsyncThunk(
   async (filters = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
-      if (filters.search)    params.append('search', filters.search);
-      if (filters.dateFrom)  params.append('startDate', filters.dateFrom);
-      if (filters.dateTo)    params.append('endDate', filters.dateTo);
+      if (filters.search) params.append('search', filters.search);
+      if (filters.dateFrom) params.append('startDate', filters.dateFrom);
+      if (filters.dateTo) params.append('endDate', filters.dateTo);
       if (filters.profitMin !== '' && filters.profitMin != null) params.append('profitMin', filters.profitMin);
       if (filters.profitMax !== '' && filters.profitMax != null) params.append('profitMax', filters.profitMax);
       if (filters.depositMin !== '' && filters.depositMin != null) params.append('depositMin', filters.depositMin);
       if (filters.depositMax !== '' && filters.depositMax != null) params.append('depositMax', filters.depositMax);
-      if (filters.ibUser)  params.append('isIbUser', filters.ibUser === 'yes');
-      if (filters.status)  params.append('isActive', filters.status === 'active');
-      if (filters.page)    params.append('page', filters.page);
-      if (filters.limit)   params.append('limit', filters.limit);
+      if (filters.ibUser) params.append('isIbUser', filters.ibUser === 'yes');
+      if (filters.status) params.append('isActive', filters.status === 'active');
+      if (filters.page) params.append('page', filters.page);
+      if (filters.limit) params.append('limit', filters.limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_USERS}?${query}` : GET_ALL_USERS);
     } catch (error) {
@@ -56,13 +56,13 @@ export const fetchIbRequests = createAsyncThunk(
   async ({ search = '', userId, page, limit, dateFrom, dateTo, status } = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
-      if (userId)   params.append('userId', userId);
-      if (search)   params.append('search', search);
+      if (userId) params.append('userId', userId);
+      if (search) params.append('search', search);
       if (dateFrom) params.append('startDate', dateFrom);
-      if (dateTo)   params.append('endDate', dateTo);
-      if (status)   params.append('status', status);
-      if (page)     params.append('page', page);
-      if (limit)    params.append('limit', limit);
+      if (dateTo) params.append('endDate', dateTo);
+      if (status) params.append('status', status);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_IB_REQUESTS}?${query}` : GET_ALL_IB_REQUESTS);
     } catch (error) {
@@ -96,14 +96,14 @@ export const fetchWithdrawRequests = createAsyncThunk(
     try {
       const params = new URLSearchParams();
       params.append('type', 'withdrawal');
-      if (search)        params.append('search', encodeURIComponent(search));
-      if (dateFrom)      params.append('startDate', dateFrom);
-      if (dateTo)        params.append('endDate', dateTo);
-      if (status)        params.append('status', status);
+      if (search) params.append('search', encodeURIComponent(search));
+      if (dateFrom) params.append('startDate', dateFrom);
+      if (dateTo) params.append('endDate', dateTo);
+      if (status) params.append('status', status);
       if (withdrawalMin !== '' && withdrawalMin != null) params.append('amountMin', withdrawalMin);
       if (withdrawalMax !== '' && withdrawalMax != null) params.append('amountMax', withdrawalMax);
-      if (page)          params.append('page', page);
-      if (limit)         params.append('limit', limit);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       return await api.get(`${GET_ALL_TRANSACTIONS}?${params.toString()}`);
     } catch (error) {
       toast.error(error);
@@ -112,31 +112,19 @@ export const fetchWithdrawRequests = createAsyncThunk(
   }
 );
 
-export const updateWithdrawRequest = createAsyncThunk(
-  'admin/updateWithdrawRequest',
-  async ({ id, status }, thunkApi) => {
-    try {
-      const response = await api.put(`${UPDATE_WITHDRAW_REQUEST}?id=${id}`, { status });
-      toast.success('Withdraw request updated.');
-      return response;
-    } catch (error) {
-      toast.error(error);
-      return thunkApi.rejectWithValue(error);
-    }
-  }
-);
+// Removed updateWithdrawRequest in favor of updateTransaction
 
 export const fetchAllKycDocuments = createAsyncThunk(
   'admin/fetchAllKycDocuments',
   async ({ search = '', page, limit, dateFrom, dateTo, status } = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
-      if (search)   params.append('search', encodeURIComponent(search));
+      if (search) params.append('search', encodeURIComponent(search));
       if (dateFrom) params.append('startDate', dateFrom);
-      if (dateTo)   params.append('endDate', dateTo);
-      if (status)   params.append('status', status);
-      if (page)     params.append('page', page);
-      if (limit)    params.append('limit', limit);
+      if (dateTo) params.append('endDate', dateTo);
+      if (status) params.append('status', status);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_KYC_DOCUMENTS}?${query}` : GET_ALL_KYC_DOCUMENTS);
     } catch (error) {
@@ -152,8 +140,8 @@ export const fetchAllSubAdmins = createAsyncThunk(
     try {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
-      if (page)   params.append('page', page);
-      if (limit)  params.append('limit', limit);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_SUB_ADMINS}?${query}` : GET_ALL_SUB_ADMINS);
     } catch (error) {
@@ -316,8 +304,8 @@ export const fetchAllContactUs = createAsyncThunk(
     try {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
-      if (page)   params.append('page', page);
-      if (limit)  params.append('limit', limit);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_CONTACT_US}?${query}` : GET_ALL_CONTACT_US);
     } catch (error) {
@@ -333,8 +321,8 @@ export const fetchAdminIbIncome = createAsyncThunk(
     try {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
-      if (page)   params.append('page', page);
-      if (limit)  params.append('limit', limit);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ADMIN_IB_INCOME}?${query}` : GET_ADMIN_IB_INCOME);
     } catch (error) {
@@ -351,8 +339,8 @@ export const fetchAdminProfitSharing = createAsyncThunk(
     try {
       const params = new URLSearchParams();
       if (search) params.append('search', search);
-      if (page)   params.append('page', page);
-      if (limit)  params.append('limit', limit);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       const query = params.toString();
       return await api.get(query ? `${GET_ADMIN_PROFIT_SHARING}?${query}` : GET_ADMIN_PROFIT_SHARING);
     } catch (error) {
@@ -381,8 +369,8 @@ export const fetchTransactions = createAsyncThunk(
       const params = new URLSearchParams();
       params.append('type', type);
       if (search) params.append('search', search);
-      if (page)   params.append('page', page);
-      if (limit)  params.append('limit', limit);
+      if (page) params.append('page', page);
+      if (limit) params.append('limit', limit);
       return await api.get(`${GET_ALL_TRANSACTIONS}?${params.toString()}`);
     } catch (error) {
       toast.error(error);
@@ -390,6 +378,28 @@ export const fetchTransactions = createAsyncThunk(
     }
   }
 );
+
+export const updateTransaction = createAsyncThunk(
+  'admin/updateTransaction',
+  async ({ id, status, file }, thunkApi) => {
+    try {
+      let data = { status };
+      if (file) {
+        const formData = new FormData();
+        formData.append('image', file);
+        const uploadRes = await api.post(UPLOAD_IMAGE, formData);
+        data.proofUrl = uploadRes?.payload; // Changed from proofOfTransfer to proofUrl
+      }
+      const response = await api.put(`${UPDATE_TRANSACTION}?id=${id}`, data);
+      toast.success('Transaction updated.');
+      return response;
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
 
 const adminSlice = createSlice({
   name: 'admin',
@@ -508,15 +518,16 @@ const adminSlice = createSlice({
       })
       .addCase(fetchWithdrawRequests.rejected, rejected)
 
-      .addCase(updateWithdrawRequest.pending, pending)
-      .addCase(updateWithdrawRequest.fulfilled, (state, action) => {
+      .addCase(updateTransaction.pending, pending)
+      .addCase(updateTransaction.fulfilled, (state, action) => {
         state.loading = false;
         const updated = action.payload?.payload?.data || action.payload?.data || action.payload;
         if (updated?.id) {
           state.withdrawRequests = state.withdrawRequests.map((r) => r.id === updated.id ? updated : r);
+          state.transactions = state.transactions.map((r) => r.id === updated.id ? updated : r);
         }
       })
-      .addCase(updateWithdrawRequest.rejected, rejected)
+      .addCase(updateTransaction.rejected, rejected)
 
       .addCase(fetchAllSubAdmins.pending, pending)
       .addCase(fetchAllSubAdmins.fulfilled, (state, action) => {
@@ -637,7 +648,10 @@ const adminSlice = createSlice({
         const limit = payload?.limit ?? payload?.perPage ?? 10;
         state.transactionsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
       })
-      .addCase(fetchTransactions.rejected, rejected);
+      .addCase(fetchTransactions.rejected, rejected)
+      
+      // updateTransaction is already handled above in fetchWithdrawRequests section
+      // .addCase(updateTransaction.pending, pending) ...
   },
 });
 

@@ -15,11 +15,6 @@
   .inputWrap {
     position: relative;
 
-    &.rightspacingAdded {
-      input {
-        padding-right: 40px;
-      }
-    }
 
     &.spacingRemove {
       input {
@@ -47,6 +42,18 @@
       }
     }
 
+    &.rightspacingAdded {
+      input {
+        padding-right: 48px;
+      }
+    }
+
+    &.hasLeftIcon {
+      input {
+        padding-left: 48px;
+      }
+    }
+
     input {
       width: 100%;
       border: 1px solid transparent;
@@ -54,7 +61,7 @@
       border-radius: var(--Radius-8, 8px);
       color: #fafafa;
       font-size: 14px;
-      padding-left: 40px;
+      padding-left: 16px;
       padding-right: 16px;
       height: 40px;
       font-weight: 500;

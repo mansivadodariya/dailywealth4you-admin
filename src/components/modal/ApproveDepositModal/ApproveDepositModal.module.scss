@@ -1,0 +1,232 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.modal {
+  background: #030F0F;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 480px;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 14px;
+    padding: 1px;
+    background: linear-gradient(
+      97.52deg,
+      rgba(255, 255, 255, 0.2) 0.15%,
+      rgba(255, 255, 255, 0.04) 11.93%
+    );
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+}
+
+.header {
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+
+  .headerTitle {
+    h2 {
+      color: #fafafa;
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 4px 0;
+    }
+    p {
+      color: #8e8e8e;
+      font-size: 14px;
+      font-weight: 500;
+    }
+  }
+
+  .closeBtn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    &:hover { opacity: 1; }
+  }
+}
+
+.body {
+  padding: 24px;
+
+  .sectionTitle {
+    color: #fafafa;
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+}
+
+.credentialsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.credentialField {
+  .fieldHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+
+    label {
+      color: #8e8e8e;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      transition: opacity 0.2s;
+      &:hover { opacity: 0.7; }
+    }
+  }
+
+  .fieldValue {
+    color: #fafafa;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+.checkboxContainer {
+  margin-bottom: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  padding-top: 24px;
+
+  .hiddenCheckbox {
+    display: none;
+  }
+
+  .customCheckbox {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+
+    .checkboxBox {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid #DBE64C;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: all 0.2s ease;
+
+      &.checked {
+        background: #DBE64C;
+        border-color: #DBE64C;
+      }
+
+      .checkMark {
+        width: 14px;
+        height: 14px;
+      }
+    }
+
+    .checkboxLabel {
+      color: #8e8e8e;
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 1.4;
+      transition: color 0.2s;
+    }
+
+    &:hover .checkboxLabel {
+      color: #fafafa;
+    }
+  }
+}
+
+.actions {
+  padding: 0 24px 24px;
+  display: flex;
+  gap: 12px;
+
+  button {
+    flex: 1;
+    height: 48px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .btnUpload {
+    background: #02DF82;
+    color: #030f0f;
+    border: none;
+
+    &:hover:not(.disabled) {
+      background: #02c372;
+    }
+
+    &.disabled {
+      background: rgba(2, 223, 130, 0.15);
+      color: rgba(3, 15, 15, 0.4);
+      cursor: not-allowed;
+    }
+  }
+
+  .btnCancel {
+    background: transparent;
+    border: 1px solid #DBE64C;
+    color: #fafafa;
+
+    &:hover {
+      background: rgba(219, 230, 76, 0.05);
+    }
+  }
+}
+
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(3, 15, 15, 0.3);
+  border-top-color: #030f0f;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

@@ -10,6 +10,7 @@ import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
 import Loader from '@/components/loader';
+import ViewButton from '@/components/common/viewButton';
 
 export default function ProfitSharing() {
   const dispatch = useDispatch();
@@ -125,8 +126,7 @@ export default function ProfitSharing() {
         const id = row.user?.id || row.id;
         const isOpen = expandedId === id;
         return (
-          <button
-            className={styles.viewBtn}
+          <ViewButton
             onClick={() => setExpandedId(isOpen ? null : id)}
             aria-label={isOpen ? 'Collapse row' : 'Expand row'}
           >
@@ -140,7 +140,7 @@ export default function ProfitSharing() {
             >
               <path d="M4 6L8 10L12 6" stroke="#fafafa" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </button>
+          </ViewButton>
         );
       },
     },

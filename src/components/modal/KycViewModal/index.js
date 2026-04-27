@@ -118,7 +118,7 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
             </button>
             <button
               className={styles.btnReject}
-              disabled={doc?.status === 'rejected' || !!actionLoading}
+              disabled={doc?.status === 'rejected' || doc?.status === 'approved' || !!actionLoading}
               onClick={() => onAction(doc.id, 'rejected')}
             >
               {actionLoading?.action === 'rejected'

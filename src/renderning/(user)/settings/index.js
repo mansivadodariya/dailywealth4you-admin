@@ -10,9 +10,9 @@ import Input from '@/components/input';
 import CloseIcon from '@/icons/closeIcon';
 
 const MENU = [
-  { key: 'profitShare',  label: 'Profit Share Setup',       icon: '/assets/icons/ProfitSharing.svg' },
-  { key: 'minWithdraw',  label: 'Minimum Withdraw Amount',  icon: '/assets/icons/Withdraw Requests.svg' },
-  { key: 'changePassword', label: 'Change Password',        icon: '/assets/icons/lock.svg' },
+  { key: 'profitShare', label: 'Profit Share Setup', icon: '/assets/icons/ProfitShareSetup.svg' },
+  { key: 'minWithdraw', label: 'Minimum Withdraw Amount', icon: '/assets/icons/MinimumWithdrawAmount.svg' },
+  { key: 'changePassword', label: 'Change Password', icon: '/assets/icons/ChangePassword.svg' },
 ];
 
 export default function Settings() {

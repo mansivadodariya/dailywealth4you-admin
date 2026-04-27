@@ -10,6 +10,7 @@ import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
 import ContactUsViewModal from '@/components/modal/ContactUsViewModal';
+import ViewButton from '@/components/common/viewButton';
 
 export default function ContactUs() {
   const dispatch = useDispatch();
@@ -64,9 +65,7 @@ export default function ContactUs() {
       key: 'action',
       label: 'Action',
       render: (r) => (
-        <button className={styles.viewBtn} onClick={() => setViewRecord(r)}>
-          View
-        </button>
+        <ViewButton onClick={() => setViewRecord(r)} />
       ),
     },
   ];
