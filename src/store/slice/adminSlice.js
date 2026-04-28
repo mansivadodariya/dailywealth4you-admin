@@ -24,6 +24,7 @@ import {
   GET_ALL_CONTACT_US,
   GET_ADMIN_PROFIT_SHARING,
   GET_ALL_TRANSACTIONS,
+  GET_USER_DASHBOARD_PROFIT_LOTS,
 } from '@/service/url';
 
 export const fetchAllUsers = createAsyncThunk(
@@ -367,7 +368,7 @@ export const fetchTransactions = createAsyncThunk(
   async ({ type = 'deposit', search = '', page, limit } = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
-      params.append('type', type);
+      if (type) params.append('type', type);
       if (search) params.append('search', search);
       if (page) params.append('page', page);
       if (limit) params.append('limit', limit);
@@ -393,6 +394,22 @@ export const updateTransaction = createAsyncThunk(
       const response = await api.put(`${UPDATE_TRANSACTION}?id=${id}`, data);
       toast.success('Transaction updated.');
       return response;
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const fetchUserDashboardProfitLots = createAsyncThunk(
+  'admin/fetchUserDashboardProfitLots',
+  async ({ startDate, endDate } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams();
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      const query = params.toString();
+      return await api.get(query ? `${GET_USER_DASHBOARD_PROFIT_LOTS}?${query}` : GET_USER_DASHBOARD_PROFIT_LOTS);
     } catch (error) {
       toast.error(error);
       return thunkApi.rejectWithValue(error);
@@ -428,6 +445,7 @@ const adminSlice = createSlice({
     error: null,
     transactions: [],
     transactionsTotalPages: 1,
+    dashboardProfitLots: {},
   },
   reducers: {
     clearAdminState: (state) => {
@@ -649,7 +667,14 @@ const adminSlice = createSlice({
         state.transactionsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
       })
       .addCase(fetchTransactions.rejected, rejected)
-      
+
+      .addCase(fetchUserDashboardProfitLots.pending, pending)
+      .addCase(fetchUserDashboardProfitLots.fulfilled, (state, action) => {
+        state.loading = false;
+        state.dashboardProfitLots = action.payload?.payload || {};
+      })
+      .addCase(fetchUserDashboardProfitLots.rejected, rejected)
+
       // updateTransaction is already handled above in fetchWithdrawRequests section
       // .addCase(updateTransaction.pending, pending) ...
   },

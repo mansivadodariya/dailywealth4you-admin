@@ -62,7 +62,7 @@ export default function Users() {
   const handleExport = () => {
     const rows = filtered.map((u) => ({
       'Date Joined': u.createdAt ? moment(u.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
-      'User ID': u.id ?? '—',
+      'User ID': u.accNumber ?? '—',
       'Name': `${u?.user?.firstName ?? ''} ${u?.user?.lastName ?? ''}`.trim() || '—',
       'Email': u?.user?.email ?? '—',
       'IB User': u?.isIbUser ? 'Yes' : 'No',

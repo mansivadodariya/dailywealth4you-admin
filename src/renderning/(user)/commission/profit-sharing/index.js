@@ -34,7 +34,7 @@ export default function ProfitSharing() {
       const totalShare = (row.brokers || []).reduce((acc, b) => acc + (b.totalProfitShare || 0), 0);
       return {
         'Date Joined': row?.user?.createdAt ? moment(row.user.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
-        'User ID': row.user?.id?.slice(0, 6).toUpperCase() ?? '—',
+        'User ID': row.user?.accNumber ?? '—',
         'Name': `${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—',
         'Email': row.user?.email ?? '—',
         'IB User': row.user?.isIbUser ? 'Yes' : 'No',
@@ -79,7 +79,7 @@ export default function ProfitSharing() {
     {
       key: 'userId',
       label: 'User ID',
-      render: (row) => row.user?.id?.slice(0, 6).toUpperCase() ?? '—',
+      render: (row) => row.user?.accNumber ?? '—',
     },
     {
       key: 'name',

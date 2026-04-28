@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import styles from './ApproveDepositModal.module.scss';
 import CloseIcon from '@/icons/closeIcon';
-import RightIcon from '@/icons/rightIcon';
 import { toast } from 'react-toastify';
 
 
@@ -61,11 +60,11 @@ export default function ApproveDepositModal({ request, onConfirm, onClose, loadi
             <div className={styles.credentialField}>
               <div className={styles.fieldHeader}>
                 <label>MT5 Login ID</label>
-                <button onClick={() => handleCopy(request?.mtsAccount || 'lucifermishra', 'Login ID')}>
+                <button onClick={() => handleCopy(request?.mt5Account || 'lucifermishra', 'Login ID')}>
                   <img src="/assets/icons/CopyIcon.svg" alt="copy" />
                 </button>
               </div>
-              <p className={styles.fieldValue}>{request?.mtsAccount || 'lucifermishra'}</p>
+              <p className={styles.fieldValue}>{request?.mt5Account || 'lucifermishra'}</p>
             </div>
 
             <div className={styles.credentialField}>
@@ -104,7 +103,7 @@ export default function ApproveDepositModal({ request, onConfirm, onClose, loadi
           >
             {loading ? <span className={styles.spinner} /> : (
               <>
-                Confirm Deposit <RightIcon color="#030f0f" size={18} />
+                Confirm Deposit <img src="/assets/icons/BlackRight.svg" alt="Right" />
               </>
             )}
           </button>

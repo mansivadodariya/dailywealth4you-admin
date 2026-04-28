@@ -91,7 +91,7 @@ export default function SubAdminModal({
               plain
               type="password"
               placeholder="••••••••"
-              value={password}
+              value={admin.password || password}
               onChange={(e) => setPassword(e.target.value)}
               leftIcon="/assets/icons/lock.svg"
               rightIcon="/assets/icons/eye-off.svg"

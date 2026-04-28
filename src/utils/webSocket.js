@@ -10,7 +10,7 @@ let socket = null;
 if (localdata) {
   socket = socketIOClient(SOCKET_URL, {
     extraHeaders: {
-      ["authorization"]: localdata,
+      authorization: localdata,
       "ngrok-skip-browser-warning": "1234",
     },
   });
@@ -28,5 +28,5 @@ export const connectSocket = () => {
 };
 
 export const getSocket = () => {
-  return socket;
+  // return socket;
 };

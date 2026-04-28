@@ -43,7 +43,7 @@ export default function Deposits() {
 
   const confirmApproval = (id, file) => {
     setActionLoading(true);
-    dispatch(updateTransaction({ id, status: 'deposit', file })).then((res) => {
+    dispatch(updateTransaction({ id, status: 'approved', file })).then((res) => {
       setActionLoading(false);
       if (!res.error) {
         setShowApprove(false);
@@ -58,11 +58,11 @@ export default function Deposits() {
 
   const columns = [
     { key: 'createdAt', label: 'Date', render: (r) => r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—' },
-    { key: 'userId', label: 'User ID' },
+    { key: 'userId', label: 'User ID', render: (r) => r.user?.accNumber ?? '—' },
     { key: 'name', label: 'Name', render: (r) => `${r.user.firstName ?? ''} ${r.user.lastName ?? ''}`.trim() || r.name || '—' },
     { key: 'email', label: 'Email', render: (r) => r.user.email || '—' },
     { key: 'amount', label: 'Deposit Amount', render: (r) => r.amount != null ? `${r.amount}` : '—' },
-    { key: 'mtsAccount', label: 'MT5 Account', render: (r) => r.mtsAccount ?? '—' },
+    { key: 'mt5Account', label: 'MT5 Account', render: (r) => r.mt5Account ?? '—' },
     { key: 'broker', label: 'Broker', render: (r) => r.broker ?? '—' },
     {
       key: 'status', label: 'Status',
@@ -74,7 +74,7 @@ export default function Deposits() {
               disabled={actionLoading}
               onClick={() => handleAction(r.id, 'deposit')}
             >
-              Deposit
+              Approve
             </button>
           ) : r.status === 'deposit' ? (
             <span className={styles.depositText}>Deposit</span>
@@ -91,11 +91,11 @@ export default function Deposits() {
     exportToExcel(
       deposits.map((r) => ({
         Date: r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
-        'User ID': r.userId ?? '—',
+        'User ID': r.user?.accNumber ?? '—',
         Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',
         Email: r?.user?.email ?? '—',
         'Deposit Amount': r.amount ?? '—',
-        'MTS Account': r.mtsAccount ?? '—',
+        'MTS Account': r.mt5Account ?? '—',
         Broker: r.broker ?? '—',
         Status: r.status ?? '—',
       })),

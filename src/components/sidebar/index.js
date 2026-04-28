@@ -2,14 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { logout } from '@/store/reducers';
 import styles from './sidebar.module.scss';
 import RightIcon from '@/icons/rightIcon';
 
 const SidebarLogo = '/assets/logo/sidebar-logo.svg';
 
-const sidebarData = [
+export const sidebarData = [
   { id: 'dashboard',            label: 'Dashboard',           icon: '/assets/icons/dashboard.svg',             route: '/dashboard' },
   { id: 'users',                label: 'Users',               icon: '/assets/icons/Users.svg',                 route: '/users' },
   {
@@ -33,10 +33,36 @@ const sidebarData = [
   { id: 'settings',             label: 'Settings',            icon: '/assets/icons/Settings.svg',              route: '/settings' },
 ];
 
+export const permissionMap = {
+  'dashboard': 'Access Dashboard Overview',
+  'users': 'Manage Users',
+  'withdraw-requests': 'Manage Withdraw Requests',
+  'ib-requests': 'Manage IB Requests',
+  'kyc-requests': 'Manage KYC Requests',
+  'send-notifications': 'Send Notifications',
+};
+
 export default function Sidebar() {
   const router = useRouter();
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const user = useSelector((state) => state.login.user);
+  const permissions = user?.permissions || [];
+  
+  const isAdmin = user?.roleId === 'admin' || user?.role === 'admin';
+
+  const visibleSidebarData = React.useMemo(() => {
+    if (isAdmin) return sidebarData;
+    return sidebarData.filter(item => {
+      if (['contact-us', 'manage-tutorials', 'manage-brokers', 'settings'].includes(item.id)) {
+        return true;
+      }
+      const reqPerm = permissionMap[item.id];
+      if (!reqPerm) return false; 
+      return permissions.includes(reqPerm);
+    });
+  }, [isAdmin, permissions]);
+
   const [activeTab, setActiveTab] = useState('dashboard');
   const [openParent, setOpenParent] = useState(null);
 
@@ -47,7 +73,7 @@ export default function Sidebar() {
 
   useEffect(() => {
     // find active among flat items and children
-    for (const item of sidebarData) {
+    for (const item of visibleSidebarData) {
       if (item.children) {
         const child = item.children.find((c) => pathname.includes(c.id));
         if (child) {
@@ -61,7 +87,7 @@ export default function Sidebar() {
       }
     }
     setActiveTab('dashboard');
-  }, [pathname]);
+  }, [pathname, visibleSidebarData]);
 
   const handleNavigation = (route) => {
     router.push(route);
@@ -80,7 +106,7 @@ export default function Sidebar() {
       </div>
       <div className={styles.scroll}>
         <div className={styles.sidebarBody}>
-          {sidebarData.map((item) => {
+          {visibleSidebarData.map((item) => {
             const isParentActive = item.children
               ? item.children.some((c) => activeTab === c.id)
               : activeTab === item.id;

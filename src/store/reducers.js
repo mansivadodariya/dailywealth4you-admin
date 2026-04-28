@@ -39,6 +39,7 @@ import adminReducer, {
   fetchAdminIbIncome,
   fetchAdminProfitSharing,
   fetchTransactions,
+  fetchUserDashboardProfitLots,
 } from '@/store/slice/adminSlice';
 
 import contentReducer, {
@@ -95,6 +96,7 @@ export {
   fetchAdminIbIncome,
   fetchAdminProfitSharing,
   fetchTransactions,
+  fetchUserDashboardProfitLots,
   // content
   fetchBrokersAdmin,
   createBroker,

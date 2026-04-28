@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { adminLoginUser } from '@/store/reducers';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { sidebarData, permissionMap } from '@/components/sidebar';
 
 const EmailIcon = '/assets/icons/email.svg';
 const EyeIcon = '/assets/icons/eye.svg';
@@ -42,7 +43,26 @@ export default function Login() {
 
       if (result.meta.requestStatus === 'fulfilled') {
         toast.success('Login Successfully');
-        router.push('/dashboard');
+        
+        const responseData = result.payload?.data || result.payload;
+        const payloadData = responseData?.payload || responseData?.data || responseData;
+        const user = payloadData?.user || payloadData || responseData?.user || responseData || null;
+        const permissions = user?.permissions || [];
+
+        let redirectRoute = '/dashboard';
+
+        const visibleSidebarData = sidebarData.filter(item => {
+          const reqPerm = permissionMap[item.id];
+          if (!reqPerm) return true;
+          return permissions.includes(reqPerm);
+        });
+
+        if (visibleSidebarData.length > 0) {
+          const firstItem = visibleSidebarData[0];
+          redirectRoute = firstItem.children ? firstItem.children[0].route : firstItem.route;
+        }
+
+        router.push(redirectRoute);
       }
       resetForm();
     },

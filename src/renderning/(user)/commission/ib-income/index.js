@@ -33,7 +33,7 @@ export default function IBIncome() {
       const totalIncome = (row.brokers || []).reduce((acc, b) => acc + (b.totalIncome || 0), 0);
       return {
         'Date Joined': row?.user?.createdAt ? moment(row.user.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
-        'User ID': row.user?.id?.slice(0, 6).toUpperCase() ?? '—',
+        'User ID': row.user?.accNumber ?? '—',
         'Name': `${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—',
         'Email': row.user?.email ?? '—',
         'Lots Traded': row.user?.totalLots ?? 0,
@@ -77,7 +77,7 @@ export default function IBIncome() {
     {
       key: 'userId',
       label: 'User ID',
-      render: (row) => row.user?.id?.slice(0, 6).toUpperCase() ?? '—',
+      render: (row) => row.user?.accNumber ?? '—',
     },
     {
       key: 'name',

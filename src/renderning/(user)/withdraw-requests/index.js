@@ -82,7 +82,7 @@ export default function WithdrawRequests() {
   const handleExport = () => {
     const rows = filtered.map((r) => ({
       Date: r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
-      'User ID': r.userId ?? '—',
+      'User ID': r?.user?.accNumber ?? '—',
       Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',
       Email: r?.user?.email ?? '—',
       'Withdrawal Amount': r.amount ?? '—',
@@ -99,7 +99,7 @@ export default function WithdrawRequests() {
       render: (r) =>
         r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
     },
-    { key: 'userId', label: 'User ID' },
+    { key: 'userId', label: 'User ID' , render: (r) => r?.user?.accNumber ?? '—' },
     {
       key: 'name',
       label: 'Name',

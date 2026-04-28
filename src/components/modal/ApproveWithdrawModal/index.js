@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import styles from './ApproveWithdrawModal.module.scss';
 import CloseIcon from '@/icons/closeIcon';
-import RightIcon from '@/icons/rightIcon';
 
 export default function ApproveWithdrawModal({ request, onConfirm, onClose, loading }) {
   const [file, setFile] = useState(null);
@@ -69,7 +68,7 @@ export default function ApproveWithdrawModal({ request, onConfirm, onClose, load
           <button className={styles.btnUpload} onClick={handleConfirm} disabled={loading || !file}>
             {loading ? <span className={styles.spinner} /> : (
               <>
-                Upload <RightIcon color="#030f0f" size={18} />
+                Upload <img src="/assets/icons/BlackRight.svg" alt="Right" />
               </>
             )}
           </button>

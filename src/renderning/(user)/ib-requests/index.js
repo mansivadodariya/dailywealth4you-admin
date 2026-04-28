@@ -89,7 +89,7 @@ export default function IBRequests() {
           </button>
           <button
             className={styles.btnReject}
-            disabled={r.status === 'cancel' || actionLoading?.id === r.id}
+            disabled={r.status === 'cancel' || r.status === 'approved' || actionLoading?.id === r.id}
             onClick={() => handleAction(r.id, 'cancel')}
           >
             {actionLoading?.id === r.id && actionLoading?.action === 'cancel'

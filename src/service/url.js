@@ -61,3 +61,6 @@ export const UPDATE_NOTIFICATION = '/notification/updateNotification';
 // Transactions
 export const GET_ALL_TRANSACTIONS = '/transaction/getAllTransaction';
 export const UPDATE_TRANSACTION = '/transaction/updateTransaction';
+
+// Trade History
+export const GET_USER_DASHBOARD_PROFIT_LOTS = '/tradesHistory/getUserDashboardProfitLots';

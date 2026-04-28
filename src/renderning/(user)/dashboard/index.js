@@ -2,13 +2,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchWithdrawRequests, fetchTransactions, fetchAdminProfitSharing } from '@/store/reducers';
+import { fetchWithdrawRequests, fetchTransactions, fetchAdminProfitSharing, fetchUserDashboardProfitLots } from '@/store/reducers';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   PieChart, Pie, Cell,
 } from 'recharts';
 import moment from 'moment';
 import styles from './dashboard.module.scss';
+import { fetchSetting } from '@/store/slice/adminSlice';
 
 const DONUT_COLORS = ['#02df82', '#2B3535', '#1a2b2b'];
 
@@ -51,16 +52,48 @@ const Card = ({ label, value, change, badge, count, children }) => (
 
 export default function Dashboard() {
   const dispatch = useDispatch();
-  const { withdrawRequests, transactions } = useSelector((s) => s.admin);
+  const { withdrawRequests, transactions, dashboardProfitLots } = useSelector((s) => s.admin);
+  const setting = useSelector((s) => s.admin.setting);
+  const [form, setForm] = useState({ investor: '', ib: '', company: '' });
+  const [donutLabel, setDonutLabel] = useState(null);
+  
+  console.log(donutLabel,"donutLabel");
+  
   const { profitSharing } = useSelector((s) => s.admin);
 
   const [chartRange, setChartRange] = useState('7 Days');
+  console.log(form, "currentSharing");
 
   useEffect(() => {
     dispatch(fetchWithdrawRequests({ limit: 100 }));
-    dispatch(fetchTransactions({ type: 'deposit', limit: 10 }));
+    dispatch(fetchTransactions({limit: 10 }));
     dispatch(fetchAdminProfitSharing({ limit: 100 }));
+    dispatch(fetchSetting());
   }, [dispatch]);
+    useEffect(() => {
+      if (setting) {
+        setForm({
+          investor: setting.investorPercentage || '',
+          ib: setting.ibPercentage || '',
+          company: setting.companyPercentage || '',
+        });
+      }
+    }, [setting]);
+
+  useEffect(() => {
+    let startDate;
+    let endDate = moment().format('YYYY-MM-DD');
+
+    if (chartRange === '24 Hours') {
+      startDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
+    } else if (chartRange === '7 Days') {
+      startDate = moment().subtract(7, 'days').format('YYYY-MM-DD');
+    } else if (chartRange === '30 Days') {
+      startDate = moment().subtract(30, 'days').format('YYYY-MM-DD');
+    }
+
+    dispatch(fetchUserDashboardProfitLots({ startDate, endDate }));
+  }, [dispatch, chartRange]);
 
   // --- stat derivations ---
   const deposits = transactions || [];
@@ -79,21 +112,16 @@ export default function Dashboard() {
   }, 0);
 
   const donutData = [
-    { name: 'Investor', value: 50 },
-    { name: 'IB', value: 10 },
-    { name: 'Company', value: 40 },
+    { name: 'Investor', value: Number(form.investor) },
+    { name: 'IB', value: Number(form.ib) },
+    { name: 'Company', value: Number(form.company) },
   ];
 
-  // line chart — last 7 days of deposits grouped by date
-  const now = moment();
-  const days = Array.from({ length: 7 }, (_, i) => now.clone().subtract(6 - i, 'days'));
-  const lineData = days.map((d) => {
-    const key = d.format('M-D');
-    const total = deposits
-      .filter((r) => moment(r.createdAt).isSame(d, 'day'))
-      .reduce((s, r) => s + (Number(r.amount) || 0), 0);
-    return { date: key, value: total };
-  });
+  // line chart — data from API
+  const lineData = (dashboardProfitLots?.portfolioGrowth || []).map((item) => ({
+    date: moment(item.date).format('MM-DD'),
+    value: Number(item.value ?? 0),
+  }));
 
   // recent transactions (deposits)
   const recentTx = deposits.slice(0, 6);
@@ -129,7 +157,7 @@ export default function Dashboard() {
               value={chartRange}
               onChange={(e) => setChartRange(e.target.value)}
             >
-              {['24 Hours', '7 Days', '30 Days', 'All Time'].map((o) => (
+              {['24 Hours', '7 Days', '30 Days'].map((o) => (
                 <option key={o}>{o}</option>
               ))}
             </select>
@@ -156,8 +184,8 @@ export default function Dashboard() {
                   axisLine={false}
                   tickLine={false}
                 />
-                <Tooltip 
-                  content={<CustomTooltip />} 
+                <Tooltip
+                  content={<CustomTooltip />}
                   cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }}
                   offset={-50}
                   position={{ y: 50 }}
@@ -221,21 +249,38 @@ export default function Dashboard() {
                         key={i}
                         fill={i === 2 ? "url(#patternHatch)" : DONUT_COLORS[i]}
                         stroke="none"
+                        onClick={() => setDonutLabel(d)}
+                        cursor="pointer"
                       />
                     ))}
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
               <div className={styles.donutCenter}>
-                <span className={styles.donutLabel}>Investor</span>
-                <span className={styles.donutPct}>50%</span>
+                <span className={styles.donutLabel}>{donutLabel?.name || "Investor"}</span>
+                <span className={styles.donutPct}>{donutLabel?.value || "50"}%</span>
               </div>
             </div>
             <div className={styles.donutLegend}>
               {donutData.map((d, i) => (
                 <span key={i} className={styles.legendItem}>
-                  <span className={styles.legendDot} style={{ background: DONUT_COLORS[i] }} />
-                  {d.name}
+                  <span
+                    className={styles.legendDot}
+                    style={
+                      i === 2
+                        ? {
+                          backgroundImage: `repeating-linear-gradient(
+            0deg,
+            #848A8A 0px,
+            #848A8A 1px,
+            transparent 1px,
+            transparent 4px
+          )`,
+                          backgroundColor: 'transparent',
+                        }
+                        : { background: DONUT_COLORS[i] }
+                    }
+                  />                  {d.name}
                 </span>
               ))}
             </div>
@@ -265,12 +310,12 @@ export default function Dashboard() {
                       <p className={styles.txName}>
                         {tx.user?.firstName ?? ''} {tx.user?.lastName ?? ''}
                       </p>
-                      <p className={styles.txId}>#{tx.id?.slice(0, 6).toUpperCase()}</p>
+                      <p className={styles.txId}>#{tx.user.accNumber}</p>
                       <p className={styles.txTime}>{moment(tx.createdAt).fromNow()}</p>
                     </div>
                     <div className={styles.txRight}>
                       <p className={styles.txAmount}>${Number(tx.amount || 0).toLocaleString()}</p>
-                      <span className={styles.txBadge}>Deposit</span>
+                      <span className={styles.txBadge}>{(tx.type).slice(0, 1).toUpperCase() + (tx.type).slice(1)}</span>
                     </div>
                   </div>
                 ))}

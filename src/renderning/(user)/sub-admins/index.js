@@ -61,7 +61,7 @@ export default function SubAdmins() {
   const handleExport = () => {
     const rows = filtered.map((r) => ({
       'Date Added': r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
-      'Admin ID': r?.id?.slice(0, 6).toUpperCase() ?? '—',
+      'Admin ID': r?.accNumber ?? '—',
       'Email': r?.email ?? '—',
       'Access': (r?.permissions || []).join(', ') || '—',
     }));
@@ -77,10 +77,10 @@ export default function SubAdmins() {
     {
       key: 'id',
       label: 'Admin ID',
-      render: (r) => r.id?.slice(0, 6).toUpperCase() ?? '—',
+      render: (r) => r.accNumber ?? '—',
     },
     { key: 'email', label: 'Email', render: (r) => r.email ?? '—' },
-    { key: 'password', label: 'Password', render: () => '••••••••••' },
+    { key: 'password', label: 'Password', render: () => '**********' },
     {
       key: 'permissions',
       label: 'Access',
