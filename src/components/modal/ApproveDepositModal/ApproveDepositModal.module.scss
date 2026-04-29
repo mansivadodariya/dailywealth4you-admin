@@ -7,14 +7,14 @@
   align-items: center;
   justify-content: center;
   z-index: 9999;
-  padding: 20px;
+  padding: 32px;
 }
 
 .modal {
   background: #030F0F;
   border-radius: 14px;
   width: 100%;
-  max-width: 480px;
+  max-width: 440px;
   position: relative;
   overflow: hidden;
 
@@ -38,7 +38,7 @@
 }
 
 .header {
-  padding: 24px;
+  padding: 32px;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -70,7 +70,7 @@
 }
 
 .body {
-  padding: 24px;
+  padding: 32px;
 
   .sectionTitle {
     color: #fafafa;
@@ -123,7 +123,7 @@
 .checkboxContainer {
   margin-bottom: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
-  padding-top: 24px;
+  padding-top: 32px;
 
   .hiddenCheckbox {
     display: none;
@@ -132,7 +132,7 @@
   .customCheckbox {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 24px;
     cursor: pointer;
 
     .checkboxBox {
@@ -159,9 +159,9 @@
     }
 
     .checkboxLabel {
-      color: #8e8e8e;
-      font-size: 14px;
-      font-weight: 500;
+      color: #8E8E8E;
+      font-size: 16px;
+      font-weight: 600;
       line-height: 1.4;
       transition: color 0.2s;
     }

@@ -46,10 +46,10 @@ export const withdrawStatusOptions = [
 const defaultFilters = {
   dateFrom: null,
   dateTo: null,
-  profitMin: '',
-  profitMax: '',
-  depositMin: '',
-  depositMax: '',
+  minProfit: '',
+  maxProfit: '',
+  minDeposit: '',
+  maxDeposit: '',
   withdrawalMin: '',
   withdrawalMax: '',
   ibUser: ibUserOptions[0],
@@ -88,7 +88,7 @@ export default function FilterModal({ onApply, onClose, initialFilters, fields, 
   };
 
   const handleCancel = () => {
-    onApply(defaultFilters);
+    // onApply(defaultFilters);
     onClose();
   };
 
@@ -160,15 +160,15 @@ export default function FilterModal({ onApply, onClose, initialFilters, fields, 
                 plain
                 type="number"
                 placeholder="Min"
-                value={filters.profitMin}
-                onChange={(e) => set('profitMin', e.target.value)}
+                  value={filters.minProfit}
+                  onChange={(e) => set('minProfit', e.target.value)}
               />
               <Input
                 plain
                 type="number"
                 placeholder="Max"
-                value={filters.profitMax}
-                onChange={(e) => set('profitMax', e.target.value)}
+                value={filters.maxProfit}
+                onChange={(e) => set('maxProfit', e.target.value)}
               />
             </div>
           </div>
@@ -179,8 +179,8 @@ export default function FilterModal({ onApply, onClose, initialFilters, fields, 
           <div className={styles.fieldGroup}>
             <label>Select Deposit Amount Range</label>
             <div className={styles.row}>
-              <Input plain type="number" placeholder="Min" value={filters.depositMin} onChange={(e) => set('depositMin', e.target.value)} />
-              <Input plain type="number" placeholder="Max" value={filters.depositMax} onChange={(e) => set('depositMax', e.target.value)} />
+              <Input plain type="number" placeholder="Min" value={filters.minDeposit} onChange={(e) => set('minDeposit', e.target.value)} />
+              <Input plain type="number" placeholder="Max" value={filters.maxDeposit} onChange={(e) => set('maxDeposit', e.target.value)} />
             </div>
           </div>
           )}

@@ -13,7 +13,7 @@ export default function UserViewModal({ user, onClose }) {
   const [showManual, setShowManual] = useState(false);
   const [showBlock, setShowBlock] = useState(false);
 
-  const accounts = user?.tradingAccounts || user?.mt5Accounts || [];
+  const accounts = user?.tradingAccount || [];
   const name = `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || '—';
 
   return (
@@ -53,11 +53,11 @@ export default function UserViewModal({ user, onClose }) {
             </div>
             <div className={styles.infoItem}>
               <label>Total Deposit</label>
-              <span>${user?.deposit ?? '0'}</span>
+              <span>${user?.totalDeposit ?? '0'}</span>
             </div>
             <div className={styles.infoItem}>
               <label>Profit</label>
-              <span>${user?.commission ?? '0'}</span>
+              <span>${user?.totalProfit ?? '0'}</span>
             </div>
           </div>
 
@@ -76,17 +76,19 @@ export default function UserViewModal({ user, onClose }) {
                       onClick={() => setOpenAccountId(isOpen ? null : acc.id)}
                     >
                       <div>
-                        <div className={styles.accountNo}>Account No: {acc.accountNumber ?? acc.id}</div>
+                        <div className={styles.accountNo}>Account No: {acc.mt5LoginId ?? acc.id}</div>
                         <div className={styles.accountBalance}>${acc.balance ?? acc.equity ?? '0'}</div>
                       </div>
-                      <span className={`${styles.chevron} ${isOpen ? styles.open : ''}`}>&#x2304;</span>
+                      <span className={`${styles.chevron} ${isOpen ? styles.open : ''}`}>
+                        <img src={"/assets/icons/Small-right.svg"}/>
+                      </span>
                     </div>
                     {isOpen && (
                       <div className={styles.accountDetails}>
                         <div className={styles.detailRow}>
                           <span className={styles.label}>Broker:</span>
                           <span className={styles.dots} />
-                          <span className={styles.value}>{acc.broker?.name ?? acc.brokerName ?? '—'}</span>
+                          <span className={styles.value}>{ acc.brokerName ?? '—'}</span>
                         </div>
                         <div className={styles.detailRow}>
                           <span className={styles.label}>Date Added</span>

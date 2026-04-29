@@ -40,41 +40,41 @@ export default function ApproveDepositModal({ request, onConfirm, onClose, loadi
             <div className={styles.credentialField}>
               <div className={styles.fieldHeader}>
                 <label>Broker Name</label>
-                <button onClick={() => handleCopy(request?.broker || 'Exness', 'Broker Name')}>
+                <button onClick={() => handleCopy(request?.tradingAccount?.brokerName || 'Exness', 'Broker Name')}>
                   <img src="/assets/icons/CopyIcon.svg" alt="copy" />
                 </button>
               </div>
-              <p className={styles.fieldValue}>{request?.broker || 'Exness'}</p>
+              <p className={styles.fieldValue}>{request?.tradingAccount?.brokerName || 'Exness'}</p>
             </div>
 
             <div className={styles.credentialField}>
               <div className={styles.fieldHeader}>
                 <label>Server</label>
-                <button onClick={() => handleCopy(request?.server || 'server.com', 'Server')}>
+                <button onClick={() => handleCopy(request?.tradingAccount?.server || 'server.com', 'Server')}>
                   <img src="/assets/icons/CopyIcon.svg" alt="copy" />
                 </button>
               </div>
-              <p className={styles.fieldValue}>{request?.server || 'server.com'}</p>
+              <p className={styles.fieldValue}>{request?.tradingAccount?.server || 'server.com'}</p>
             </div>
 
             <div className={styles.credentialField}>
               <div className={styles.fieldHeader}>
                 <label>MT5 Login ID</label>
-                <button onClick={() => handleCopy(request?.mt5Account || 'lucifermishra', 'Login ID')}>
+                <button onClick={() => handleCopy(request?.tradingAccount?.mt5LoginId || 'lucifermishra', 'Login ID')}>
                   <img src="/assets/icons/CopyIcon.svg" alt="copy" />
                 </button>
               </div>
-              <p className={styles.fieldValue}>{request?.mt5Account || 'lucifermishra'}</p>
+              <p className={styles.fieldValue}>{request?.tradingAccount?.mt5LoginId || 'lucifermishra'}</p>
             </div>
 
             <div className={styles.credentialField}>
               <div className={styles.fieldHeader}>
                 <label>Password</label>
-                <button onClick={() => handleCopy(request?.mt5Password || 'Next@123', 'Password')}>
+                <button onClick={() => handleCopy(request?.tradingAccount?.password || 'Next@123', 'Password')}>
                   <img src="/assets/icons/CopyIcon.svg" alt="copy" />
                 </button>
               </div>
-              <p className={styles.fieldValue}>{request?.mt5Password || 'Next@123'}</p>
+              <p className={styles.fieldValue}>{request?.tradingAccount?.password || 'Next@123'}</p>
             </div>
           </div>
 

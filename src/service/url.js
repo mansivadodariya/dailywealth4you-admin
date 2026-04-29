@@ -25,7 +25,7 @@ export const UPDATE_KYC_DOCUMENT = '/userDocument/updateUserDocument';
 
 export const BLOCK_USER = '/user/blockUser';
 export const ADD_SUB_ADMIN = '/user/addSubAdmin';
-export const UPDATE_SUB_ADMIN = '/user/update';
+export const UPDATE_SUB_ADMIN = '/user/subAdminUpdate';
 export const DELETE_SUB_ADMIN = '/user/deleteUser';
 export const GET_ALL_SUB_ADMINS = '/user/getAllSubAdmin';
 export const CREATE_NOTIFICATION = '/notification/createNewNotification';
@@ -64,3 +64,4 @@ export const UPDATE_TRANSACTION = '/transaction/updateTransaction';
 
 // Trade History
 export const GET_USER_DASHBOARD_PROFIT_LOTS = '/tradesHistory/getUserDashboardProfitLots';
+export const GET_ADMIN_DASHBOARD_STATS = '/tradesHistory/getAdminDashboardUseDepoWith';

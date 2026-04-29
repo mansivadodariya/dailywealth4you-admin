@@ -119,6 +119,7 @@
           }
 
           img {
+            opacity: 1;
             filter: brightness(0) invert(1);
           }
         }
@@ -147,6 +148,7 @@
         cursor: pointer;
 
         img {
+          opacity: 0.5;
           transition: all 0.3s ease-in-out;
         }
 

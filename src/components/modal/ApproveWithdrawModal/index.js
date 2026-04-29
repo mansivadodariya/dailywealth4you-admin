@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import styles from './ApproveWithdrawModal.module.scss';
 import CloseIcon from '@/icons/closeIcon';
+import { toast } from 'react-toastify';
 
 export default function ApproveWithdrawModal({ request, onConfirm, onClose, loading }) {
   const [file, setFile] = useState(null);
@@ -22,7 +23,7 @@ export default function ApproveWithdrawModal({ request, onConfirm, onClose, load
 
   const handleConfirm = () => {
     if (!file) {
-      alert('Please upload a screenshot first.');
+      toast.error('Please upload a screenshot first.');
       return;
     }
     onConfirm(request.id, file);

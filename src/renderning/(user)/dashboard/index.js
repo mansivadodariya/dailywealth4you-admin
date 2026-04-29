@@ -2,14 +2,15 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchWithdrawRequests, fetchTransactions, fetchAdminProfitSharing, fetchUserDashboardProfitLots } from '@/store/reducers';
+import { fetchWithdrawRequests, fetchTransactions, fetchAdminProfitSharing, fetchUserDashboardProfitLots, fetchAdminIbIncome, fetchAllUsers } from '@/store/reducers';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   PieChart, Pie, Cell,
 } from 'recharts';
 import moment from 'moment';
 import styles from './dashboard.module.scss';
-import { fetchSetting } from '@/store/slice/adminSlice';
+import { fetchSetting, fetchAdminDashboardStats } from '@/store/slice/adminSlice';
+import Select from 'react-select';
 
 const DONUT_COLORS = ['#02df82', '#2B3535', '#1a2b2b'];
 
@@ -24,24 +25,23 @@ const CustomTooltip = ({ active, payload, label }) => {
   );
 };
 
-const Card = ({ label, value, change, badge, count, children }) => (
+const BADGE_OPTIONS = ['24 Hours', '7 Days', '30 Days'];
+
+const Card = ({ label, value, change, badge, badgeValue, onBadgeChange, count, children }) => (
   <div className={styles.statCard}>
     <div className={styles.statTop}>
       <span className={styles.statLabel}>{label}</span>
       <div className={styles.statRight}>
-        {badge && (
-          <div className={styles.badge}>
-
-            {badge} <span className={styles.chevron}>
-
-            </span>
-            <img src="/assets/icons/down.svg" alt="chevron" />
-
-          </div>
-        )}
+        {badge &&
+          <Select
+            className={styles.select}
+            value={{ value: badgeValue || badge, label: badgeValue || badge }}
+            onChange={(opt) => onBadgeChange && onBadgeChange(opt.value)}
+            options={BADGE_OPTIONS.map((o) => ({ value: o, label: o }))}
+          />
+        }
       </div>
     </div>
-
     <p className={styles.statValue}>{value}
       {change && <span className={styles.change}>({change})</span>}
     </p>
@@ -52,38 +52,36 @@ const Card = ({ label, value, change, badge, count, children }) => (
 
 export default function Dashboard() {
   const dispatch = useDispatch();
-  const { withdrawRequests, transactions, dashboardProfitLots } = useSelector((s) => s.admin);
+  const { withdrawRequests, transactions, dashboardProfitLots, profitSharing, ibIncome, usersTotalPages, dashboardStats } = useSelector((s) => s.admin);
   const setting = useSelector((s) => s.admin.setting);
   const [form, setForm] = useState({ investor: '', ib: '', company: '' });
   const [donutLabel, setDonutLabel] = useState(null);
-  
-  console.log(donutLabel,"donutLabel");
-  
-  const { profitSharing } = useSelector((s) => s.admin);
-
   const [chartRange, setChartRange] = useState('7 Days');
-  console.log(form, "currentSharing");
+  const [badgeRanges, setBadgeRanges] = useState({});
 
   useEffect(() => {
     dispatch(fetchWithdrawRequests({ limit: 100 }));
-    dispatch(fetchTransactions({limit: 10 }));
+    dispatch(fetchTransactions());
     dispatch(fetchAdminProfitSharing({ limit: 100 }));
     dispatch(fetchSetting());
+    dispatch(fetchAdminIbIncome({ limit: 1000 }));
+    dispatch(fetchAllUsers({ limit: 1 }));
+    dispatch(fetchAdminDashboardStats());
   }, [dispatch]);
-    useEffect(() => {
-      if (setting) {
-        setForm({
-          investor: setting.investorPercentage || '',
-          ib: setting.ibPercentage || '',
-          company: setting.companyPercentage || '',
-        });
-      }
-    }, [setting]);
+
+  useEffect(() => {
+    if (setting) {
+      setForm({
+        investor: setting.investorPercentage || '',
+        ib: setting.ibPercentage || '',
+        company: setting.companyPercentage || '',
+      });
+    }
+  }, [setting]);
 
   useEffect(() => {
     let startDate;
-    let endDate = moment().format('YYYY-MM-DD');
-
+    const endDate = moment().format('YYYY-MM-DD');
     if (chartRange === '24 Hours') {
       startDate = moment().subtract(1, 'days').format('YYYY-MM-DD');
     } else if (chartRange === '7 Days') {
@@ -91,7 +89,6 @@ export default function Dashboard() {
     } else if (chartRange === '30 Days') {
       startDate = moment().subtract(30, 'days').format('YYYY-MM-DD');
     }
-
     dispatch(fetchUserDashboardProfitLots({ startDate, endDate }));
   }, [dispatch, chartRange]);
 
@@ -105,11 +102,20 @@ export default function Dashboard() {
   const pendingWithdrawTotal = pendingWithdraw.reduce((s, r) => s + (Number(r.amount) || 0), 0);
   const completedWithdrawTotal = completedWithdraw.reduce((s, r) => s + (Number(r.amount) || 0), 0);
 
-  // profit sharing donut
+  // profit sharing paid — sum totalProfitShare across all rows
   const totalInvestorShare = (profitSharing || []).reduce((s, r) => {
     const share = (r.brokers || []).reduce((a, b) => a + (b.totalProfitShare || 0), 0);
     return s + (r.totalProfitShare ?? share ?? 0);
   }, 0);
+
+  // IB commission paid — sum totalIncome across all IB income rows
+  const totalIbCommission = (ibIncome || []).reduce((s, r) => {
+    const rowIncome = (r.brokers || []).reduce((a, b) => a + (b.totalIncome || 0), 0);
+    return s + (r.totalIncome ?? rowIncome ?? 0);
+  }, 0);
+
+  // Total lots — from dashboardProfitLots API response
+  const totalLots = dashboardProfitLots?.totalLots ?? dashboardProfitLots?.lots ?? null;
 
   const donutData = [
     { name: 'Investor', value: Number(form.investor) },
@@ -123,26 +129,34 @@ export default function Dashboard() {
     value: Number(item.value ?? 0),
   }));
 
-  // recent transactions (deposits)
-  const recentTx = deposits.slice(0, 6);
+  // recent transactions
+  const recentTx = deposits;
 
   const statCards = [
     { label: 'Total Deposits', value: `$${totalDeposits.toLocaleString()}`, badge: null },
-    { label: 'Gross Profit', value: `$12,694`, badge: '24 Hours', change: '+12%' },
-    { label: 'Net Profit', value: `$12,694`, badge: '24 Hours', change: '+12%' },
+    { label: 'Gross Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
+    { label: 'Net Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
     { label: 'Profit Sharing Paid', value: `$${totalInvestorShare.toLocaleString() || '12,694'}`, badge: 'All Time' },
-    { label: 'Total Users', value: '204', badge: null },
+    { label: 'Total Users', value: usersTotalPages != null ? String(usersTotalPages) : '204', badge: null },
     { label: 'All Users Account Balance', value: '$1,800,000.82', badge: null },
-    { label: 'IB Commission Paid', value: '$60,785', badge: 'All Time' },
-    { label: 'Total Lots Traded', value: '1534.2', badge: '24 Hours' },
+    { label: 'IB Commission Paid', value: `$${totalIbCommission.toLocaleString()}`, badge: 'All Time' },
+    { label: 'Total Lots Traded', value: totalLots != null ? String(totalLots) : '1534.2', badge: '24 Hours' },
   ];
 
   return (
     <div className={styles.wrapper}>
-      {/* Row 1 — 4 stat cards */}
+      {/* Row 1 — stat cards */}
       <div className={styles.statsGrid}>
         {statCards.map((c, i) => (
-          <Card key={i} label={c.label} value={c.value} change={c.change} badge={c.badge} />
+          <Card
+            key={i}
+            label={c.label}
+            value={c.value}
+            change={c.change}
+            badge={c.badge}
+            badgeValue={badgeRanges[i] || c.badge}
+            onBadgeChange={(val) => setBadgeRanges((prev) => ({ ...prev, [i]: val }))}
+          />
         ))}
       </div>
 
@@ -172,18 +186,8 @@ export default function Dashboard() {
                   </linearGradient>
                 </defs>
                 <CartesianGrid stroke="rgba(255,255,255,0.05)" vertical={false} strokeDasharray="3 3" />
-                <XAxis
-                  dataKey="date"
-                  tick={{ fill: '#6b7280', fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                  dy={10}
-                />
-                <YAxis
-                  tick={{ fill: '#6b7280', fontSize: 11 }}
-                  axisLine={false}
-                  tickLine={false}
-                />
+                <XAxis dataKey="date" tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false} dy={10} />
+                <YAxis tick={{ fill: '#6b7280', fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip
                   content={<CustomTooltip />}
                   cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }}
@@ -205,18 +209,15 @@ export default function Dashboard() {
 
         {/* Right column */}
         <div className={styles.rightCol}>
-          {/* Pending withdraw */}
           <Card
             label="Pending Withdraw Requests"
             value={`$${pendingWithdrawTotal.toLocaleString()}`}
-            count={pendingWithdraw.length}
+            count={pendingWithdraw.length || '0'}
           />
-
-          {/* Completed withdraw */}
           <Card
             label="Completed Withdraw Requests"
             value={`$${completedWithdrawTotal.toLocaleString()}`}
-            count={completedWithdraw.length || "0"}
+            count={completedWithdraw.length || '0'}
           />
 
           {/* Donut */}
@@ -247,7 +248,7 @@ export default function Dashboard() {
                     {donutData.map((d, i) => (
                       <Cell
                         key={i}
-                        fill={i === 2 ? "url(#patternHatch)" : DONUT_COLORS[i]}
+                        fill={i === 2 ? 'url(#patternHatch)' : DONUT_COLORS[i]}
                         stroke="none"
                         onClick={() => setDonutLabel(d)}
                         cursor="pointer"
@@ -257,8 +258,8 @@ export default function Dashboard() {
                 </PieChart>
               </ResponsiveContainer>
               <div className={styles.donutCenter}>
-                <span className={styles.donutLabel}>{donutLabel?.name || "Investor"}</span>
-                <span className={styles.donutPct}>{donutLabel?.value || "50"}%</span>
+                <span className={styles.donutLabel}>{donutLabel?.name || 'Investor'}</span>
+                <span className={styles.donutPct}>{donutLabel?.value || '50'}%</span>
               </div>
             </div>
             <div className={styles.donutLegend}>
@@ -269,18 +270,13 @@ export default function Dashboard() {
                     style={
                       i === 2
                         ? {
-                          backgroundImage: `repeating-linear-gradient(
-            0deg,
-            #848A8A 0px,
-            #848A8A 1px,
-            transparent 1px,
-            transparent 4px
-          )`,
+                          backgroundImage: `repeating-linear-gradient(0deg, #848A8A 0px, #848A8A 1px, transparent 1px, transparent 4px)`,
                           backgroundColor: 'transparent',
                         }
                         : { background: DONUT_COLORS[i] }
                     }
-                  />                  {d.name}
+                  />
+                  {d.name}
                 </span>
               ))}
             </div>
@@ -310,12 +306,14 @@ export default function Dashboard() {
                       <p className={styles.txName}>
                         {tx.user?.firstName ?? ''} {tx.user?.lastName ?? ''}
                       </p>
-                      <p className={styles.txId}>#{tx.user.accNumber}</p>
+                      <p className={styles.txId}>#{tx.user?.accNumber}</p>
                       <p className={styles.txTime}>{moment(tx.createdAt).fromNow()}</p>
                     </div>
                     <div className={styles.txRight}>
                       <p className={styles.txAmount}>${Number(tx.amount || 0).toLocaleString()}</p>
-                      <span className={styles.txBadge}>{(tx.type).slice(0, 1).toUpperCase() + (tx.type).slice(1)}</span>
+                      <span className={styles.txBadge}>
+                        {tx.type.slice(0, 1).toUpperCase() + tx.type.slice(1)}
+                      </span>
                     </div>
                   </div>
                 ))}

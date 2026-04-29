@@ -61,7 +61,7 @@ export default function Deposits() {
     { key: 'userId', label: 'User ID', render: (r) => r.user?.accNumber ?? '—' },
     { key: 'name', label: 'Name', render: (r) => `${r.user.firstName ?? ''} ${r.user.lastName ?? ''}`.trim() || r.name || '—' },
     { key: 'email', label: 'Email', render: (r) => r.user.email || '—' },
-    { key: 'amount', label: 'Deposit Amount', render: (r) => r.amount != null ? `${r.amount}` : '—' },
+    { key: 'amount', label: 'Deposit Amount', render: (r) => r.amount != null ? `$${r.amount}` : '—' },
     { key: 'mt5Account', label: 'MT5 Account', render: (r) => r.mt5Account ?? '—' },
     { key: 'broker', label: 'Broker', render: (r) => r.broker ?? '—' },
     {
@@ -95,8 +95,7 @@ export default function Deposits() {
         Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',
         Email: r?.user?.email ?? '—',
         'Deposit Amount': r.amount ?? '—',
-        'MTS Account': r.mt5Account ?? '—',
-        Broker: r.broker ?? '—',
+        'MT5 Account': r.mt5Account ?? '—',        Broker: r.broker ?? '—',
         Status: r.status ?? '—',
       })),
       'Deposits', 'deposits_export.xlsx'

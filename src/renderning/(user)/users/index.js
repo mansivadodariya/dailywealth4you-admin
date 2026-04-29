@@ -17,10 +17,10 @@ import ViewButton from '@/components/common/viewButton';
 const defaultFilters = {
   dateFrom: '',
   dateTo: '',
-  profitMin: '',
-  profitMax: '',
-  depositMin: '',
-  depositMax: '',
+  minProfit: '',
+  maxProfit: '',
+  minDeposit: '',
+  maxDeposit: '',
   ibUser: '',
   status: '',
 };
@@ -63,11 +63,11 @@ export default function Users() {
     const rows = filtered.map((u) => ({
       'Date Joined': u.createdAt ? moment(u.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
       'User ID': u.accNumber ?? '—',
-      'Name': `${u?.user?.firstName ?? ''} ${u?.user?.lastName ?? ''}`.trim() || '—',
-      'Email': u?.user?.email ?? '—',
+      'Name': `${u?.firstName ?? ''} ${u?.lastName ?? ''}`.trim() || '—',
+      'Email': u?.email ?? '—',
       'IB User': u?.isIbUser ? 'Yes' : 'No',
-      'Deposit': u?.deposit ?? '—',
-      'Profit': u?.commission ?? '—',
+      'Deposit': u?.totalDeposit ?? '0',
+      'Profit': u?.totalProfit ?? '0',
     }));
     exportToExcel(rows, 'Users', 'users_export.xlsx');
   };
@@ -91,9 +91,9 @@ export default function Users() {
       render: (u) => (u.isIbUser ? 'Yes' : 'No'),
     },
     {
-      key: 'deposit',
+      key: 'totalDeposit',
       label: 'Deposit',
-      render: (u) => (u.deposit != null ? `$${u.deposit}` : '$0'),
+      render: (u) => (u.totalDeposit != null ? `$${u.totalDeposit}` : '$0'),
     },
     {
       key: 'totalProfit',
@@ -126,7 +126,6 @@ export default function Users() {
     { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => setShowFilter(true) },
     { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
   ];
-  console.log(usersTotalPages, "totalPages");
 
   return (
     <>
@@ -223,6 +222,7 @@ export default function Users() {
 
       {showFilter && (
         <FilterModal
+          fields={['dateRange', 'profit', 'status','ibUser',"deposit"]}
           initialFilters={activeFilters}
           onApply={handleFilterApply}
           onClose={() => setShowFilter(false)}

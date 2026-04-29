@@ -86,7 +86,7 @@ export default function WithdrawRequests() {
       Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',
       Email: r?.user?.email ?? '—',
       'Withdrawal Amount': r.amount ?? '—',
-      'Wallet Address': r.walletAddress ?? '—',
+      'Wallet Address': r.address ?? '—',
       Status: r.status ?? '—',
     }));
     exportToExcel(rows, 'Withdraw Requests', 'withdraw_requests_export.xlsx');
@@ -116,11 +116,11 @@ export default function WithdrawRequests() {
       render: (r) => (r.amount != null ? `$${r.amount}` : '—'),
     },
     {
-      key: 'walletAddress',
+      key: 'address',
       label: 'Wallet Address',
       render: (r) =>
-        r.walletAddress
-          ? `${r.walletAddress.slice(0, 8)}...`
+        r.address
+          ? `${r.address}`
           : '—',
     },
     {

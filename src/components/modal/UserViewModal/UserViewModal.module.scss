@@ -93,13 +93,14 @@
 .infoItem {
   label {
     display: block;
-    color: rgba(255, 255, 255, 0.4);
-    font-size: 13px;
+    color: #8E8E8E;
+    font-weight: 600;
+    font-size: 16px;
     margin-bottom: 5px;
   }
   span {
     color: #fafafa;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
   }
 }
@@ -129,14 +130,15 @@
   cursor: pointer;
 
   .accountNo {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 13px;
+    color: #fafafa;
+    font-size: 16px;    font-weight: 600;
+
     margin-bottom: 4px;
   }
 
   .accountBalance {
     color: #fafafa;
-    font-size: 26px;
+    font-size: 32px;
     font-weight: 700;
     letter-spacing: -0.5px;
   }
@@ -158,8 +160,10 @@
     display: flex;
     align-items: center;
     padding: 7px 0;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 14px;
+       color: #fafafa;
+    font-weight: 600;
+
+    font-size: 16px;
     gap: 6px;
 
     .label { white-space: nowrap; }

@@ -25,6 +25,7 @@ import {
   GET_ADMIN_PROFIT_SHARING,
   GET_ALL_TRANSACTIONS,
   GET_USER_DASHBOARD_PROFIT_LOTS,
+  GET_ADMIN_DASHBOARD_STATS,
 } from '@/service/url';
 
 export const fetchAllUsers = createAsyncThunk(
@@ -35,10 +36,10 @@ export const fetchAllUsers = createAsyncThunk(
       if (filters.search) params.append('search', filters.search);
       if (filters.dateFrom) params.append('startDate', filters.dateFrom);
       if (filters.dateTo) params.append('endDate', filters.dateTo);
-      if (filters.profitMin !== '' && filters.profitMin != null) params.append('profitMin', filters.profitMin);
-      if (filters.profitMax !== '' && filters.profitMax != null) params.append('profitMax', filters.profitMax);
-      if (filters.depositMin !== '' && filters.depositMin != null) params.append('depositMin', filters.depositMin);
-      if (filters.depositMax !== '' && filters.depositMax != null) params.append('depositMax', filters.depositMax);
+      if (filters.minProfit !== '' && filters.minProfit != null) params.append('minProfit', filters.minProfit);
+      if (filters.maxProfit !== '' && filters.maxProfit != null) params.append('maxProfit', filters.maxProfit);
+      if (filters.minDeposit !== '' && filters.minDeposit != null) params.append('minDeposit', filters.minDeposit);
+      if (filters.maxDeposit !== '' && filters.maxDeposit != null) params.append('maxDeposit', filters.maxDeposit);
       if (filters.ibUser) params.append('isIbUser', filters.ibUser === 'yes');
       if (filters.status) params.append('isActive', filters.status === 'active');
       if (filters.page) params.append('page', filters.page);
@@ -365,7 +366,7 @@ export const fetchIbClients = createAsyncThunk(
 
 export const fetchTransactions = createAsyncThunk(
   'admin/fetchTransactions',
-  async ({ type = 'deposit', search = '', page, limit } = {}, thunkApi) => {
+  async ({ type , search = '', page, limit } = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
       if (type) params.append('type', type);
@@ -417,7 +418,17 @@ export const fetchUserDashboardProfitLots = createAsyncThunk(
   }
 );
 
-
+export const fetchAdminDashboardStats = createAsyncThunk(
+  'admin/fetchAdminDashboardStats',
+  async (_, thunkApi) => {
+    try {
+      return await api.get(GET_ADMIN_DASHBOARD_STATS);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
@@ -446,6 +457,7 @@ const adminSlice = createSlice({
     transactions: [],
     transactionsTotalPages: 1,
     dashboardProfitLots: {},
+    dashboardStats: null,
   },
   reducers: {
     clearAdminState: (state) => {
@@ -674,6 +686,13 @@ const adminSlice = createSlice({
         state.dashboardProfitLots = action.payload?.payload || {};
       })
       .addCase(fetchUserDashboardProfitLots.rejected, rejected)
+
+      .addCase(fetchAdminDashboardStats.pending, pending)
+      .addCase(fetchAdminDashboardStats.fulfilled, (state, action) => {
+        state.loading = false;
+        state.dashboardStats = action.payload?.payload || action.payload?.data || action.payload || null;
+      })
+      .addCase(fetchAdminDashboardStats.rejected, rejected)
 
       // updateTransaction is already handled above in fetchWithdrawRequests section
       // .addCase(updateTransaction.pending, pending) ...

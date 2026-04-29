@@ -16,8 +16,6 @@ const RightWhiteIcon = '/assets/icons/right-white.svg';
 export default function Mt5Account() {
   const dispatch = useDispatch();
   const { brokers, loading, error } = useSelector((state) => state?.account);
-  console.log('Brokers:', brokers);
-
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [isOpen, setIsOpen] = useState(false);
@@ -57,13 +55,13 @@ export default function Mt5Account() {
 
   const handleContinue = () => {
     if (!selectedBroker) {
-      return alert('Please select a broker');
+      return toast.error('Please select a broker');
     }
 
     if (selectedBroker.redirectURL) {
       window.open(selectedBroker.redirectURL, '_blank');
     } else {
-      alert('Redirect URL not available');
+      toast.error('Redirect URL not available');
     }
   };
 

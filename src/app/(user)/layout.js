@@ -65,7 +65,6 @@ export default function layout({ children }) {
     const socket = getSocket();
 
     const handleCheckNotification = (data) => {
-      console.log(data,"dataaaa");
       // Re-fetch notifications to keep Redux store in sync
       dispatch(fetchNotifications());
     };

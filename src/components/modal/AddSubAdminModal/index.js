@@ -91,7 +91,7 @@ export default function SubAdminModal({
               plain
               type="password"
               placeholder="••••••••"
-              value={admin.password || password}
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
               leftIcon="/assets/icons/lock.svg"
               rightIcon="/assets/icons/eye-off.svg"
@@ -126,7 +126,7 @@ export default function SubAdminModal({
               <button
                 className={styles.btnSave}
                 disabled={saving}
-                onClick={() => onSave?.({ id: admin.id, password, permissions: access })}
+                onClick={() => onSave?.({ id: admin.id, ...(password && { password }), permissions: access })}
               >
                 {saving ? <span className={styles.spinner} /> : <>Save <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /></>}
               </button>

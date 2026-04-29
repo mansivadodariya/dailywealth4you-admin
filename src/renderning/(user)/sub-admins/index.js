@@ -80,7 +80,7 @@ export default function SubAdmins() {
       render: (r) => r.accNumber ?? '—',
     },
     { key: 'email', label: 'Email', render: (r) => r.email ?? '—' },
-    { key: 'password', label: 'Password', render: () => '**********' },
+    // { key: 'password', label: 'Password', render: () => '**********' },
     {
       key: 'permissions',
       label: 'Access',
@@ -106,7 +106,6 @@ export default function SubAdmins() {
         search={search}
         onSearchChange={handleSearchChange}
         actions={[
-          { label: 'Filters', icon: '/assets/icons/Filter.svg', onClick: () => {} },
           { label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport },
           { label: 'Add New Sub-Admin ', icon: '/assets/icons/plus.svg', onClick: () => setShowAdd(true), variant: 'primary' },
         ]}

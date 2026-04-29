@@ -51,8 +51,9 @@ export default function IBRequests() {
   const handleExport = () => {
     const rows = filtered.map((r) => ({
       Date: r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
-      Name: `${r.firstName ?? ''} ${r.lastName ?? ''}`.trim() || r.name || '—',
-      Email: r.email ?? '—',
+      'User ID': r?.user?.accNumber ?? '—',
+      Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',
+      Email: r?.user?.email ?? '—',
       Status: r.status ?? '—',
     }));
     exportToExcel(rows, 'IB Requests', 'ib_requests_export.xlsx');

@@ -124,7 +124,6 @@ export default function UseExisting({
         setAgreed(false);
         if (onClose) onClose();
       } catch (error) {
-        console.log(error)
         // toast.error(error?.message || 'Failed to create MT5 account.');
       }
     }
