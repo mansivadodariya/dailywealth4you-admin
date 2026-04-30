@@ -16,6 +16,9 @@ const ACCESS_OPTIONS = [
   'Manage IB Requests',
   'Send Notifications',
   'Manage KYC Requests',
+  'Manage Contact Us',
+  'Manage Tutorials',
+  'Manage Brokers',
 ];
 
 // mode="add"  → Add New Sub-Admin form

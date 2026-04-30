@@ -73,3 +73,27 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+.approvedText {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid var(--Primary, #02df82);
+  border-radius: 99px;
+  padding: 4px 14px;
+  background: rgba(2, 223, 130, 0.1);
+  display: inline-block;
+  text-align: center;
+}
+
+.rejectedText {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid rgba(255, 80, 80, 0.6);
+  border-radius: 99px;
+  padding: 4px 14px;
+  background: rgba(255, 80, 80, 0.1);
+  display: inline-block;
+  text-align: center;
+}

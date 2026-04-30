@@ -47,17 +47,18 @@ export default function Users() {
   };
 
   useEffect(() => {
-    dispatch(fetchAllUsers({ ...activeFilters, search, page, limit: 10 }));
-  }, [dispatch, activeFilters, search, page]);
+    dispatch(fetchAllUsers({ ...activeFilters, search, page: 1, limit: 1000 }));
+  }, [dispatch, activeFilters, search]);
 
-  // fetch IB clients when a row is expanded
+  const allUsers = users || [];
+  const totalPagesFrontend = Math.ceil(allUsers.length / 10);
+  const filtered = allUsers.slice((page - 1) * 10, page * 10);
   useEffect(() => {
     if (expandedUserId) {
       dispatch(fetchIbClients(expandedUserId));
     }
   }, [expandedUserId, dispatch]);
 
-  const filtered = users || [];
 
   const handleExport = () => {
     const rows = filtered.map((u) => ({
@@ -217,7 +218,7 @@ export default function Users() {
           </table>
         </div>
 
-        <Pagination page={page} totalPages={usersTotalPages} onPageChange={setPage} />
+        <Pagination page={page} totalPages={totalPagesFrontend} onPageChange={setPage} />
       </div>
 
       {showFilter && (

@@ -128,20 +128,28 @@ export default function WithdrawRequests() {
       label: 'Actions',
       render: (r) => (
         <div className={styles.actionBtns}>
-          <button
-            className={styles.btnApprove}
-            disabled={r.status === 'approved' || r.status === 'completed'}
-            onClick={() => handleAction(r.id, 'approved')}
-          >
-            Approve
-          </button>
-          <button
-            className={styles.btnReject}
-            disabled={r.status === 'rejected'}
-            onClick={() => handleAction(r.id, 'rejected')}
-          >
-            Reject
-          </button>
+          {r.status === 'pending' ? (
+            <>
+              <button
+                className={styles.btnApprove}
+                onClick={() => handleAction(r.id, 'approved')}
+              >
+                Approve
+              </button>
+              <button
+                className={styles.btnReject}
+                onClick={() => handleAction(r.id, 'rejected')}
+              >
+                Reject
+              </button>
+            </>
+          ) : r.status === 'approved' || r.status === 'completed' ? (
+            <span className={styles.approvedText}>Approved</span>
+          ) : r.status === 'rejected' ? (
+            <span className={styles.rejectedText}>Rejected</span>
+          ) : (
+            '—'
+          )}
         </div>
       ),
     },

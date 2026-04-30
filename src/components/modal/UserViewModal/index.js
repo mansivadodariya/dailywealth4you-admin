@@ -16,9 +16,11 @@ export default function UserViewModal({ user, onClose }) {
   const accounts = user?.tradingAccount || [];
   const name = `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || '—';
 
+  const subModalOpen = showManual || showBlock;
+
   return (
     <>
-      <div className={styles.overlay}>
+      <div className={styles.overlay} style={subModalOpen ? { display: 'none' } : undefined}>
         <div className={styles.modal}>
 
           {/* Header: name/email left, block+close right */}

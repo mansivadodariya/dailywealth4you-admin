@@ -79,24 +79,34 @@ export default function IBRequests() {
       label: 'Action',
       render: (r) => (
         <div className={styles.actionBtns}>
-          <button
-            className={styles.btnApprove}
-            disabled={r.status === 'approved' || actionLoading?.id === r.id}
-            onClick={() => handleAction(r.id, 'approved')}
-          >
-            {actionLoading?.id === r.id && actionLoading?.action === 'approved'
-              ? <span className={styles.btnSpinner} />
-              : 'Approve'}
-          </button>
-          <button
-            className={styles.btnReject}
-            disabled={r.status === 'cancel' || r.status === 'approved' || actionLoading?.id === r.id}
-            onClick={() => handleAction(r.id, 'cancel')}
-          >
-            {actionLoading?.id === r.id && actionLoading?.action === 'cancel'
-              ? <span className={styles.btnSpinner} />
-              : 'Reject'}
-          </button>
+          {r.status === 'pending' ? (
+            <>
+              <button
+                className={styles.btnApprove}
+                disabled={actionLoading?.id === r.id}
+                onClick={() => handleAction(r.id, 'approved')}
+              >
+                {actionLoading?.id === r.id && actionLoading?.action === 'approved'
+                  ? <span className={styles.btnSpinner} />
+                  : 'Approve'}
+              </button>
+              <button
+                className={styles.btnReject}
+                disabled={actionLoading?.id === r.id}
+                onClick={() => handleAction(r.id, 'cancel')}
+              >
+                {actionLoading?.id === r.id && actionLoading?.action === 'cancel'
+                  ? <span className={styles.btnSpinner} />
+                  : 'Reject'}
+              </button>
+            </>
+          ) : r.status === 'approved' || r.status === 'completed' ? (
+            <span className={styles.approvedText}>Approved</span>
+          ) : r.status === 'cancel' || r.status === 'rejected' ? (
+            <span className={styles.rejectedText}>Rejected</span>
+          ) : (
+            '—'
+          )}
         </div>
       ),
     },

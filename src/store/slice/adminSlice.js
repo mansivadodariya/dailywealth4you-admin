@@ -26,6 +26,7 @@ import {
   GET_ALL_TRANSACTIONS,
   GET_USER_DASHBOARD_PROFIT_LOTS,
   GET_ADMIN_DASHBOARD_STATS,
+  GET_ADMIN_PROFIT_AND_IB_COMMISSION,
 } from '@/service/url';
 
 export const fetchAllUsers = createAsyncThunk(
@@ -429,6 +430,18 @@ export const fetchAdminDashboardStats = createAsyncThunk(
     }
   }
 );
+
+export const fetchAdminProfitAndIbCommission = createAsyncThunk(
+  'admin/fetchAdminProfitAndIbCommission',
+  async (_, thunkApi) => {
+    try {
+      return await api.get(GET_ADMIN_PROFIT_AND_IB_COMMISSION);
+    } catch (error) {
+      toast.error(error);
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
@@ -458,6 +471,7 @@ const adminSlice = createSlice({
     transactionsTotalPages: 1,
     dashboardProfitLots: {},
     dashboardStats: null,
+    adminProfitAndIbCommission: null,
   },
   reducers: {
     clearAdminState: (state) => {
@@ -693,6 +707,13 @@ const adminSlice = createSlice({
         state.dashboardStats = action.payload?.payload || action.payload?.data || action.payload || null;
       })
       .addCase(fetchAdminDashboardStats.rejected, rejected)
+
+      .addCase(fetchAdminProfitAndIbCommission.pending, pending)
+      .addCase(fetchAdminProfitAndIbCommission.fulfilled, (state, action) => {
+        state.loading = false;
+        state.adminProfitAndIbCommission = action.payload?.payload || {};
+      })
+      .addCase(fetchAdminProfitAndIbCommission.rejected, rejected)
 
       // updateTransaction is already handled above in fetchWithdrawRequests section
       // .addCase(updateTransaction.pending, pending) ...

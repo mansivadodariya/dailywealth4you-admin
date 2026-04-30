@@ -14,9 +14,6 @@ export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
   const [name, setName] = useState(broker?.name ?? '');
   const [description, setDescription] = useState(broker?.description ?? '');
   const [redirectURL, setRedirectURL] = useState(broker?.redirectURL ?? '');
-  const [supportsFundTransferApi, setSupportsFundTransferApi] = useState(
-    broker?.supportsFundTransferApi ?? false
-  );
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(broker?.logo ?? '');
   const [errors, setErrors] = useState({});
@@ -35,7 +32,6 @@ export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
   const validate = () => {
     const e = {};
     if (!name.trim()) e.name = 'Name is required.';
-    if (!description.trim()) e.description = 'Description is required.';
     if (!redirectURL.trim()) e.redirectURL = 'Redirect URL is required.';
     if (isAdd && !imageFile) e.image = 'Image is required.';
     return e;
@@ -58,12 +54,14 @@ export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
 
   const handleSubmit = () => {
     const e = validate();
+    console.log(e,"Eeeeeeeeeeee");
+    
     if (Object.keys(e).length) { setErrors(e); return; }
     setErrors({});
     setLoading(true);
     const action = isAdd
-      ? createBroker({ name, description, redirectURL, supportsFundTransferApi, file: imageFile })
-      : updateBroker({ id: broker.id, original: broker, name, description, redirectURL, supportsFundTransferApi, file: imageFile });
+      ? createBroker({ name, description, redirectURL, file: imageFile })
+      : updateBroker({ id: broker.id, original: broker, name, description, redirectURL, file: imageFile });
     dispatch(action).then((res) => {
       setLoading(false);
       if (res.meta.requestStatus === 'fulfilled') { onDone?.(); onClose(); }
@@ -106,7 +104,6 @@ export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
 
           {[
             { label: 'Name', value: name, set: setName, key: 'name' },
-            { label: 'Description', value: description, set: setDescription, key: 'description' },
             { label: 'Redirect URL', value: redirectURL, set: setRedirectURL, key: 'redirectURL', placeholder: 'https://' },
           ].map(({ label, value, set, key, placeholder }) => (
             <div className={styles.fieldGroup} key={key}>
@@ -121,10 +118,6 @@ export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
             </div>
           ))}
 
-          <label className={styles.checkItem}>
-            <input type="checkbox" checked={supportsFundTransferApi} onChange={(e) => setSupportsFundTransferApi(e.target.checked)} />
-            <span>Supports Fund Transfer API</span>
-          </label>
         </div>
 
         <div className={styles.actions}>

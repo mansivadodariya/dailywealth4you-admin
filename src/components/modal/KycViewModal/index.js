@@ -116,18 +116,20 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
                 ? 'Approved'
                 : <> Approve KYC <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /> </>}
             </button>
-            <button
-              className={styles.btnReject}
-              disabled={doc?.status === 'rejected' || doc?.status === 'approved' || !!actionLoading}
-              onClick={() => onAction(doc.id, 'rejected')}
-            >
-              {actionLoading?.action === 'rejected'
-                ? <span className={styles.btnSpinner} />
-                : doc?.status === 'rejected'
-                ? 'Rejected'
-                : 
-                <> Reject KYC <img src="/assets/icons/WhiteClose.svg" alt="" style={{ width: 18, height: 18 }} /> </>}                
-            </button>
+            {doc?.status !== 'approved' && (
+              <button
+                className={styles.btnReject}
+                disabled={doc?.status === 'rejected' || !!actionLoading}
+                onClick={() => onAction(doc.id, 'rejected')}
+              >
+                {actionLoading?.action === 'rejected'
+                  ? <span className={styles.btnSpinner} />
+                  : doc?.status === 'rejected'
+                  ? 'Rejected'
+                  : 
+                  <> Reject KYC <img src="/assets/icons/WhiteClose.svg" alt="" style={{ width: 18, height: 18 }} /> </>}                
+              </button>
+            )}
           </div>
 
         </div>

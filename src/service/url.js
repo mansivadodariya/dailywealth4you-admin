@@ -65,3 +65,4 @@ export const UPDATE_TRANSACTION = '/transaction/updateTransaction';
 // Trade History
 export const GET_USER_DASHBOARD_PROFIT_LOTS = '/tradesHistory/getUserDashboardProfitLots';
 export const GET_ADMIN_DASHBOARD_STATS = '/tradesHistory/getAdminDashboardUseDepoWith';
+export const GET_ADMIN_PROFIT_AND_IB_COMMISSION = '/tradesHistory/getAdminProfitAndIbcommission';

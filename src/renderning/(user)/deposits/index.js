@@ -23,10 +23,14 @@ export default function Deposits() {
   const [actionLoading, setActionLoading] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchTransactions({ type: 'deposit', search, page, limit: 10 }));
-  }, [dispatch, search, page]);
+    dispatch(fetchTransactions({ type: 'deposit', search, page: 1, limit: 1000 }));
+  }, [dispatch, search]);
 
-  const deposits = transactions || [];
+  const allDeposits = transactions || [];
+  const totalPagesFrontend = Math.ceil(allDeposits.length / 10);
+  const deposits = allDeposits.slice((page - 1) * 10, page * 10);
+
+
 
   const handleAction = (id, status) => {
     const request = deposits.find((r) => r.id === id);
@@ -37,7 +41,7 @@ export default function Deposits() {
     }
     // For other status updates if needed
     dispatch(updateTransaction({ id, status })).then(() => {
-      dispatch(fetchTransactions({ type: 'deposit', search, page, limit: 10 }));
+      dispatch(fetchTransactions({ type: 'deposit', search, page: 1, limit: 1000 }));
     });
   };
 
@@ -48,7 +52,7 @@ export default function Deposits() {
       if (!res.error) {
         setShowApprove(false);
         setSelectedRequest(null);
-        dispatch(fetchTransactions({ type: 'deposit', search, page, limit: 10 }));
+        dispatch(fetchTransactions({ type: 'deposit', search, page: 1, limit: 1000 }));
       }
     });
   };
@@ -68,7 +72,7 @@ export default function Deposits() {
       key: 'status', label: 'Status',
       render: (r) => (
         <div className={styles.actionBtns}>
-          {r.status === 'approved' ? (
+          {r.status === 'pending' ? (
             <button
               className={styles.btnApprove}
               disabled={actionLoading}
@@ -76,7 +80,7 @@ export default function Deposits() {
             >
               Approve
             </button>
-          ) : r.status === 'deposit' ? (
+          ) : r.status === 'approved' ? (
             <span className={styles.depositText}>Deposit</span>
           ) : (
             '—'
@@ -112,7 +116,7 @@ export default function Deposits() {
         />
         <StatCard
           label="Completed Deposits"
-          value={completedDeposits.reduce((s, r) => s + (Number(r.amount) || 0), 0).toLocaleString()}
+          value={`$${completedDeposits.reduce((s, r) => s + (Number(r.amount) || 0), 0).toLocaleString()}`}
           sub={`Count: ${completedDeposits.length}`}
         />
       </div>
@@ -122,7 +126,7 @@ export default function Deposits() {
         actions={[{ label: 'Export', icon: '/assets/icons/Export.svg', onClick: handleExport }]}
       />
       <DataTable columns={columns} data={deposits} loading={loading} emptyMessage="No deposit transactions found." />
-      <Pagination page={page} totalPages={transactionsTotalPages} onPageChange={setPage} />
+      <Pagination page={page} totalPages={totalPagesFrontend} onPageChange={setPage} />
 
       {showApprove && selectedRequest && (
         <ApproveDepositModal

@@ -62,7 +62,7 @@ export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone 
     const e = {};
     if (!videoUrl.trim()) e.videoUrl = 'Video URL is required.';
     if (!thumbnail) e.thumbnail = 'Thumbnail image is required.';
-    if (!description.trim()) e.description = 'Description is required.';
+    if (!description.trim()) e.description = 'Title is required.';
     return e;
   };
 
@@ -92,7 +92,7 @@ export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone 
 
   const fields = [
     { label: 'Video URL', value: videoUrl, set: setVideoUrl, key: 'videoUrl', placeholder: 'Enter video URL' },
-    { label: 'Title', value: description, set: setDescription, key: 'description', textarea: true },
+    { label: 'Title', value: description, set: setDescription, key: 'description', placeholder: 'Enter title' },
   ];
 
   return (
@@ -138,24 +138,15 @@ export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone 
             {errors.thumbnail && <span className={styles.errorText}>{errors.thumbnail}</span>}
           </div>
 
-          {fields.map(({ label, value, set, key, placeholder, textarea }) => (
+          {fields.map(({ label, value, set, key, placeholder }) => (
             <div className={styles.fieldGroup} key={key}>
               <label>{label}</label>
-              {textarea ? (
-                <textarea
-                  className={`${styles.textarea}${errors[key] ? ` ${styles.inputError}` : ''}`}
-                  value={value}
-                  rows={4}
-                  onChange={(e) => { set(e.target.value); setErrors((p) => ({ ...p, [key]: '' })); }}
-                />
-              ) : (
-                <input
-                  className={`${styles.input}${errors[key] ? ` ${styles.inputError}` : ''}`}
-                  value={value}
-                  placeholder={placeholder}
-                  onChange={(e) => { set(e.target.value); setErrors((p) => ({ ...p, [key]: '' })); }}
-                />
-              )}
+              <input
+                className={`${styles.input}${errors[key] ? ` ${styles.inputError}` : ''}`}
+                value={value}
+                placeholder={placeholder}
+                onChange={(e) => { set(e.target.value); setErrors((p) => ({ ...p, [key]: '' })); }}
+              />
               {errors[key] && <span className={styles.errorText}>{errors[key]}</span>}
             </div>
           ))}

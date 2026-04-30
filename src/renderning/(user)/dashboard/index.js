@@ -9,7 +9,7 @@ import {
 } from 'recharts';
 import moment from 'moment';
 import styles from './dashboard.module.scss';
-import { fetchSetting, fetchAdminDashboardStats } from '@/store/slice/adminSlice';
+import { fetchSetting, fetchAdminDashboardStats, fetchAdminProfitAndIbCommission } from '@/store/slice/adminSlice';
 import Select from 'react-select';
 
 const DONUT_COLORS = ['#02df82', '#2B3535', '#1a2b2b'];
@@ -27,6 +27,74 @@ const CustomTooltip = ({ active, payload, label }) => {
 
 const BADGE_OPTIONS = ['24 Hours', '7 Days', '30 Days'];
 
+const customSelectStyles = {
+  control: (provided) => ({
+    ...provided,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    borderRadius: '16px',
+    minHeight: '26px',
+    height: '26px',
+    boxShadow: 'none',
+    cursor: 'pointer',
+    '&:hover': {
+      border: '1px solid rgba(255, 255, 255, 0.2)',
+    }
+  }),
+  valueContainer: (provided) => ({
+    ...provided,
+    padding: '0 2px 0 10px',
+  }),
+  input: (provided) => ({
+    ...provided,
+    margin: 0,
+    padding: 0,
+    color: '#fafafa',
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: '#fafafa',
+    fontSize: '11px',
+    fontWeight: '500',
+  }),
+  indicatorSeparator: () => ({
+    display: 'none',
+  }),
+  dropdownIndicator: (provided) => ({
+    ...provided,
+    padding: '0 8px 0 4px',
+    color: '#fafafa',
+    '&:hover': {
+      color: '#fafafa',
+    },
+    svg: {
+      width: '12px',
+      height: '12px',
+    }
+  }),
+  menu: (provided) => ({
+    ...provided,
+    backgroundColor: '#1B2626',
+    borderRadius: '8px',
+    border: '1px solid rgba(255, 255, 255, 0.1)',
+    zIndex: 10,
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected 
+      ? 'rgba(255, 255, 255, 0.1)' 
+      : state.isFocused 
+        ? 'rgba(255, 255, 255, 0.05)' 
+        : 'transparent',
+    color: '#fafafa',
+    fontSize: '11px',
+    cursor: 'pointer',
+    '&:active': {
+      backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    }
+  }),
+};
+
 const Card = ({ label, value, change, badge, badgeValue, onBadgeChange, count, children }) => (
   <div className={styles.statCard}>
     <div className={styles.statTop}>
@@ -34,10 +102,11 @@ const Card = ({ label, value, change, badge, badgeValue, onBadgeChange, count, c
       <div className={styles.statRight}>
         {badge &&
           <Select
-            className={styles.select}
             value={{ value: badgeValue || badge, label: badgeValue || badge }}
             onChange={(opt) => onBadgeChange && onBadgeChange(opt.value)}
             options={BADGE_OPTIONS.map((o) => ({ value: o, label: o }))}
+            styles={customSelectStyles}
+            isSearchable={false}
           />
         }
       </div>
@@ -52,7 +121,7 @@ const Card = ({ label, value, change, badge, badgeValue, onBadgeChange, count, c
 
 export default function Dashboard() {
   const dispatch = useDispatch();
-  const { withdrawRequests, transactions, dashboardProfitLots, profitSharing, ibIncome, usersTotalPages, dashboardStats } = useSelector((s) => s.admin);
+  const { withdrawRequests, transactions, dashboardProfitLots, profitSharing, ibIncome, usersTotalPages, dashboardStats, adminProfitAndIbCommission } = useSelector((s) => s.admin);
   const setting = useSelector((s) => s.admin.setting);
   const [form, setForm] = useState({ investor: '', ib: '', company: '' });
   const [donutLabel, setDonutLabel] = useState(null);
@@ -67,6 +136,7 @@ export default function Dashboard() {
     dispatch(fetchAdminIbIncome({ limit: 1000 }));
     dispatch(fetchAllUsers({ limit: 1 }));
     dispatch(fetchAdminDashboardStats());
+    dispatch(fetchAdminProfitAndIbCommission());
   }, [dispatch]);
 
   useEffect(() => {
@@ -102,20 +172,10 @@ export default function Dashboard() {
   const pendingWithdrawTotal = pendingWithdraw.reduce((s, r) => s + (Number(r.amount) || 0), 0);
   const completedWithdrawTotal = completedWithdraw.reduce((s, r) => s + (Number(r.amount) || 0), 0);
 
-  // profit sharing paid — sum totalProfitShare across all rows
-  const totalInvestorShare = (profitSharing || []).reduce((s, r) => {
-    const share = (r.brokers || []).reduce((a, b) => a + (b.totalProfitShare || 0), 0);
-    return s + (r.totalProfitShare ?? share ?? 0);
-  }, 0);
-
-  // IB commission paid — sum totalIncome across all IB income rows
-  const totalIbCommission = (ibIncome || []).reduce((s, r) => {
-    const rowIncome = (r.brokers || []).reduce((a, b) => a + (b.totalIncome || 0), 0);
-    return s + (r.totalIncome ?? rowIncome ?? 0);
-  }, 0);
-
-  // Total lots — from dashboardProfitLots API response
-  const totalLots = dashboardProfitLots?.totalLots ?? dashboardProfitLots?.lots ?? null;
+  // Values from the getAdminProfitAndIbcommission API
+  const totalInvestorShare = adminProfitAndIbCommission?.totalAdminProfitSharing ?? 0;
+  const totalIbCommission = adminProfitAndIbCommission?.totalIbCommission ?? 0;
+  const totalLots = adminProfitAndIbCommission?.totalLots ?? null;
 
   const donutData = [
     { name: 'Investor', value: Number(form.investor) },
@@ -136,11 +196,11 @@ export default function Dashboard() {
     { label: 'Total Deposits', value: `$${totalDeposits.toLocaleString()}`, badge: null },
     { label: 'Gross Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
     { label: 'Net Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
-    { label: 'Profit Sharing Paid', value: `$${totalInvestorShare.toLocaleString() || '12,694'}`, badge: 'All Time' },
-    { label: 'Total Users', value: usersTotalPages != null ? String(usersTotalPages) : '204', badge: null },
+    { label: 'Profit Sharing Paid', value: `$${totalInvestorShare.toLocaleString() || '0'}`, badge: '30 Days' },
+    { label: 'Total Users', value: dashboardStats?.totalUsers != null ? String(dashboardStats?.totalUsers) : '0', badge: null },
     { label: 'All Users Account Balance', value: '$1,800,000.82', badge: null },
-    { label: 'IB Commission Paid', value: `$${totalIbCommission.toLocaleString()}`, badge: 'All Time' },
-    { label: 'Total Lots Traded', value: totalLots != null ? String(totalLots) : '1534.2', badge: '24 Hours' },
+    { label: 'IB Commission Paid', value: `$${totalIbCommission.toLocaleString()}`, badge: '30 Days' },
+    { label: 'Total Lots Traded', value: totalLots != null ? String(totalLots) : '0', badge: '24 Hours' },
   ];
 
   return (
@@ -166,15 +226,13 @@ export default function Dashboard() {
         <div className={styles.chartCard}>
           <div className={styles.chartHeader}>
             <span className={styles.chartTitle}>Gross Profit Growth</span>
-            <select
-              className={styles.select}
-              value={chartRange}
-              onChange={(e) => setChartRange(e.target.value)}
-            >
-              {['24 Hours', '7 Days', '30 Days'].map((o) => (
-                <option key={o}>{o}</option>
-              ))}
-            </select>
+            <Select
+              styles={customSelectStyles}
+              isSearchable={false}
+              value={{ value: chartRange, label: chartRange }}
+              onChange={(opt) => setChartRange(opt.value)}
+              options={BADGE_OPTIONS.map((o) => ({ value: o, label: o }))}
+            />
           </div>
           <div className={styles.chartArea}>
             <ResponsiveContainer width="100%" height="100%">
@@ -258,8 +316,8 @@ export default function Dashboard() {
                 </PieChart>
               </ResponsiveContainer>
               <div className={styles.donutCenter}>
-                <span className={styles.donutLabel}>{donutLabel?.name || 'Investor'}</span>
-                <span className={styles.donutPct}>{donutLabel?.value || '50'}%</span>
+                <span className={styles.donutLabel}>{donutLabel ? donutLabel.name : donutData[0].name}</span>
+                <span className={styles.donutPct}>{donutLabel ? donutLabel.value : donutData[0].value}%</span>
               </div>
             </div>
             <div className={styles.donutLegend}>

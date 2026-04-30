@@ -40,6 +40,9 @@ export const permissionMap = {
   'ib-requests': 'Manage IB Requests',
   'kyc-requests': 'Manage KYC Requests',
   'send-notifications': 'Send Notifications',
+  'contact-us': 'Manage Contact Us',
+  'manage-tutorials': 'Manage Tutorials',
+  'manage-brokers': 'Manage Brokers',
 };
 
 export default function Sidebar() {
@@ -54,9 +57,9 @@ export default function Sidebar() {
   const visibleSidebarData = React.useMemo(() => {
     if (isAdmin) return sidebarData;
     return sidebarData.filter(item => {
-      if (['contact-us', 'manage-tutorials', 'manage-brokers', 'settings'].includes(item.id)) {
-        return true;
-      }
+      // if (['contact-us', 'manage-tutorials', 'manage-brokers'].includes(item.id)) {
+      //   return true;
+      // }
       const reqPerm = permissionMap[item.id];
       if (!reqPerm) return false; 
       return permissions.includes(reqPerm);

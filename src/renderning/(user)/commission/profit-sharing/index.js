@@ -29,44 +29,103 @@ export default function ProfitSharing() {
   }, [dispatch, search, page]);
 
   const handleExport = () => {
-    const rows = (profitSharing || []).map((row) => {
-      const totalLots = (row.brokers || []).reduce((acc, b) => acc + (b.totalLots || 0), 0);
-      const totalShare = (row.brokers || []).reduce((acc, b) => acc + (b.totalProfitShare || 0), 0);
-      return {
-        'Date Joined': row?.user?.createdAt ? moment(row.user.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
-        'User ID': row.user?.accNumber ?? '—',
-        'Name': `${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—',
-        'Email': row.user?.email ?? '—',
-        'IB User': row.user?.isIbUser ? 'Yes' : 'No',
+    const rows = [];
+
+    (profitSharing || []).forEach((row) => {
+      const user = row.user || {};
+      const brokers = row.brokers || [];
+      const referrals = row.referrals || [];
+
+      const totalLots = brokers.reduce((acc, b) => acc + (b.totalLots || 0), 0);
+      const totalShare = brokers.reduce((acc, b) => acc + (b.totalProfitShare || 0), 0);
+
+      rows.push({
+        'Date Joined': user?.createdAt
+          ? moment(user.createdAt).format('DD-MM-YYYY | hh:mm A')
+          : '—',
+        'User ID': user?.accNumber ?? '—',
+        'Name': `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || '—',
+        'Email': user?.email ?? '—',
+        'IB User': user?.isIbUser ? 'Yes' : 'No',
         "User's Profit": row.totalLots ?? totalLots ?? 0,
-        'Profit %': (row.totalProfitShare ?? totalShare ?? 0).toLocaleString(),
-      };
+        'Profit %': `${(row.totalProfitShare ?? totalShare ?? 0).toLocaleString()}`,
+        'My Profit Share': '',
+        'Referral Join Date': '',
+        'Referral User ID': '',
+        'Referral Name': '',
+        'Referral Email': '',
+        'Referral Profit': '',
+        'Referral Profit %': '',
+        'Admin Profit': '',
+      });
+
+      referrals.forEach((ref) => {
+        rows.push({
+          'Date Joined': '',
+          'User ID': '',
+          'Name': '',
+          'Email': '',
+          'IB User': '',
+          "User's Profit": '',
+          'Profit %': '',
+          'My Profit Share': '',
+          'Referral Join Date': ref?.createdAt
+            ? moment(ref.createdAt).format('DD-MM-YYYY | hh:mm A')
+            : '—',
+          'Referral User ID': ref?.accNumber ?? '—',
+          'Referral Name': `${ref?.firstName ?? ''} ${ref?.lastName ?? ''}`.trim() || '—',
+          'Referral Email': ref?.email ?? '—',
+          'Referral Profit': `$${ref?.totalProfit?.toLocaleString() ?? 0}`,
+          'Referral Profit %': `${ref?.profit ?? 0}%`,
+          'Admin Profit': `$${ref?.adminProfit?.toLocaleString() ?? 0}`,
+        });
+      });
+
+      rows.push({});
     });
-    exportToExcel(rows, 'Profit Sharing', 'profit_sharing_export.xlsx');
+
+    exportToExcel(rows, 'Profit Sharing', 'profit_sharing_grouped.xlsx');
   };
 
   const innerColumns = [
-    { key: 'orderId', label: 'Order ID' },
-    { key: 'mt5Account', label: 'MT5 Account' },
     {
-      key: 'symbol',
-      label: 'Symbol',
-      render: (t) => <span className={styles.symbolTag}>{t.symbol ?? '—'}</span>,
+      key: 'createdAt',
+      label: 'Join Date',
+      render: (t) => t.createdAt ? moment(t.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
     },
-    { key: 'lots', label: 'Lots', render: (t) => t.lots ?? '0' },
     {
-      key: 'pnl',
-      label: 'P&L',
+      key: 'accNumber',
+      label: 'User ID',
+      render: (t) => <span className={styles.idBadge}>{t.accNumber ?? '—'}</span>,
+    },
+    {
+      key: 'name',
+      label: 'Name',
+      render: (t) => `${t.firstName ?? ''} ${t.lastName ?? ''}`.trim() || '—',
+    },
+    {
+      key: 'email',
+      label: 'Email',
+      render: (t) => t.email ?? '—',
+    },
+    {
+      key: 'totalProfit',
+      label: "User's Profit",
+      render: (t) => `$${t.totalProfit?.toLocaleString() ?? 0}`,
+    },
+    {
+      key: 'profit',
+      label: 'Profit %',
+      render: (t) => `${t.profit ?? '0'}%`,
+    },
+    {
+      key: 'adminProfit',
+      label: 'My Profit Share',
       render: (t) => (
-        <span className={t.pnl >= 0 ? styles.pnlPositive : styles.pnlNegative}>
-          {t.pnl >= 0 ? '+' : ''}${t.pnl?.toLocaleString() ?? 0}
+        <span className={styles.profitBadge}>
+          ${t.adminProfit?.toLocaleString() ?? 0}
         </span>
       ),
-    },
-    {
-      key: 'profitShare',
-      label: 'Profit Share',
-      render: (t) => `${t.profitShare?.toLocaleString() ?? 0}`,
     },
   ];
 
@@ -91,14 +150,14 @@ export default function ProfitSharing() {
       label: 'Email',
       render: (row) => row.user?.email ?? '—',
     },
-        {
-      key: 'email',
+    {
+      key: 'isIbUser',
       label: 'IB User',
-      render: (row) => row.user?.isIbUser ? "Yes" : 'No',
+      render: (row) => row.user?.isIbUser ? 'Yes' : 'No',
     },
     {
       key: 'totalProfit',
-      label: 'User’s Profit',
+      label: "User's Profit",
       render: (row) => {
         const totalLots = (row.brokers || []).reduce((acc, b) => acc + (b.totalLots || 0), 0);
         return row.totalLots ?? totalLots ?? 0;
@@ -111,13 +170,10 @@ export default function ProfitSharing() {
         const totalShare = (row.brokers || []).reduce((acc, b) => acc + (b.totalProfitShare || 0), 0);
         return `${(row.totalProfitShare ?? totalShare ?? 0).toLocaleString()}`;
       },
-      
     },
-      {
+    {
       key: 'adminProfit',
       label: 'My Profit Share',
-   
-      
     },
     {
       key: 'action',
@@ -181,7 +237,7 @@ export default function ProfitSharing() {
             ) : (
               (profitSharing || []).map((row) => {
                 const id = row.user?.id || row.id;
-                const allTrades = (row.brokers || []).flatMap((b) => b.trades || []);
+                const referrals = row.referrals || [];
                 return (
                   <React.Fragment key={id}>
                     <tr>
@@ -197,9 +253,9 @@ export default function ProfitSharing() {
                           <div className={styles.expandedContent}>
                             <DataTable
                               columns={innerColumns}
-                              data={allTrades}
-                              rowKey={(t, i) => t.orderId ?? i}
-                              emptyMessage="No trades found."
+                              data={referrals}
+                              rowKey={(t, i) => t.accNumber ?? i}
+                              emptyMessage="No referrals found."
                             />
                           </div>
                         </td>

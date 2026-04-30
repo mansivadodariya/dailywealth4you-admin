@@ -25,11 +25,9 @@
     inset: 0;
     border-radius: 8px;
     padding: 1px;
-    background: linear-gradient(
-      97.52deg,
-      rgba(255, 255, 255, 0.2) 0.15%,
-      rgba(255, 255, 255, 0.04) 11.93%
-    );
+    background: linear-gradient(97.52deg,
+        rgba(255, 255, 255, 0.2) 0.15%,
+        rgba(255, 255, 255, 0.04) 11.93%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
@@ -89,7 +87,66 @@
 }
 
 .expandedContent {
-  padding: 24px;
+  padding: 0;
+
+  table {
+    background-color: #0B1616 !important;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  thead {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
+    &::after {
+      display: none;
+    }
+  }
+
+  th {
+    background: transparent !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  tr {
+    background-color: #0B1616 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: #0B1616 !important;
+    }
+  }
+}
+
+.idBadge {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 4px 12px;
+  color: #fafafa;
+  font-size: 13px;
+  font-weight: 500;
+  display: inline-block;
+  min-width: 80px;
+  text-align: center;
+}
+
+.profitBadge {
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid #02df82;
+  background: rgba(2, 223, 130, 0.1);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
 }
 
 .innerTable {
@@ -101,10 +158,34 @@
 }
 
 
-.pnlPositive { color: #02df82 !important; }
-.pnlNegative { color: #ff5c5c !important; }
+.pnlPositive {
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid #02df82;
+  background: rgba(2, 223, 130, 0.1);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+}
 
-.loading, .empty {
+.pnlNegative {
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid #02df82;
+  background: rgba(2, 223, 130, 0.1);
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 70px;
+  text-align: center;
+}
+
+.loading,
+.empty {
   text-align: center;
   color: #888;
   vertical-align: middle;
@@ -113,7 +194,7 @@
 .loading {
   height: 300px;
 
-  > * {
+  >* {
     display: flex;
     align-items: center;
     justify-content: center;

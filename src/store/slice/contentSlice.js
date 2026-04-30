@@ -35,7 +35,7 @@ const toSlug = (str) =>
 
 export const createBroker = createAsyncThunk(
   'content/createBroker',
-  async ({ name, description, redirectURL, supportsFundTransferApi, file }, thunkApi) => {
+  async ({ name, description, redirectURL, file }, thunkApi) => {
     try {
       // Step 1: upload image, get back URL
       const imgForm = new FormData();
@@ -50,7 +50,6 @@ export const createBroker = createAsyncThunk(
         description,
         redirectURL,
         slug: toSlug(name),
-        supportsFundTransferApi: Boolean(supportsFundTransferApi),
         logo: imageUrl,
       });
       toast.success('Broker created.');

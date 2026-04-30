@@ -28,36 +28,72 @@ export default function IBIncome() {
     dispatch(fetchAdminIbIncome({ search, page, limit: 10 }));
   }, [dispatch, search, page]);
 
-  const handleExport = () => {
-    const rows = (ibIncome || []).map((row) => {
-      const totalIncome = (row.brokers || []).reduce((acc, b) => acc + (b.totalIncome || 0), 0);
-      return {
-        'Date Joined': row?.user?.createdAt ? moment(row.user.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
-        'User ID': row.user?.accNumber ?? '—',
-        'Name': `${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—',
-        'Email': row.user?.email ?? '—',
-        'Lots Traded': row.user?.totalLots ?? 0,
-        'IB Income': (row.totalIncome ?? totalIncome ?? 0).toLocaleString(),
-      };
+const handleExport = () => {
+  const rows = [];
+
+  (ibIncome || []).forEach((row) => {
+    const user = row.user || {};
+    const brokers = row.brokers || [];
+    const allTrades = brokers.flatMap((b) => b.trades || []);
+
+    rows.push({
+      'Date Joined': user?.createdAt
+        ? moment(user.createdAt).format('DD-MM-YYYY | hh:mm A')
+        : '—',
+      'User ID': user?.accNumber ?? '—',
+      'Name': `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || '—',
+      'Email': user?.email ?? '—',
+      'Lots Traded': user?.totalLots ?? 0,
+      'IB Income': `$${(row.totalIncome ?? 0).toLocaleString()}`,
+      'Order ID': '',
+      'MT5 Account': '',
+      'Symbol': '',
+      'Lots': '',
+      'P&L': '',
+      'Commission': '',
     });
-    exportToExcel(rows, 'IB Income', 'ib_income_export.xlsx');
-  };
+
+    allTrades.forEach((trade) => {
+      rows.push({
+        'Date Joined': '',
+        'User ID': '',
+        'Name': '',
+        'Email': '',
+        'Lots Traded': '',
+        'IB Income': '',
+        'Order ID': trade?.orderId ?? '—',
+        'MT5 Account': trade?.accountId ?? '—',
+        'Symbol': trade?.item ?? '—',
+        'Lots': trade?.volume ?? 0,
+        'P&L': `$${trade?.profitLoss?.toLocaleString() ?? 0}`,
+        'Commission': `$${trade?.commission?.toLocaleString() ?? 0}`,
+      });
+    });
+
+    // ✅ Spacer Row (optional but cleaner)
+    rows.push({});
+  });
+
+  exportToExcel(rows, 'IB Income', 'ib_income_grouped.xlsx');
+};
 
   const innerColumns = [
     { key: 'orderId', label: 'Order ID' },
-    { key: 'mt5Account', label: 'MT5 Account' },
     {
-      key: 'symbol',
-      label: 'Symbol',
-      render: (t) => <span className={styles.symbolTag}>{t.symbol ?? '—'}</span>,
+      key: 'accountId', label: 'MT5 Account'
     },
-    { key: 'lots', label: 'Lots', render: (t) => t.lots ?? '0' },
     {
-      key: 'pnl',
+      key: 'item',
+      label: 'Symbol',
+      render: (t) => <span className={styles.idBadge}>{t.item ?? '—'}</span>,
+    },
+    { key: 'volume', label: 'Lots', render: (t) => t.volume ?? '0' },
+    {
+      key: 'profitLoss',
       label: 'P&L',
       render: (t) => (
         <span className={t.pnl >= 0 ? styles.pnlPositive : styles.pnlNegative}>
-          {t.pnl >= 0 ? '+' : ''}${t.pnl?.toLocaleString() ?? 0}
+          {t.pnl >= 0 ? '+' : ''}${t.profitLoss?.toLocaleString() ?? 0}
         </span>
       ),
     },
