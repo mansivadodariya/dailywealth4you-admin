@@ -23,7 +23,7 @@ export const fetchBrokersAdmin = createAsyncThunk(
       if (search) params.append('search', search);
       return await api.get(`${GET_ALL_BROKERS_ADMIN}?${params.toString()}`);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -55,7 +55,7 @@ export const createBroker = createAsyncThunk(
       toast.success('Broker created.');
       return response;
     } catch (error) {
-      toast.error(typeof error === 'string' ? error : error?.message || 'Something went wrong.');
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -91,7 +91,7 @@ export const updateBroker = createAsyncThunk(
       toast.success('Broker updated.');
       return response;
     } catch (error) {
-      toast.error(typeof error === 'string' ? error : error?.message || 'Something went wrong.');
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -105,7 +105,7 @@ export const deleteBroker = createAsyncThunk(
       toast.success('Broker deleted.');
       return id;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -121,7 +121,7 @@ export const fetchTutorials = createAsyncThunk(
       if (search) params.append('search', search);
       return await api.get(`${GET_ALL_TUTORIALS}?${params.toString()}`);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -145,7 +145,7 @@ export const createTutorial = createAsyncThunk(
       toast.success('Tutorial created.');
       return response;
     } catch (error) {
-      toast.error(typeof error === 'string' ? error : error?.message || 'Something went wrong.');
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -175,7 +175,7 @@ export const updateTutorial = createAsyncThunk(
       toast.success('Tutorial updated.');
       return response;
     } catch (error) {
-      toast.error(typeof error === 'string' ? error : error?.message || 'Something went wrong.');
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -189,7 +189,7 @@ export const deleteTutorial = createAsyncThunk(
       toast.success('Tutorial deleted.');
       return id;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }

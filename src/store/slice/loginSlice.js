@@ -61,7 +61,7 @@ export const loginUser = createAsyncThunk(
       const response = await api.post(LOGIN, payload);
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -74,7 +74,7 @@ export const adminLoginUser = createAsyncThunk(
       const response = await api.post(ADMIN_LOGIN, payload);
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }

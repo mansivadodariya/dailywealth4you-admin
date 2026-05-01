@@ -3,6 +3,7 @@
 import React from 'react';
 import styles from './dataTable.module.scss';
 import Loader from '@/components/loader';
+import TableSkeleton from '@/components/skeleton/TableSkeleton';
 
 /**
  * DataTable
@@ -35,15 +36,9 @@ export default function DataTable({
           </tr>
         </thead>
         <tbody className={styles.tbody}>
-          {loading ? (
-            <tr>
-              <td colSpan={columns.length} className={styles.loading}>
-                <div className={styles.loadingInner}>
-                  <Loader />
-                </div>
-              </td>
-            </tr>
-          ) : data.length === 0 ? (
+          {loading || data === null ? (
+            <TableSkeleton rows={10} cols={columns.length} />
+          ) : data?.length === 0 ? (
             <tr>
               <td colSpan={columns.length} className={styles.empty}>
                 {emptyMessage}

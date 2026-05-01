@@ -26,7 +26,7 @@ export const ibRequestStatusOptions = [
   { value: '', label: 'All' },
   { value: 'pending', label: 'Pending' },
   { value: 'approved', label: 'Approved' },
-  { value: 'rejected', label: 'Rejected' },
+  { value: 'cancel', label: 'Rejected' },
 ];
 
 export const kycStatusOptions = [

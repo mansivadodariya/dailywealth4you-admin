@@ -105,6 +105,7 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
         </div>
 
           <div className={styles.actions}>
+              {doc?.status == 'approved' && (
             <button
               className={styles.btnApprove}
               disabled={doc?.status === 'approved' || !!actionLoading}
@@ -116,7 +117,8 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
                 ? 'Approved'
                 : <> Approve KYC <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /> </>}
             </button>
-            {doc?.status !== 'approved' && (
+)}
+            {doc?.status == 'rejected' && (
               <button
                 className={styles.btnReject}
                 disabled={doc?.status === 'rejected' || !!actionLoading}

@@ -11,6 +11,7 @@ import DataTable from '@/components/dataTable';
 import Pagination from '@/components/pagination';
 import Loader from '@/components/loader';
 import ViewButton from '@/components/common/viewButton';
+import TableSkeleton from '@/components/skeleton/TableSkeleton';
 
 export default function ProfitSharing() {
   const dispatch = useDispatch();
@@ -222,12 +223,8 @@ export default function ProfitSharing() {
             </tr>
           </thead>
           <tbody className={styles.tbody}>
-            {loading ? (
-              <tr>
-                <td colSpan={columns.length} className={styles.loading}>
-                  <Loader color="#02df82" />
-                </td>
-              </tr>
+            {loading || profitSharing === null ? (
+              <TableSkeleton rows={10} cols={columns.length} />
             ) : !profitSharing?.length ? (
               <tr>
                 <td colSpan={columns.length} className={styles.empty}>

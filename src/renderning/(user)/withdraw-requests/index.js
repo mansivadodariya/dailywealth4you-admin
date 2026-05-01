@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchWithdrawRequests, updateTransaction } from '@/store/slice/adminSlice';
+import { fetchAdminDashboardStats, fetchWithdrawRequests, updateTransaction } from '@/store/slice/adminSlice';
 import moment from 'moment';
 import styles from './withdrawRequests.module.scss';
 import { exportToExcel } from '@/utils/exportToExcel';
@@ -15,7 +15,7 @@ import ApproveWithdrawModal from '@/components/modal/ApproveWithdrawModal';
 
 export default function WithdrawRequests() {
   const dispatch = useDispatch();
-  const { withdrawRequests, withdrawRequestsTotalPages, loading } = useSelector((state) => state.admin);
+  const { withdrawRequests, withdrawRequestsTotalPages, loading, dashboardStats } = useSelector((state) => state.admin);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [showFilter, setShowFilter] = useState(false);
@@ -36,27 +36,20 @@ export default function WithdrawRequests() {
 
   useEffect(() => {
     dispatch(fetchWithdrawRequests({ search, page, limit: 10, ...activeFilters }));
+    dispatch(fetchAdminDashboardStats());
   }, [dispatch, search, page, activeFilters]);
 
-  const filtered = withdrawRequests || [];
-
-  const pendingTotal = filtered
-    .filter((r) => r.status === 'pending')
-    .reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-
+  const filtered = withdrawRequests;
+  const pendingTotal = dashboardStats?.totalPendingWithdrawal ?? 0;
+  const completedTotal = dashboardStats?.totalApprovedWithdrawal ?? 0;
   const pendingCount = filtered.filter((r) => r.status === 'pending').length;
-
-  const completedTotal = filtered
-    .filter((r) => r.status === 'approved' || r.status === 'completed')
-    .reduce((sum, r) => sum + (Number(r.amount) || 0), 0);
-
   const completedCount = filtered.filter(
     (r) => r.status === 'approved' || r.status === 'completed'
   ).length;
 
   const handleAction = (id, status) => {
     if (status === 'approved') {
-      setSelectedRequest(filtered.find(r => r.id === id));
+      setSelectedRequest((filtered || []).find(r => r.id === id));
       setShowApprove(true);
       return;
     }
@@ -99,21 +92,26 @@ export default function WithdrawRequests() {
       render: (r) =>
         r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
     },
-    { key: 'userId', label: 'User ID' , render: (r) => r?.user?.accNumber ?? '—' },
+    { key: 'userId', label: 'User ID', render: (r) => r?.user?.accNumber ?? '—' },
     {
       key: 'name',
       label: 'Name',
       render: (r) =>
         `${r.user.firstName ?? ''} ${r.user.lastName ?? ''}`.trim() || '—',
     },
-    { key: 'email', label: 'Email' ,
-       render: (r) =>
+    {
+      key: 'email', label: 'Email',
+      render: (r) =>
         `${r.user.email ?? ''}`.trim() || '—',
     },
     {
       key: 'amount',
       label: 'Withdrawal Amount',
       render: (r) => (r.amount != null ? `$${r.amount}` : '—'),
+    },
+    {
+      key: 'network',
+      label: 'Network Change',
     },
     {
       key: 'address',

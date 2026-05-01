@@ -28,10 +28,10 @@ export default function ContactUs() {
     dispatch(fetchAllContactUs({ search, page, limit: 10 }));
   }, [dispatch, search, page]);
 
-  const contactUsData = contactUs || [];
+  const contactUsData = contactUs;
 
   const handleExport = () => {
-    const rows = contactUsData.map((r) => ({
+    const rows = (contactUsData || []).map((r) => ({
       'Date': r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
       'Name': r.firstName ? `${r.firstName} ${r.lastName}` : '—',
       'Email': r.email ?? '—',

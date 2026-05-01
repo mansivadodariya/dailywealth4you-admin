@@ -53,9 +53,7 @@ export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
   };
 
   const handleSubmit = () => {
-    const e = validate();
-    console.log(e,"Eeeeeeeeeeee");
-    
+    const e = validate();    
     if (Object.keys(e).length) { setErrors(e); return; }
     setErrors({});
     setLoading(true);

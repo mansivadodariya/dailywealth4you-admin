@@ -35,10 +35,10 @@ export default function IBRequests() {
     dispatch(fetchIbRequests({ search, page, limit: 10, ...activeFilters }));
   }, [dispatch, search, page, activeFilters]);
 
-  const filtered = ibRequests || [];
+  const filtered = ibRequests;
 
-  const pending = filtered.filter((r) => r.status === 'pending').length;
-  const approved = filtered.filter((r) => r.status === 'approved').length;
+  const pending = (filtered || []).filter((r) => r.status === 'pending').length;
+  const approved = (filtered || []).filter((r) => r.status === 'approved').length;
 
   const handleAction = (id, status) => {
     setActionLoading({ id, action: status });
@@ -49,7 +49,7 @@ export default function IBRequests() {
   };
 
   const handleExport = () => {
-    const rows = filtered.map((r) => ({
+    const rows = (filtered || []).map((r) => ({
       Date: r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
       'User ID': r?.user?.accNumber ?? '—',
       Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',

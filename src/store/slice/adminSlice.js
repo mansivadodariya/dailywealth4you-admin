@@ -44,11 +44,11 @@ export const fetchAllUsers = createAsyncThunk(
       if (filters.ibUser) params.append('isIbUser', filters.ibUser === 'yes');
       if (filters.status) params.append('isActive', filters.status === 'active');
       if (filters.page) params.append('page', filters.page);
-      if (filters.limit) params.append('limit', filters.limit);
+      params.append('limit', filters.limit || 10);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_USERS}?${query}` : GET_ALL_USERS);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -65,11 +65,11 @@ export const fetchIbRequests = createAsyncThunk(
       if (dateTo) params.append('endDate', dateTo);
       if (status) params.append('status', status);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_IB_REQUESTS}?${query}` : GET_ALL_IB_REQUESTS);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -87,7 +87,7 @@ export const updateIbRequest = createAsyncThunk(
       toast.success('IB request updated.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -106,10 +106,10 @@ export const fetchWithdrawRequests = createAsyncThunk(
       if (withdrawalMin !== '' && withdrawalMin != null) params.append('amountMin', withdrawalMin);
       if (withdrawalMax !== '' && withdrawalMax != null) params.append('amountMax', withdrawalMax);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       return await api.get(`${GET_ALL_TRANSACTIONS}?${params.toString()}`);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -127,11 +127,11 @@ export const fetchAllKycDocuments = createAsyncThunk(
       if (dateTo) params.append('endDate', dateTo);
       if (status) params.append('status', status);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_KYC_DOCUMENTS}?${query}` : GET_ALL_KYC_DOCUMENTS);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -144,11 +144,11 @@ export const fetchAllSubAdmins = createAsyncThunk(
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_SUB_ADMINS}?${query}` : GET_ALL_SUB_ADMINS);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -162,7 +162,7 @@ export const addSubAdmin = createAsyncThunk(
       toast.success('Sub-admin created.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -178,7 +178,7 @@ export const updateSubAdmin = createAsyncThunk(
       toast.success('Sub-admin updated.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -192,7 +192,7 @@ export const deleteSubAdmin = createAsyncThunk(
       toast.success('Sub-admin deleted.');
       return id;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -206,7 +206,7 @@ export const blockUser = createAsyncThunk(
       toast.success('User blocked.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -220,7 +220,7 @@ export const updateKycDocument = createAsyncThunk(
       toast.success('KYC status updated.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -234,7 +234,7 @@ export const createNotification = createAsyncThunk(
       toast.success('Notification sent.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -257,7 +257,7 @@ export const createPopup = createAsyncThunk(
       toast.success('Popup sent.');
       return response;
     } catch (error) {
-      toast.error(typeof error === 'string' ? error : error?.message || 'Something went wrong.');
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -269,7 +269,7 @@ export const fetchPopup = createAsyncThunk(
     try {
       return await api.get(GET_POPUP);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -281,7 +281,7 @@ export const fetchSetting = createAsyncThunk(
     try {
       return await api.get(GET_SETTING);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -295,7 +295,7 @@ export const updateSetting = createAsyncThunk(
       toast.success('Settings updated.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -308,11 +308,11 @@ export const fetchAllContactUs = createAsyncThunk(
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       const query = params.toString();
       return await api.get(query ? `${GET_ALL_CONTACT_US}?${query}` : GET_ALL_CONTACT_US);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -325,11 +325,11 @@ export const fetchAdminIbIncome = createAsyncThunk(
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       const query = params.toString();
       return await api.get(query ? `${GET_ADMIN_IB_INCOME}?${query}` : GET_ADMIN_IB_INCOME);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -343,11 +343,11 @@ export const fetchAdminProfitSharing = createAsyncThunk(
       const params = new URLSearchParams();
       if (search) params.append('search', search);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       const query = params.toString();
       return await api.get(query ? `${GET_ADMIN_PROFIT_SHARING}?${query}` : GET_ADMIN_PROFIT_SHARING);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -359,7 +359,7 @@ export const fetchIbClients = createAsyncThunk(
     try {
       return await api.get(`${GET_IB_CLIENTS}?userId=${userId}`);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -367,16 +367,21 @@ export const fetchIbClients = createAsyncThunk(
 
 export const fetchTransactions = createAsyncThunk(
   'admin/fetchTransactions',
-  async ({ type , search = '', page, limit } = {}, thunkApi) => {
+  async ({ type, search = '', page, limit, dateFrom, dateTo, minDeposit, maxDeposit, status } = {}, thunkApi) => {
     try {
       const params = new URLSearchParams();
       if (type) params.append('type', type);
       if (search) params.append('search', search);
+      if (dateFrom) params.append('startDate', dateFrom);
+      if (dateTo) params.append('endDate', dateTo);
+      if (minDeposit !== '' && minDeposit != null) params.append('amountMin', minDeposit);
+      if (maxDeposit !== '' && maxDeposit != null) params.append('amountMax', maxDeposit);
+      if (status) params.append('status', status);
       if (page) params.append('page', page);
-      if (limit) params.append('limit', limit);
+      params.append('limit', limit || 10);
       return await api.get(`${GET_ALL_TRANSACTIONS}?${params.toString()}`);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -397,7 +402,7 @@ export const updateTransaction = createAsyncThunk(
       toast.success('Transaction updated.');
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -413,7 +418,7 @@ export const fetchUserDashboardProfitLots = createAsyncThunk(
       const query = params.toString();
       return await api.get(query ? `${GET_USER_DASHBOARD_PROFIT_LOTS}?${query}` : GET_USER_DASHBOARD_PROFIT_LOTS);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -425,7 +430,7 @@ export const fetchAdminDashboardStats = createAsyncThunk(
     try {
       return await api.get(GET_ADMIN_DASHBOARD_STATS);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -437,7 +442,7 @@ export const fetchAdminProfitAndIbCommission = createAsyncThunk(
     try {
       return await api.get(GET_ADMIN_PROFIT_AND_IB_COMMISSION);
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -445,29 +450,29 @@ export const fetchAdminProfitAndIbCommission = createAsyncThunk(
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
-    subAdmins: [],
+    subAdmins: null,
     subAdminsTotalPages: 1,
-    users: [],
+    users: null,
     usersTotalPages: 1,
-    ibRequests: [],
+    ibRequests: null,
     ibRequestsTotalPages: 1,
-    kycDocuments: [],
+    kycDocuments: null,
     kycDocumentsTotalPages: 1,
-    withdrawRequests: [],
+    withdrawRequests: null,
     withdrawRequestsTotalPages: 1,
-    ibClients: [],
+    ibClients: null,
     ibClientsLoading: false,
-    contactUs: [],
+    contactUs: null,
     contactUsTotalPages: 1,
-    ibIncome: [],
+    ibIncome: null,
     ibIncomeTotalPages: 1,
-    profitSharing: [],
+    profitSharing: null,
     profitSharingTotalPages: 1,
     setting: null,
     popup: null,
     loading: false,
     error: null,
-    transactions: [],
+    transactions: null,
     transactionsTotalPages: 1,
     dashboardProfitLots: {},
     dashboardStats: null,
@@ -497,24 +502,30 @@ const adminSlice = createSlice({
       .addCase(fetchAllUsers.pending, pending)
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.users = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.usersTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.users = Array.isArray(data) ? data : [];
+        state.usersTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchAllUsers.rejected, rejected)
 
       .addCase(fetchIbRequests.pending, pending)
       .addCase(fetchIbRequests.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.ibRequests = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.ibRequestsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.ibRequests = Array.isArray(data) ? data : [];
+        state.ibRequestsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchIbRequests.rejected, rejected)
 
@@ -531,12 +542,15 @@ const adminSlice = createSlice({
       .addCase(fetchAllKycDocuments.pending, pending)
       .addCase(fetchAllKycDocuments.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.kycDocuments = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.kycDocumentsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.kycDocuments = Array.isArray(data) ? data : [];
+        state.kycDocumentsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchAllKycDocuments.rejected, rejected)
 
@@ -553,12 +567,15 @@ const adminSlice = createSlice({
       .addCase(fetchWithdrawRequests.pending, pending)
       .addCase(fetchWithdrawRequests.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.withdrawRequests = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.withdrawRequestsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.withdrawRequests = Array.isArray(data) ? data : [];
+        state.withdrawRequestsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchWithdrawRequests.rejected, rejected)
 
@@ -576,12 +593,15 @@ const adminSlice = createSlice({
       .addCase(fetchAllSubAdmins.pending, pending)
       .addCase(fetchAllSubAdmins.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.subAdmins = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.subAdminsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.subAdmins = Array.isArray(data) ? data : [];
+        state.subAdminsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchAllSubAdmins.rejected, rejected)
 
@@ -637,36 +657,45 @@ const adminSlice = createSlice({
       .addCase(fetchAllContactUs.pending, pending)
       .addCase(fetchAllContactUs.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.contactUs = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.contactUsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.contactUs = Array.isArray(data) ? data : [];
+        state.contactUsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchAllContactUs.rejected, rejected)
 
       .addCase(fetchAdminIbIncome.pending, pending)
       .addCase(fetchAdminIbIncome.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.ibIncome = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.ibIncomeTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.ibIncome = Array.isArray(data) ? data : [];
+        state.ibIncomeTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchAdminIbIncome.rejected, rejected)
 
       .addCase(fetchAdminProfitSharing.pending, pending)
       .addCase(fetchAdminProfitSharing.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.profitSharing = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.profitSharingTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.profitSharing = Array.isArray(data) ? data : [];
+        state.profitSharingTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchAdminProfitSharing.rejected, rejected)
 
@@ -685,12 +714,15 @@ const adminSlice = createSlice({
       .addCase(fetchTransactions.pending, pending)
       .addCase(fetchTransactions.fulfilled, (state, action) => {
         state.loading = false;
-        const payload = action.payload?.payload || action.payload?.data || action.payload || {};
-        state.transactions = payload?.data || (Array.isArray(payload) ? payload : []);
-        const total = payload?.totalPages ?? payload?.meta?.totalPages ?? null;
-        const count = payload?.count ?? payload?.total ?? payload?.totalCount ?? null;
-        const limit = payload?.limit ?? payload?.perPage ?? 10;
-        state.transactionsTotalPages = total ?? (count != null ? Math.ceil(count / limit) : 1);
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const total = inner?.totalPages ?? inner?.meta?.totalPages ?? res?.totalPages ?? null;
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+
+        state.transactions = Array.isArray(data) ? data : [];
+        state.transactionsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchTransactions.rejected, rejected)
 

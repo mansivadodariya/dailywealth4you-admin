@@ -56,10 +56,10 @@ export default function SubAdmins() {
     });
   };
 
-  const filtered = subAdmins || [];
+  const filtered = subAdmins;
 
   const handleExport = () => {
-    const rows = filtered.map((r) => ({
+    const rows = (filtered || []).map((r) => ({
       'Date Added': r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY | hh:mm A') : '—',
       'Admin ID': r?.accNumber ?? '—',
       'Email': r?.email ?? '—',

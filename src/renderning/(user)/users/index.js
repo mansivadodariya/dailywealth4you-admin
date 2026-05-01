@@ -11,8 +11,8 @@ import TableTopBar from '@/components/tableTopBar';
 import DataTable from '@/components/dataTable';
 import UserViewModal from '@/components/modal/UserViewModal';
 import Pagination from '@/components/pagination';
-import Loader from '@/components/loader';
 import ViewButton from '@/components/common/viewButton';
+import TableSkeleton from '@/components/skeleton/TableSkeleton';
 
 const defaultFilters = {
   dateFrom: '',
@@ -47,12 +47,10 @@ export default function Users() {
   };
 
   useEffect(() => {
-    dispatch(fetchAllUsers({ ...activeFilters, search, page: 1, limit: 1000 }));
-  }, [dispatch, activeFilters, search]);
+    dispatch(fetchAllUsers({ ...activeFilters, search, page, limit: 10 }));
+  }, [dispatch, activeFilters, search, page]);
 
-  const allUsers = users || [];
-  const totalPagesFrontend = Math.ceil(allUsers.length / 10);
-  const filtered = allUsers.slice((page - 1) * 10, page * 10);
+  const filtered = users || [];
   useEffect(() => {
     if (expandedUserId) {
       dispatch(fetchIbClients(expandedUserId));
@@ -147,15 +145,13 @@ export default function Users() {
               </tr>
             </thead>
             <tbody className={styles.tbody}>
-              {loading ? (
-                <tr>
-                  <td colSpan={columns.length} className={styles.loading}>
-                    <Loader />
-                  </td>
-                </tr>
+              {loading || users === null ? (
+                <TableSkeleton rows={10} cols={columns.length} />
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length} className={styles.empty}>No users found.</td>
+                  <td colSpan={columns.length} className={styles.empty}>
+                    No users found.
+                  </td>
                 </tr>
               ) : (
                 filtered.map((user) => (
@@ -218,7 +214,7 @@ export default function Users() {
           </table>
         </div>
 
-        <Pagination page={page} totalPages={totalPagesFrontend} onPageChange={setPage} />
+        <Pagination page={page} totalPages={usersTotalPages} onPageChange={setPage} />
       </div>
 
       {showFilter && (

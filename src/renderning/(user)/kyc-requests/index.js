@@ -37,7 +37,7 @@ export default function KycRequests() {
     dispatch(fetchAllKycDocuments({ search, page, limit: 10, ...activeFilters }));
   }, [dispatch, search, page, activeFilters]);
 
-  const filtered = kycDocuments || [];
+  const filtered = kycDocuments;
 
   const handleAction = (id, status) => {
     setActionLoading({ id, action: status });
@@ -49,7 +49,7 @@ export default function KycRequests() {
   };
 
   const handleExport = () => {
-    const rows = filtered.map((d) => ({
+    const rows = (filtered || []).map((d) => ({
       'Date Requested': d.createdAt ? moment(d.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
       'User ID': d?.user?.accNumber ?? '—',
       'Name': `${d?.user?.firstName ?? ''} ${d?.user?.lastName ?? ''}`.trim() || '—',

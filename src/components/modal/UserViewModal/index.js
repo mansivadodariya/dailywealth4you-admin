@@ -1,17 +1,53 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import moment from 'moment';
 import styles from './UserViewModal.module.scss';
 import ManualEntryModal from '@/components/modal/ManualEntryModal';
 import BlockUserModal from '@/components/modal/BlockUserModal';
 import Image from 'next/image';
-import CloseIcon from '@/icons/closeIcon';
+import api from '@/service/api';
+import { UPLOAD_TRADE_HISTORY } from '@/service/url';
+import { toast } from 'react-toastify';
 
 export default function UserViewModal({ user, onClose }) {
   const [openAccountId, setOpenAccountId] = useState(null);
   const [showManual, setShowManual] = useState(false);
   const [showBlock, setShowBlock] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  const handleUploadClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.xlsx')) {
+      toast.error('Only .xlsx files are allowed');
+      e.target.value = '';
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('userId', user?.id ?? '');
+    // brokerId from the first trading account, or empty if not available
+    formData.append('brokerId', user?.tradingAccount?.[0]?.brokerId ?? '');
+
+    try {
+      setUploading(true);
+      await api.post(UPLOAD_TRADE_HISTORY, formData);
+      toast.success('Trade history uploaded successfully');
+    } catch {
+      // error toast handled by api interceptor
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
 
   const accounts = user?.tradingAccount || [];
   const name = `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || '—';
@@ -116,8 +152,15 @@ export default function UserViewModal({ user, onClose }) {
 
           {/* Actions */}
           <div className={styles.actions}>
-            <button className={styles.btnUpload}>
-              Upload Excel <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".xlsx"
+              style={{ display: 'none' }}
+              onChange={handleFileChange}
+            />
+            <button className={styles.btnUpload} onClick={handleUploadClick} disabled={uploading}>
+              {uploading ? 'Uploading...' : 'Upload Excel'} <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
             </button>
             <button className={styles.btnManual} onClick={() => setShowManual(true)}>
               Manual Entry <Image src="/assets/icons/WhiteRight.svg" alt="arrow right" width={18} height={18} />
@@ -127,7 +170,7 @@ export default function UserViewModal({ user, onClose }) {
         </div>
       </div>
 
-      {showManual && <ManualEntryModal userId={user?.id} onClose={() => setShowManual(false)} />}
+      {showManual && <ManualEntryModal userId={user?.id} accounts={accounts} onClose={() => setShowManual(false)} />}
       {showBlock && <BlockUserModal user={user} onClose={() => setShowBlock(false)} onBlocked={onClose} />}
     </>
   );

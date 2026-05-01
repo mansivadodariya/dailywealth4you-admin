@@ -1,6 +1,14 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { clearAuthCookies, getTokenFromCookie } from './cookies';
 import config from '@/config';
+
+const TOAST_ID = 'api-error';
+const showErrorToast = (message) => {
+  if (!toast.isActive(TOAST_ID)) {
+    toast.error(message, { toastId: TOAST_ID });
+  }
+};
 
 const api = axios.create({
   baseURL: config.APP_BACKEND_URL,
@@ -41,6 +49,7 @@ api.interceptors.response.use(
       error?.message ||
       fallbackMessage;
 
+    showErrorToast(message);
     return Promise.reject(message);
   }
 );

@@ -26,7 +26,7 @@ export const fetchBrokers = createAsyncThunk(
       //   debugger
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -41,7 +41,7 @@ export const fetchTradingAccounts = createAsyncThunk(
       );
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -54,7 +54,7 @@ export const createTradingAccount = createAsyncThunk(
       const response = await api.post(CREATE_TRADING_ACCOUNT, payload);
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -69,7 +69,7 @@ export const updateTradingAccount = createAsyncThunk(
       toast.success('Trading account updated successfully.');
       return response;
     } catch (error) {
-      // toast.error(error?.response?.data?.message || 'Failed to update trading account.');
+      //
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -83,7 +83,7 @@ export const deleteTradingAccount = createAsyncThunk(
       toast.success('Trading account deleted successfully.');
       return { id, response };
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Failed to delete trading account.');
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -96,7 +96,7 @@ export const fetchFaqs = createAsyncThunk(
       const response = await api.get(GET_ALL_FAQ);
       return response;
     } catch (error) {
-      toast.error(error);
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -110,7 +110,7 @@ export const createContactUs = createAsyncThunk(
       toast.success('Your message has been sent successfully.');
       return response;
     } catch (error) {
-      toast.error(error?.response?.data?.message || 'Failed to send message.');
+
       return thunkApi.rejectWithValue(error);
     }
   }
@@ -175,7 +175,9 @@ const accountSlice = createSlice({
       })
       .addCase(fetchBrokers.fulfilled, (state, action) => {
         state.loading = false;
-        state.brokers = action?.payload?.payload?.data;
+        const res = action.payload;
+        const data = res?.data || res?.payload?.data || (Array.isArray(res) ? res : []);
+        state.brokers = Array.isArray(data) ? data : [];
       })
       .addCase(fetchBrokers.rejected, (state, action) => {
         state.loading = false;
@@ -187,7 +189,9 @@ const accountSlice = createSlice({
       })
       .addCase(fetchTradingAccounts.fulfilled, (state, action) => {
         state.tradingAccountsLoading = false;
-        state.tradingAccounts = action?.payload?.payload?.data || [];
+        const res = action.payload;
+        const data = res?.data || res?.payload?.data || (Array.isArray(res) ? res : []);
+        state.tradingAccounts = Array.isArray(data) ? data : [];
       })
       .addCase(fetchTradingAccounts.rejected, (state, action) => {
         state.tradingAccountsLoading = false;
