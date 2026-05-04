@@ -13,6 +13,7 @@ import UserViewModal from '@/components/modal/UserViewModal';
 import Pagination from '@/components/pagination';
 import ViewButton from '@/components/common/viewButton';
 import TableSkeleton from '@/components/skeleton/TableSkeleton';
+import Loader from '@/components/loader';
 
 const defaultFilters = {
   dateFrom: '',

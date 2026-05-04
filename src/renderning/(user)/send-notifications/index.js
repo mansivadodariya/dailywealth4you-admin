@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { createNotification, createPopup, fetchPopup } from '@/store/slice/adminSlice';
 import styles from './sendNotifications.module.scss';
 import CloseIcon from '@/icons/closeIcon';
+import ActionButtons from '@/components/common/actionButtons';
 
 export default function SendNotifications() {
   const dispatch = useDispatch();
@@ -113,12 +114,13 @@ export default function SendNotifications() {
             {notifErrors.description && <span className={styles.errorText}>{notifErrors.description}</span>}
           </div>
           <div className={styles.actions}>
-            <button className={styles.btnSend} onClick={handleSend} disabled={loading}>
-              Send <img src="/assets/icons/BlackRight.svg" alt="" className={styles.btnIcon} />
-            </button>
-            <button className={styles.btnCancel} onClick={handleCancel}>
-              Cancel <CloseIcon color="#ffffff" size={14} />
-            </button>
+          <ActionButtons
+            onSave={handleSend}
+            onCancel={handleCancel}
+            loading={loading}
+            saveText="Send"
+            layout="row"
+          />
           </div>
         </div>
 
@@ -164,12 +166,14 @@ export default function SendNotifications() {
             {popupErrors.popupLink && <span className={styles.errorText}>{popupErrors.popupLink}</span>}
           </div>
           <div className={styles.actions}>
-            <button className={styles.btnSend} onClick={handleSendPopup} disabled={loading}>
-              Send <img src="/assets/icons/BlackRight.svg" alt="" className={styles.btnIcon} />
-            </button>
-            <button className={styles.btnCancel} onClick={handleCancelPopup}>
-              Cancel <CloseIcon color="#ffffff" size={14} />
-            </button>
+
+          <ActionButtons
+            onSave={handleSendPopup}
+            onCancel={handleCancelPopup}
+            loading={loading}
+            saveText="Send"
+            layout="row"
+          />
           </div>
         </div>
       </div>

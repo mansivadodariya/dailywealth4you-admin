@@ -242,7 +242,7 @@ const loginSlice = createSlice({
       })
       .addCase(fetchNotifications.fulfilled, (state, action) => {
         state.notificationsLoading = false;
-        const data = action.payload?.data || action.payload || [];
+        const data = action.payload?.payload?.data || action.payload?.data || action.payload || [];
         const list = Array.isArray(data) ? data : data?.notifications || [];
         state.notifications = list;
         state.unreadCount = list.filter((n) => !n.isRead).length;

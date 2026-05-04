@@ -120,6 +120,11 @@
   border-radius: 12px;
   margin: 0 28px 10px;
   overflow: hidden;
+  transition: border 0.2s;
+
+  &.selectedCard {
+    border: 1px solid #c8b84a;
+  }
 }
 
 .accountHeader {

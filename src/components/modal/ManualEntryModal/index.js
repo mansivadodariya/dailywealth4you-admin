@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import styles from './ManualEntryModal.module.scss';
 import Input from '@/components/input';
 import CloseIcon from '@/icons/closeIcon';
+import ActionButtons from '@/components/common/actionButtons';
 import Select from 'react-select';
 import { selectStyles, DropdownIndicator } from '@/components/common/selectConfig';
 import api from '@/service/api';
@@ -78,7 +79,7 @@ export default function ManualEntryModal({ userId, accounts = [], onClose }) {
       const payload = {
         userId,
         brokerId: selectedAcc.brokerId,
-        tradingAccountId: selectedAcc.accountId,
+        accountId: selectedAcc.accountId,
         orderId: values.orderId,
         tradingDate: moment(values.tradingDate).format('YYYY-MM-DD'),
         type: values.type,
@@ -183,14 +184,12 @@ export default function ManualEntryModal({ userId, accounts = [], onClose }) {
           </div>
         </div>
 
-        <div className={styles.actions}>
-          <button className={styles.btnSave} onClick={handleSave} disabled={loading}>
-            {loading ? 'Saving...' : 'Save'} <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} />
-          </button>
-          <button className={styles.btnCancel} onClick={onClose} disabled={loading}>
-            Cancel <CloseIcon color="#ffffff" size={16} />
-          </button>
-        </div>
+        <ActionButtons
+          onSave={handleSave}
+          onCancel={onClose}
+          loading={loading}
+          layout="row"
+        />
       </div>
     </div>
   );

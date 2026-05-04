@@ -17,6 +17,10 @@ export default function UserViewModal({ user, onClose }) {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
+  const accounts = user?.tradingAccount || [];
+  const selectedAccount = accounts.length === 1 ? accounts[0] : accounts.find(acc => acc.id === openAccountId);
+  const isAccountSelected = accounts.length > 0 && selectedAccount != null;
+
   const handleUploadClick = () => {
     fileInputRef.current?.click();
   };
@@ -34,8 +38,7 @@ export default function UserViewModal({ user, onClose }) {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('userId', user?.id ?? '');
-    // brokerId from the first trading account, or empty if not available
-    formData.append('brokerId', user?.tradingAccount?.[0]?.brokerId ?? '');
+    formData.append('brokerId', selectedAccount?.brokerId ?? '');
 
     try {
       setUploading(true);
@@ -49,7 +52,6 @@ export default function UserViewModal({ user, onClose }) {
     }
   };
 
-  const accounts = user?.tradingAccount || [];
   const name = `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || '—';
 
   const subModalOpen = showManual || showBlock;
@@ -108,14 +110,14 @@ export default function UserViewModal({ user, onClose }) {
                 const pnl = acc.pnl ?? acc.pandl ?? acc.pl;
                 const pnlNum = parseFloat(pnl);
                 return (
-                  <div key={acc.id} className={styles.accountCard}>
+                  <div key={acc.id} className={`${styles.accountCard} ${selectedAccount?.id === acc.id ? styles.selectedCard : ''}`}>
                     <div
                       className={styles.accountHeader}
                       onClick={() => setOpenAccountId(isOpen ? null : acc.id)}
                     >
                       <div>
                         <div className={styles.accountNo}>Account No: {acc.mt5LoginId ?? acc.id}</div>
-                        <div className={styles.accountBalance}>${acc.balance ?? acc.equity ?? '0'}</div>
+                        <div className={styles.accountBalance}>${acc.currentBalance ?? acc.equity ?? '0'}</div>
                       </div>
                       <span className={`${styles.chevron} ${isOpen ? styles.open : ''}`}>
                         <img src={"/assets/icons/Small-right.svg"}/>
@@ -159,12 +161,16 @@ export default function UserViewModal({ user, onClose }) {
               style={{ display: 'none' }}
               onChange={handleFileChange}
             />
-            <button className={styles.btnUpload} onClick={handleUploadClick} disabled={uploading}>
-              {uploading ? 'Uploading...' : 'Upload Excel'} <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
-            </button>
+            {isAccountSelected && (
+              <>
+              <button className={styles.btnUpload} onClick={handleUploadClick} disabled={uploading}>
+                {uploading ? 'Uploading...' : 'Upload Excel'} <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
+              </button>
             <button className={styles.btnManual} onClick={() => setShowManual(true)}>
               Manual Entry <Image src="/assets/icons/WhiteRight.svg" alt="arrow right" width={18} height={18} />
             </button>
+              </>
+            )}
           </div>
 
         </div>

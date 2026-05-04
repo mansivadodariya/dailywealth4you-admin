@@ -48,15 +48,15 @@ export default function ProfitSharing() {
         'Name': `${user?.firstName ?? ''} ${user?.lastName ?? ''}`.trim() || '—',
         'Email': user?.email ?? '—',
         'IB User': user?.isIbUser ? 'Yes' : 'No',
-        "User's Profit": row.totalLots ?? totalLots ?? 0,
-        'Profit %': `${(row.totalProfitShare ?? totalShare ?? 0).toLocaleString()}`,
-        'My Profit Share': '',
+        "User's Profit": `$${(row.totalProfit ?? row.totalLots ?? 0).toLocaleString()}`,
+        'Profit %': `${(row.userProfitPercentage ?? totalShare ?? 0).toLocaleString()}%`,
+        'My Profit Share': `$${(row.adminProfit ?? 0).toLocaleString()}`,
         'Referral Join Date': '',
         'Referral User ID': '',
         'Referral Name': '',
         'Referral Email': '',
         'Referral Profit': '',
-        'Referral Profit %': '',
+        'Referral Profit %': row.referralProfitPercentage ? `${row.referralProfitPercentage}%` : '—',
         'Admin Profit': '',
       });
 
@@ -77,7 +77,7 @@ export default function ProfitSharing() {
           'Referral Name': `${ref?.firstName ?? ''} ${ref?.lastName ?? ''}`.trim() || '—',
           'Referral Email': ref?.email ?? '—',
           'Referral Profit': `$${ref?.totalProfit?.toLocaleString() ?? 0}`,
-          'Referral Profit %': `${ref?.profit ?? 0}%`,
+          'Referral Profit %': row.referralProfitPercentage ? `${row.referralProfitPercentage}%` : '—',
           'Admin Profit': `$${ref?.adminProfit?.toLocaleString() ?? 0}`,
         });
       });
@@ -115,9 +115,9 @@ export default function ProfitSharing() {
       render: (t) => `$${t.totalProfit?.toLocaleString() ?? 0}`,
     },
     {
-      key: 'profit',
+      key: 'referralProfitPercentage',
       label: 'Profit %',
-      render: (t) => `${t.profit ?? '0'}%`,
+      render: (t) => `${t.referralProfitPercentage ?? t.parentReferralProfitPercentage ?? '0'}%`,
     },
     {
       key: 'adminProfit',
@@ -160,21 +160,28 @@ export default function ProfitSharing() {
       key: 'totalProfit',
       label: "User's Profit",
       render: (row) => {
-        const totalLots = (row.brokers || []).reduce((acc, b) => acc + (b.totalLots || 0), 0);
-        return row.totalLots ?? totalLots ?? 0;
+        return `$${(row.totalProfit ?? row.totalLots ?? 0).toLocaleString()}`;
       },
     },
     {
-      key: 'profitSharing',
+      key: 'userProfitPercentage',
       label: 'Profit %',
       render: (row) => {
         const totalShare = (row.brokers || []).reduce((acc, b) => acc + (b.totalProfitShare || 0), 0);
-        return `${(row.totalProfitShare ?? totalShare ?? 0).toLocaleString()}`;
+        return `${(row.userProfitPercentage ?? totalShare ?? 0).toLocaleString()}%`;
       },
+    },
+    {
+      key: 'referralProfitPercentage',
+      label: 'Referral %',
+      render: (row) => `${row.referralProfitPercentage ?? '0'}%`,
     },
     {
       key: 'adminProfit',
       label: 'My Profit Share',
+      render: (t) => (
+        `$${t.adminProfit?.toLocaleString() ?? 0}`
+      ),
     },
     {
       key: 'action',
@@ -234,7 +241,10 @@ export default function ProfitSharing() {
             ) : (
               (profitSharing || []).map((row) => {
                 const id = row.user?.id || row.id;
-                const referrals = row.referrals || [];
+                const referrals = (row.referrals || []).map((ref) => ({
+                  ...ref,
+                  parentReferralProfitPercentage: row.referralProfitPercentage,
+                }));
                 return (
                   <React.Fragment key={id}>
                     <tr>

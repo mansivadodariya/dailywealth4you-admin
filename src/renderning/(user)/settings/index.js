@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import styles from './settings.module.scss';
 import Input from '@/components/input';
 import CloseIcon from '@/icons/closeIcon';
+import ActionButtons from '@/components/common/actionButtons';
 
 const MENU = [
   { key: 'profitShare', label: 'Profit Share Setup', icon: '/assets/icons/ProfitShareSetup.svg' },
@@ -106,7 +107,7 @@ function ProfitSharePanel() {
         <label>Broker Commissions</label>
         <Input plain value={form.broker} onChange={(e) => set('broker', e.target.value)} placeholder="e.g. 5" />
       </div>
-      <ActionButtons onSave={handleSave} onCancel={handleCancel} />
+      <ActionButtons onSave={handleSave} onCancel={handleCancel} layout="row" />
     </div>
   );
 }
@@ -146,7 +147,7 @@ function MinWithdrawPanel() {
         <label>Set Minimum Withdraw Amount</label>
         <Input plain type="number" value={amount} onChange={(e) => setAmount(e.target.value)} placeholder="e.g. 50" />
       </div>
-      <ActionButtons onSave={handleSave} onCancel={handleCancel} />
+      <ActionButtons onSave={handleSave} onCancel={handleCancel} layout="row" />
     </div>
   );
 }
@@ -220,20 +221,7 @@ function ChangePasswordPanel() {
           rightIconActive="/assets/icons/eye.svg"
         />
       </div>
-      <ActionButtons onSave={handleSave} onCancel={() => setForm({ current: '', newPass: '', confirm: '' })} loading={resetPasswordLoading} />
-    </div>
-  );
-}
-
-function ActionButtons({ onSave, onCancel }) {
-  return (
-    <div className={styles.actions}>
-      <button className={styles.btnSave} onClick={onSave}>
-        Save <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} />
-      </button>
-      <button className={styles.btnCancel} onClick={onCancel}>
-        Cancel <CloseIcon color="#ffffff" size={14} />
-      </button>
+      <ActionButtons onSave={handleSave} onCancel={() => setForm({ current: '', newPass: '', confirm: '' })} loading={resetPasswordLoading} layout="row" />
     </div>
   );
 }

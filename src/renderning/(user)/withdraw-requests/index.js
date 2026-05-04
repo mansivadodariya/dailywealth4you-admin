@@ -42,8 +42,8 @@ export default function WithdrawRequests() {
   const filtered = withdrawRequests;
   const pendingTotal = dashboardStats?.totalPendingWithdrawal ?? 0;
   const completedTotal = dashboardStats?.totalApprovedWithdrawal ?? 0;
-  const pendingCount = filtered.filter((r) => r.status === 'pending').length;
-  const completedCount = filtered.filter(
+  const pendingCount = (filtered || []).filter((r) => r.status === 'pending').length;
+  const completedCount = (filtered || []).filter(
     (r) => r.status === 'approved' || r.status === 'completed'
   ).length;
 
@@ -73,7 +73,7 @@ export default function WithdrawRequests() {
 
 
   const handleExport = () => {
-    const rows = filtered.map((r) => ({
+    const rows = (filtered || []).map((r) => ({
       Date: r.createdAt ? moment(r.createdAt).format('DD-MM-YYYY hh:mm A') : '—',
       'User ID': r?.user?.accNumber ?? '—',
       Name: `${r?.user?.firstName ?? ''} ${r?.user?.lastName ?? ''}`.trim() || r.name || '—',

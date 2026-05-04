@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { createTutorial, updateTutorial, deleteTutorial, uploadImage } from '@/store/reducers';
 import styles from './TutorialModal.module.scss';
 import CloseIcon from '@/icons/closeIcon';
+import ActionButtons from '@/components/common/actionButtons';
 
 export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone }) {
   const dispatch = useDispatch();
@@ -150,21 +151,19 @@ export default function TutorialModal({ mode = 'add', tutorial, onClose, onDone 
               {errors[key] && <span className={styles.errorText}>{errors[key]}</span>}
             </div>
           ))}
+        <ActionButtons
+          onSave={handleSubmit}
+          onCancel={onClose}
+          onDelete={handleDelete}
+          loading={loading}
+          deleting={deleting}
+          saveText={isAdd ? 'Add Tutorial' : 'Save Changes'}
+          deleteText="Delete Tutorial"
+          showDelete={!isAdd}
+          layout="column"
+        />
         </div>
 
-        <div className={styles.actions}>
-          <button className={styles.btnSave} onClick={handleSubmit} disabled={loading}>
-            {loading ? <span className={styles.spinner} /> : <>{isAdd ? 'Add Tutorial' : 'Save Changes'} <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /></>}
-          </button>
-          {!isAdd && (
-            <button className={styles.btnDelete} onClick={handleDelete} disabled={deleting}>
-              {deleting ? <span className={styles.spinner} /> : 'Delete Tutorial'}
-            </button>
-          )}
-          <button className={styles.btnCancel} onClick={onClose}>
-            Cancel <CloseIcon color="#fff" size={14} />
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -40,6 +40,18 @@ export default function Input({
           type={inputType}
           placeholder={placeholder}
           {...props}
+          onWheel={(e) => {
+            if (inputType === 'number') {
+              e.target.blur();
+            }
+            props.onWheel?.(e);
+          }}
+          onKeyDown={(e) => {
+            if (inputType === 'number' && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
+              e.preventDefault();
+            }
+            props.onKeyDown?.(e);
+          }}
           onChange={(e) => {
             e.target.value = e.target.value.trimStart();
             props.onChange?.(e);
