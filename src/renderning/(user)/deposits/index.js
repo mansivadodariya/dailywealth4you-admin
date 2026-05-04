@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAdminDashboardStats, fetchTransactions, updateTransaction } from '@/store/slice/adminSlice';
+import { fetchTransactions, updateTransaction } from '@/store/slice/adminSlice';
 import moment from 'moment';
 import styles from './deposits.module.scss';
 import { exportToExcel } from '@/utils/exportToExcel';
@@ -12,6 +12,7 @@ import StatCard from '@/components/statCard';
 import Pagination from '@/components/pagination';
 import ApproveDepositModal from '@/components/modal/ApproveDepositModal';
 import FilterModal, { withdrawStatusOptions } from '@/components/modal/FilterModal';
+import StatCardSkeleton from '@/components/skeleton/StatCardSkeleton';
 
 const depositStatusOptions = [
   { value: '', label: 'All' },
@@ -29,7 +30,7 @@ const defaultFilters = {
 
 export default function Deposits() {
   const dispatch = useDispatch();
-  const { transactions, transactionsTotalPages, loading, dashboardStats } = useSelector((s) => s.admin);
+  const { transactions, transactionsTotalPages, loading, transactionsSummary } = useSelector((s) => s.admin);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -51,7 +52,6 @@ export default function Deposits() {
 
   useEffect(() => {
     fetchData();
-    dispatch(fetchAdminDashboardStats());
   }, [dispatch, search, page, filters]);
 
   const deposits = transactions;
@@ -137,16 +137,25 @@ export default function Deposits() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.statsRow}>
-        <StatCard
-          label="Total Deposits"
-          value={`$${(dashboardStats?.totalDeposit ?? 0).toLocaleString()}`}
-          sub={`Count: ${completedDeposits.length}`}
-        />
-        <StatCard
-          label="Pending Withdrawals"
-          value={`$${(dashboardStats?.totalPendingWithdrawal ?? 0).toLocaleString()}`}
-          sub={`Count: ${pendingDeposits.length}`}
-        />
+        {loading || transactionsSummary === null ? (
+          <>
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+          </>
+        ) : (
+          <>
+            <StatCard
+              label="Total Deposits"
+              value={`$${(transactionsSummary?.approvedDepositAmount ?? 0).toLocaleString()}`}
+              sub={`Count: ${transactionsSummary?.approvedDepositCount ?? 0}`}
+            />
+            <StatCard
+              label="Pending Deposits"
+              value={`$${(transactionsSummary?.pendingDepositAmount ?? 0).toLocaleString()}`}
+              sub={`Count: ${transactionsSummary?.pendingDepositCount ?? 0}`}
+            />
+          </>
+        )}
       </div>
       <TableTopBar
         search={search}

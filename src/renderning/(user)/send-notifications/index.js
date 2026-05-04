@@ -165,7 +165,7 @@ export default function SendNotifications() {
             />
             {popupErrors.popupLink && <span className={styles.errorText}>{popupErrors.popupLink}</span>}
           </div>
-          <div className={styles.actions}>
+          <div className={styles.actionss}>
 
           <ActionButtons
             onSave={handleSendPopup}

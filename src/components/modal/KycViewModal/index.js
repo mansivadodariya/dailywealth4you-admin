@@ -105,20 +105,20 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
         </div>
 
           <div className={styles.actions}>
-              {doc?.status == 'approved' && (
-            <button
-              className={styles.btnApprove}
-              disabled={doc?.status === 'approved' || !!actionLoading}
-              onClick={() => onAction(doc.id, 'approved')}
-            >
-              {actionLoading?.action === 'approved'
-                ? <span className={styles.btnSpinner} />
-                : doc?.status === 'approved'
-                ? 'Approved'
-                : <> Approve KYC <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /> </>}
-            </button>
-)}
-            {doc?.status == 'rejected' && (
+            {doc?.status !== 'rejected' && (
+              <button
+                className={styles.btnApprove}
+                disabled={doc?.status === 'approved' || !!actionLoading}
+                onClick={() => onAction(doc.id, 'approved')}
+              >
+                {actionLoading?.action === 'approved'
+                  ? <span className={styles.btnSpinner} />
+                  : doc?.status === 'approved'
+                  ? 'Approved'
+                  : <> Approve KYC <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /> </>}
+              </button>
+            )}
+            {doc?.status !== 'approved' && (
               <button
                 className={styles.btnReject}
                 disabled={doc?.status === 'rejected' || !!actionLoading}
@@ -128,8 +128,7 @@ export default function KycViewModal({ doc, onClose, onAction, actionLoading }) 
                   ? <span className={styles.btnSpinner} />
                   : doc?.status === 'rejected'
                   ? 'Rejected'
-                  : 
-                  <> Reject KYC <img src="/assets/icons/WhiteClose.svg" alt="" style={{ width: 18, height: 18 }} /> </>}                
+                  : <> Reject KYC <img src="/assets/icons/WhiteClose.svg" alt="" style={{ width: 18, height: 18 }} /> </>}
               </button>
             )}
           </div>

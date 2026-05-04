@@ -474,6 +474,8 @@ const adminSlice = createSlice({
     error: null,
     transactions: null,
     transactionsTotalPages: 1,
+    transactionsSummary: null,
+    withdrawRequestsSummary: null,
     dashboardProfitLots: {},
     dashboardStats: null,
     adminProfitAndIbCommission: null,
@@ -575,6 +577,7 @@ const adminSlice = createSlice({
         const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
 
         state.withdrawRequests = Array.isArray(data) ? data : [];
+        state.withdrawRequestsSummary = inner?.summary ?? null;
         state.withdrawRequestsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchWithdrawRequests.rejected, rejected)
@@ -722,6 +725,7 @@ const adminSlice = createSlice({
         const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
 
         state.transactions = Array.isArray(data) ? data : [];
+        state.transactionsSummary = inner?.summary ?? null;
         state.transactionsTotalPages = (count != null ? Math.ceil(count / limit) : total) || 1;
       })
       .addCase(fetchTransactions.rejected, rejected)

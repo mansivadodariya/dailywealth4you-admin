@@ -19,13 +19,13 @@
 }
 
 .card {
-  position: relative; /* needed for overlay */
+  position: relative;
+  /* needed for overlay */
 
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0) 100%
-  );  border: 1px solid rgba(255, 255, 255, 0);
+  background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0) 100%);
+  border: 1px solid rgba(255, 255, 255, 0);
   border-radius: 14px;
 
   display: flex;
@@ -33,15 +33,17 @@
   gap: 16px;
 
 
-  overflow: hidden; /* keeps gradient inside rounded corners */
+  overflow: hidden;
+  /* keeps gradient inside rounded corners */
 }
+
 .cardTitle {
   padding: 24px;
   font-size: 20px;
   font-weight: 600;
   color: #fafafa;
   margin: 0 0 4px;
-  border-bottom:1px solid #2C3636 ;
+  border-bottom: 1px solid #2C3636;
 }
 
 .fieldGroup {
@@ -134,7 +136,9 @@
     justify-content: center;
     line-height: 1;
 
-    &:hover { background: rgba(0, 0, 0, 0.85); }
+    &:hover {
+      background: rgba(0, 0, 0, 0.85);
+    }
   }
 }
 
@@ -160,6 +164,10 @@
   padding: 0 24px 0 24px;
 }
 
+.actionss {
+  padding: 0 24px 24px 24px;
+}
+
 .btnIcon {
   width: 18px;
   height: 18px;
@@ -182,8 +190,14 @@
   gap: 8px;
   transition: opacity 0.2s;
 
-  &:hover { opacity: 0.88; }
-  &:disabled { opacity: 0.5; cursor: not-allowed; }
+  &:hover {
+    opacity: 0.88;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 }
 
 .btnCancel {
@@ -202,7 +216,9 @@
   gap: 8px;
   transition: background 0.2s;
 
-  &:hover { background: rgba(255, 255, 255, 0.05); }
+  &:hover {
+    background: rgba(255, 255, 255, 0.05);
+  }
 }
 
 .errorText {

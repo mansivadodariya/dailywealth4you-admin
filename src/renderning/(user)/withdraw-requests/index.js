@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAdminDashboardStats, fetchWithdrawRequests, updateTransaction } from '@/store/slice/adminSlice';
+import { fetchWithdrawRequests, updateTransaction } from '@/store/slice/adminSlice';
 import moment from 'moment';
 import styles from './withdrawRequests.module.scss';
 import { exportToExcel } from '@/utils/exportToExcel';
@@ -12,10 +12,11 @@ import StatCard from '@/components/statCard';
 import Pagination from '@/components/pagination';
 import FilterModal, { withdrawStatusOptions } from '@/components/modal/FilterModal';
 import ApproveWithdrawModal from '@/components/modal/ApproveWithdrawModal';
+import StatCardSkeleton from '@/components/skeleton/StatCardSkeleton';
 
 export default function WithdrawRequests() {
   const dispatch = useDispatch();
-  const { withdrawRequests, withdrawRequestsTotalPages, loading, dashboardStats } = useSelector((state) => state.admin);
+  const { withdrawRequests, withdrawRequestsTotalPages, loading, withdrawRequestsSummary } = useSelector((state) => state.admin);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [showFilter, setShowFilter] = useState(false);
@@ -36,16 +37,9 @@ export default function WithdrawRequests() {
 
   useEffect(() => {
     dispatch(fetchWithdrawRequests({ search, page, limit: 10, ...activeFilters }));
-    dispatch(fetchAdminDashboardStats());
   }, [dispatch, search, page, activeFilters]);
 
   const filtered = withdrawRequests;
-  const pendingTotal = dashboardStats?.totalPendingWithdrawal ?? 0;
-  const completedTotal = dashboardStats?.totalApprovedWithdrawal ?? 0;
-  const pendingCount = (filtered || []).filter((r) => r.status === 'pending').length;
-  const completedCount = (filtered || []).filter(
-    (r) => r.status === 'approved' || r.status === 'completed'
-  ).length;
 
   const handleAction = (id, status) => {
     if (status === 'approved') {
@@ -156,16 +150,25 @@ export default function WithdrawRequests() {
   return (
     <div className={styles.wrapper}>
       <div className={styles.statsRow}>
-        <StatCard
-          label="Pending Withdraw Requests"
-          value={`$${pendingTotal.toLocaleString()}`}
-          sub={`Count: ${pendingCount}`}
-        />
-        <StatCard
-          label="Completed Withdraw Requests"
-          value={`$${completedTotal.toLocaleString()}`}
-          sub={`Count: ${completedCount}`}
-        />
+        {loading || withdrawRequestsSummary === null ? (
+          <>
+            <StatCardSkeleton />
+            <StatCardSkeleton />
+          </>
+        ) : (
+          <>
+            <StatCard
+              label="Pending Withdraw Requests"
+              value={`$${(withdrawRequestsSummary?.pendingWithdrawalAmount ?? 0).toLocaleString()}`}
+              sub={`Count: ${withdrawRequestsSummary?.pendingWithdrawalCount ?? 0}`}
+            />
+            <StatCard
+              label="Completed Withdraw Requests"
+              value={`$${(withdrawRequestsSummary?.approvedWithdrawalAmount ?? 0).toLocaleString()}`}
+              sub={`Count: ${withdrawRequestsSummary?.approvedWithdrawalCount ?? 0}`}
+            />
+          </>
+        )}
       </div>
 
       <TableTopBar

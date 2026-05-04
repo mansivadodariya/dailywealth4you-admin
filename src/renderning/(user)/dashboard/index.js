@@ -112,8 +112,8 @@ export default function Dashboard() {
   const totalDeposit = dashboardStats?.totalDeposit ?? 0;
   const totalPendingWithdrawal = dashboardStats?.totalPendingWithdrawal ?? 0;
   const totalApprovedWithdrawal = dashboardStats?.totalApprovedWithdrawal ?? 0;
-  const pendingWithdrawalCount = dashboardStats?.pendingWithdrawalCount ?? 0;
-  const approvedWithdrawalCount = dashboardStats?.approvedWithdrawalCount ?? 0;
+  const pendingWithdrawalCount = dashboardStats?.totalPendingWithdrawalCount ?? 0;
+  const approvedWithdrawalCount = dashboardStats?.totalApprovedWithdrawalCount ?? 0;
   const allUserAccountBalance = dashboardStats?.allUserAccountBalance ?? 0;
   const totalUsers = dashboardStats?.totalUsers ?? 0;
 

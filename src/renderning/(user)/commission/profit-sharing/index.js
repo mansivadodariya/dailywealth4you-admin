@@ -56,7 +56,7 @@ export default function ProfitSharing() {
         'Referral Name': '',
         'Referral Email': '',
         'Referral Profit': '',
-        'Referral Profit %': row.referralProfitPercentage ? `${row.referralProfitPercentage}%` : '—',
+        'Referral Profit %': "",
         'Admin Profit': '',
       });
 
