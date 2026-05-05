@@ -15,6 +15,8 @@ export default function Input({
   placeholderWhite,
   plain,
   type = 'text',
+  prefix,
+  suffix,
   ...props
 }) {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -33,9 +35,11 @@ export default function Input({
           leftSpacingRemove ? styles.leftSpacingRemove : '',
           placeholderWhite ? styles.placeholderWhite : '',
           plain ? styles.plain : '',
-          leftIcon ? styles.hasLeftIcon : ''
+          (leftIcon || prefix) ? styles.hasLeftIcon : '',
+          (rightIcon || suffix) ? styles.rightspacingAdded : ''
         )}
       >
+        {prefix && <span className={styles.prefix}>{prefix}</span>}
         <input
           type={inputType}
           placeholder={placeholder}
@@ -62,6 +66,7 @@ export default function Input({
             <img src={leftIcon} alt={leftIcon} />
           </div>
         )}
+        {suffix && <span className={styles.suffix}>{suffix}</span>}
         {rightIcon &&
           (isPasswordField ? (
             <button

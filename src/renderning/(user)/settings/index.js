@@ -68,6 +68,15 @@ function ProfitSharePanel() {
   }, [setting]);
 
   const handleSave = () => {
+    const inv = Number(form.investor) || 0;
+    const ib = Number(form.ib) || 0;
+    const co = Number(form.company) || 0;
+
+    if (inv + ib + co !== 100) {
+      toast.error('Total percentage (Investor + IB + Company) must be exactly 100%.');
+      return;
+    }
+
     if (!setting?.id && !setting?._id) return;
     dispatch(updateSetting({
       id: setting.id || setting._id,
@@ -93,19 +102,19 @@ function ProfitSharePanel() {
     <div className={styles.card}>
       <div className={styles.fieldGroup}>
         <label>Investor</label>
-        <Input plain value={form.investor} onChange={(e) => set('investor', e.target.value)} placeholder="e.g. 50" />
+        <Input plain type="number" suffix="%" value={form.investor} onChange={(e) => set('investor', e.target.value)} placeholder="e.g. 50" />
       </div>
       <div className={styles.fieldGroup}>
         <label>IB</label>
-        <Input plain value={form.ib} onChange={(e) => set('ib', e.target.value)} placeholder="e.g. 10" />
+        <Input plain type="number" suffix="%" value={form.ib} onChange={(e) => set('ib', e.target.value)} placeholder="e.g. 10" />
       </div>
       <div className={styles.fieldGroup}>
         <label>Company</label>
-        <Input plain value={form.company} onChange={(e) => set('company', e.target.value)} placeholder="e.g. 40" />
+        <Input plain type="number" suffix="%" value={form.company} onChange={(e) => set('company', e.target.value)} placeholder="e.g. 40" />
       </div>
       <div className={styles.fieldGroup}>
         <label>Broker Commissions</label>
-        <Input plain value={form.broker} onChange={(e) => set('broker', e.target.value)} placeholder="e.g. 5" />
+        <Input plain type="number" prefix="$" value={form.broker} onChange={(e) => set('broker', e.target.value)} placeholder="e.g. 5" />
       </div>
       <ActionButtons onSave={handleSave} onCancel={handleCancel} layout="row" />
     </div>

@@ -25,7 +25,7 @@ export function middleware(request) {
     '/settings',
   ];
 
-  const token = request.cookies.get('auth_user')?.value;
+  const token = request.cookies.get('auth_token')?.value;
   const { pathname } = request.nextUrl;
 
   // Check if the current route starts with any of our protected routes

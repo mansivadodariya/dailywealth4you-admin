@@ -69,13 +69,14 @@ export default function UserViewModal({ user, onClose }) {
             </div>
             <div className={styles.headerRight}>
               <button className={styles.blockBtn} onClick={() => setShowBlock(true)} aria-label="Block user">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <span>Block</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                   <circle cx="12" cy="12" r="10" stroke="#ff4444" strokeWidth="2" />
                   <line x1="4.93" y1="4.93" x2="19.07" y2="19.07" stroke="#ff4444" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               </button>
               <button className={styles.closeBtn} onClick={onClose} aria-label="Close">
-<Image src="/assets/icons/WhiteClose.svg" alt="arrow right" width={24} height={24} />              </button>
+                <Image src="/assets/icons/WhiteClose.svg" alt="arrow right" width={24} height={24} />              </button>
             </div>
           </div>
 
@@ -104,7 +105,7 @@ export default function UserViewModal({ user, onClose }) {
           {/* MT5 Accounts */}
           {accounts.length > 0 && (
             <>
-              <div className={styles.sectionTitle}>MT5 Accounts</div>
+              <div className={styles.sectionTitle}>Select MT5 Account</div>
               {accounts.map((acc) => {
                 const isOpen = openAccountId === acc.id;
                 const pnl = acc.pnl ?? acc.pandl ?? acc.pl;
@@ -120,7 +121,7 @@ export default function UserViewModal({ user, onClose }) {
                         <div className={styles.accountBalance}>${acc.currentBalance ?? acc.equity ?? '0'}</div>
                       </div>
                       <span className={`${styles.chevron} ${isOpen ? styles.open : ''}`}>
-                        <img src={"/assets/icons/Small-right.svg"}/>
+                        <img src={"/assets/icons/Small-right.svg"} />
                       </span>
                     </div>
                     {isOpen && (
@@ -128,7 +129,7 @@ export default function UserViewModal({ user, onClose }) {
                         <div className={styles.detailRow}>
                           <span className={styles.label}>Broker:</span>
                           <span className={styles.dots} />
-                          <span className={styles.value}>{ acc.brokerName ?? '—'}</span>
+                          <span className={styles.value}>{acc.brokerName ?? '—'}</span>
                         </div>
                         <div className={styles.detailRow}>
                           <span className={styles.label}>Date Added</span>
@@ -163,12 +164,12 @@ export default function UserViewModal({ user, onClose }) {
             />
             {isAccountSelected && (
               <>
-              <button className={styles.btnUpload} onClick={handleUploadClick} disabled={uploading}>
-                {uploading ? 'Uploading...' : 'Upload Excel'} <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
-              </button>
-            <button className={styles.btnManual} onClick={() => setShowManual(true)}>
-              Manual Entry <Image src="/assets/icons/WhiteRight.svg" alt="arrow right" width={18} height={18} />
-            </button>
+                <button className={styles.btnUpload} onClick={handleUploadClick} disabled={uploading}>
+                  {uploading ? 'Uploading...' : 'Upload Excel'} <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
+                </button>
+                <button className={styles.btnManual} onClick={() => setShowManual(true)}>
+                  Manual Entry <Image src="/assets/icons/WhiteRight.svg" alt="arrow right" width={18} height={18} />
+                </button>
               </>
             )}
           </div>

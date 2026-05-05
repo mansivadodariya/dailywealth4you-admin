@@ -137,8 +137,8 @@ export default function Dashboard() {
 
   const statCards = [
     { label: 'Total Deposits', value: `$${totalDeposit.toLocaleString()}` },
-    { label: 'Gross Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
-    { label: 'Net Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
+    { label: 'Total Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
+    { label: 'Generated Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
     { label: 'Profit Sharing Paid', value: `$${totalInvestorShare.toLocaleString()}`, badge: '30 Days' },
     { label: 'Total Users', value: String(totalUsers) },
     { label: 'All Users Account Balance', value: `$${allUserAccountBalance.toLocaleString()}` },
@@ -243,7 +243,8 @@ export default function Dashboard() {
                         cornerRadius={12}
                         paddingAngle={4}
                         dataKey="value"
-                        strokeWidth={0}
+                          strokeWidth={0}
+                          style={{ outline: 'none' }}
                       >
                         {donutData.map((d, i) => (
                           <Cell

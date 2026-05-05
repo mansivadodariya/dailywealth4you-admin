@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { connectSocket, getSocket } from '@/utils/webSocket';
 import { usePathname,useRouter } from 'next/navigation';
-import { getCookie } from '@/service/cookies';
+import { getCookie, getTokenFromCookie, getUserFromCookie } from '@/service/cookies';
 import Loader from '@/components/loader';
 import { toast } from 'react-toastify';
 import { fetchNotifications } from '@/store/slice/loginSlice';
@@ -21,8 +21,8 @@ export default function layout({ children }) {
   // Check authentication on mount and route changes
   useEffect(() => {
     const checkAuth = () => {
-      const userToken = getCookie('auth_token');
-      const user = getCookie('auth_user');
+      const userToken = getTokenFromCookie();
+      const user = getUserFromCookie();
 
       if (!userToken || !user) {
         toast.error('Please login to access this page');
@@ -40,8 +40,8 @@ export default function layout({ children }) {
   // Handle browser back/forward navigation
   useEffect(() => {
     const handlePopState = () => {
-      const userToken = getCookie('userToken');
-      const user = getCookie('user');
+      const userToken = getTokenFromCookie();
+      const user = getUserFromCookie();
 
       if (!userToken || !user) {
         window.location.href = '/';
