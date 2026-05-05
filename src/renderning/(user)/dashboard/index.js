@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchTransactions } from '@/store/reducers';
-import { fetchSetting, fetchAdminDashboardStats, fetchAdminProfitAndIbCommission, fetchUserDashboardProfitLots } from '@/store/slice/adminSlice';
+import { fetchSetting, fetchAdminDashboardStats, fetchAdminProfitAndIbCommission, fetchUserDashboardProfitLots, fetchAdminDashboardProfit } from '@/store/slice/adminSlice';
 import {
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   PieChart, Pie, Cell,
@@ -75,7 +75,7 @@ const Card = ({ label, value, change, badge, badgeValue, onBadgeChange, count, c
 
 export default function Dashboard() {
   const dispatch = useDispatch();
-  const { transactions, dashboardProfitLots, dashboardStats, adminProfitAndIbCommission, loading } = useSelector((s) => s.admin);
+  const { transactions, dashboardProfitLots, dashboardStats, adminProfitAndIbCommission, dashboardProfit, loading } = useSelector((s) => s.admin);
   const setting = useSelector((s) => s.admin.setting);
   const [form, setForm] = useState({ investor: '', ib: '', company: '' });
   const [donutLabel, setDonutLabel] = useState(null);
@@ -85,6 +85,7 @@ export default function Dashboard() {
   useEffect(() => {
     dispatch(fetchAdminDashboardStats());
     dispatch(fetchAdminProfitAndIbCommission());
+    dispatch(fetchAdminDashboardProfit());
     dispatch(fetchSetting());
     dispatch(fetchTransactions({ limit: 10 }));
   }, [dispatch]);
@@ -122,6 +123,10 @@ export default function Dashboard() {
   const totalIbCommission = adminProfitAndIbCommission?.totalIbCommission ?? 0;
   const totalLots = adminProfitAndIbCommission?.totalLots ?? 0;
 
+  // Stats from dashboardProfit API
+  const totalProfit = dashboardProfit?.totalProfit ?? 0;
+  const generatedProfit = dashboardProfit?.generatedProfit ?? 0;
+
   const donutData = [
     { name: 'Investor', value: Number(form.investor) },
     { name: 'IB', value: Number(form.ib) },
@@ -137,7 +142,7 @@ export default function Dashboard() {
 
   const statCards = [
     { label: 'Total Deposits', value: `$${totalDeposit.toLocaleString()}` },
-    { label: 'Total Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
+    { label: 'Total Profit', value: `$${totalProfit.toLocaleString()}`, badge: '24 Hours' },
     { label: 'Generated Profit', value: '$12,694', badge: '24 Hours', change: '+12%' },
     { label: 'Profit Sharing Paid', value: `$${totalInvestorShare.toLocaleString()}`, badge: '30 Days' },
     { label: 'Total Users', value: String(totalUsers) },
@@ -158,7 +163,7 @@ export default function Dashboard() {
             badge={c.badge}
             badgeValue={badgeRanges[i] || c.badge}
             onBadgeChange={(val) => setBadgeRanges((prev) => ({ ...prev, [i]: val }))}
-            loading={loading || dashboardStats === null}
+            loading={loading || dashboardStats === null || dashboardProfit === null}
           />
         ))}
       </div>

@@ -67,4 +67,5 @@ export const UPLOAD_TRADE_HISTORY = '/tradesHistory/uploadTradeHistory';
 export const GET_USER_DASHBOARD_PROFIT_LOTS = '/tradesHistory/getUserDashboardProfitLots';
 export const GET_ADMIN_DASHBOARD_STATS = '/tradesHistory/getAdminDashboardUseDepoWith';
 export const GET_ADMIN_PROFIT_AND_IB_COMMISSION = '/tradesHistory/getAdminProfitAndIbcommission';
+export const GET_ADMIN_DASHBOARD_PROFIT = '/tradesHistory/getAdminDashboardProfit';
 export const UPLOAD_MANUAL_TRADE_HISTORY = '/tradesHistory/uploadManuallyTradeHistory';
