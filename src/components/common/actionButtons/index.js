@@ -27,6 +27,7 @@ export default function ActionButtons({
       {showDelete && onDelete && (
         <button className={styles.btnDelete} onClick={onDelete} disabled={deleting}>
           {deleting ? <span className={styles.spinner} /> : deleteText}
+          <img src="/assets/icons/DeleteIcon.svg" alt="DeleteIcon" style={{ width: 18, height: 18 }} />
         </button>
       )}
 

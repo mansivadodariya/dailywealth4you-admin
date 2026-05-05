@@ -9,7 +9,9 @@ import ActionButtons from '@/components/common/actionButtons';
 
 export default function SendNotifications() {
   const dispatch = useDispatch();
-  const { loading, popup } = useSelector((state) => state.admin);
+  const { popup } = useSelector((state) => state.admin);
+  const [notifLoading, setNotifLoading] = useState(false);
+  const [popupLoading, setPopupLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [popupLink, setPopupLink] = useState('');
@@ -35,7 +37,9 @@ export default function SendNotifications() {
     if (!description.trim()) errors.description = 'Content is required.';
     if (Object.keys(errors).length) { setNotifErrors(errors); return; }
     setNotifErrors({});
+    setNotifLoading(true);
     dispatch(createNotification({ title, description })).then((res) => {
+      setNotifLoading(false);
       if (res.meta.requestStatus === 'fulfilled') {
         setTitle('');
         setDescription('');
@@ -69,7 +73,9 @@ export default function SendNotifications() {
     if (!popupLink.trim()) errors.popupLink = 'Redirect link is required.';
     if (Object.keys(errors).length) { setPopupErrors(errors); return; }
     setPopupErrors({});
+    setPopupLoading(true);
     dispatch(createPopup({ link: popupLink, file: imageFile })).then((res) => {
+      setPopupLoading(false);
       if (res.meta.requestStatus === 'fulfilled') {
         setImageFile(null);
         setImagePreview('');
@@ -117,7 +123,7 @@ export default function SendNotifications() {
           <ActionButtons
             onSave={handleSend}
             onCancel={handleCancel}
-            loading={loading}
+            loading={notifLoading}
             saveText="Send"
             layout="row"
           />
@@ -170,7 +176,7 @@ export default function SendNotifications() {
           <ActionButtons
             onSave={handleSendPopup}
             onCancel={handleCancelPopup}
-            loading={loading}
+            loading={popupLoading}
             saveText="Send"
             layout="row"
           />

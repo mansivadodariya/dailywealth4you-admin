@@ -202,7 +202,7 @@ export const blockUser = createAsyncThunk(
   'admin/blockUser',
   async (userId, thunkApi) => {
     try {
-      const response = await api.put(`${BLOCK_USER}?id=${userId}`);
+      const response = await api.put(`${BLOCK_USER}?id=${userId}`, { isActive: false });
       toast.success('User blocked.');
       return response;
     } catch (error) {
@@ -647,6 +647,10 @@ const adminSlice = createSlice({
       .addCase(createPopup.pending, pending)
       .addCase(createPopup.fulfilled, (state) => { state.loading = false; })
       .addCase(createPopup.rejected, rejected)
+      
+      .addCase(createNotification.pending, pending)
+      .addCase(createNotification.fulfilled, (state) => { state.loading = false; })
+      .addCase(createNotification.rejected, rejected)
 
 
       .addCase(fetchPopup.pending, pending)

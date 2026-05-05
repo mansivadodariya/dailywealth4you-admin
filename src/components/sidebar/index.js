@@ -50,16 +50,19 @@ export default function Sidebar() {
   const pathname = usePathname();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.login.user);
+  const userRole = useSelector((state) => state.login.role);
   const permissions = user?.permissions || [];
   
-  const isAdmin = user?.roleId === 'admin' || user?.role === 'admin';
+  const isAdmin = 
+    userRole === 'admin' || 
+    user?.roleId === 'admin' || 
+    user?.role === 'admin' ||
+    user?.payload?.role === 'admin' ||
+    user?.payload?.roleId === 'admin';
 
   const visibleSidebarData = React.useMemo(() => {
     if (isAdmin) return sidebarData;
     return sidebarData.filter(item => {
-      // if (['contact-us', 'manage-tutorials', 'manage-brokers'].includes(item.id)) {
-      //   return true;
-      // }
       const reqPerm = permissionMap[item.id];
       if (!reqPerm) return false; 
       return permissions.includes(reqPerm);

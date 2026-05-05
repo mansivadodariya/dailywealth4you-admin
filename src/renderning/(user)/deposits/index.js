@@ -38,7 +38,7 @@ export default function Deposits() {
   const [showFilter, setShowFilter] = useState(false);
   const [showApprove, setShowApprove] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(null); // { id, action }
 
   const fetchData = () => {
     dispatch(fetchTransactions({
@@ -68,13 +68,17 @@ export default function Deposits() {
       setShowApprove(true);
       return;
     }
-    dispatch(updateTransaction({ id, status })).then(() => fetchData());
+    setActionLoading({ id, action: status });
+    dispatch(updateTransaction({ id, status })).then(() => {
+      setActionLoading(null);
+      fetchData();
+    });
   };
 
   const confirmApproval = (id, file) => {
-    setActionLoading(true);
+    setActionLoading({ id, action: 'deposit' });
     dispatch(updateTransaction({ id, status: 'approved', file })).then((res) => {
-      setActionLoading(false);
+      setActionLoading(null);
       if (!res.error) {
         setShowApprove(false);
         setSelectedRequest(null);
@@ -101,10 +105,14 @@ export default function Deposits() {
           {r.status === 'pending' ? (
             <button
               className={styles.btnApprove}
-              disabled={actionLoading}
+              disabled={actionLoading?.id === r.id}
               onClick={() => handleAction(r.id, 'deposit')}
             >
-              Approve
+              {actionLoading?.id === r.id && actionLoading?.action === 'deposit' ? (
+                <span className={styles.btnSpinner} />
+              ) : (
+                'Approve'
+              )}
             </button>
           ) : r.status === 'approved' ? (
             <span className={styles.depositText}>Deposit</span>
@@ -185,7 +193,7 @@ export default function Deposits() {
       {showApprove && selectedRequest && (
         <ApproveDepositModal
           request={selectedRequest}
-          loading={actionLoading}
+          loading={actionLoading?.id === selectedRequest.id && actionLoading?.action === 'deposit'}
           onClose={() => {
             setShowApprove(false);
             setSelectedRequest(null);

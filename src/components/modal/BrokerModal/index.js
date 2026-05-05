@@ -5,6 +5,7 @@ import { useDispatch } from 'react-redux';
 import { createBroker, updateBroker, deleteBroker } from '@/store/reducers';
 import styles from './BrokerModal.module.scss';
 import CloseIcon from '@/icons/closeIcon';
+import ActionButtons from '@/components/common/actionButtons';
 
 export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
   const dispatch = useDispatch();
@@ -119,17 +120,16 @@ export default function BrokerModal({ mode = 'add', broker, onClose, onDone }) {
         </div>
 
         <div className={styles.actions}>
-          <button className={styles.btnSave} onClick={handleSubmit} disabled={loading}>
-            {loading ? <span className={styles.spinner} /> : <>{isAdd ? 'Add Broker' : 'Save Changes'} <img src="/assets/icons/BlackRight.svg" alt="" style={{ width: 18, height: 18 }} /></>}
-          </button>
-          {!isAdd && (
-            <button className={styles.btnDelete} onClick={handleDelete} disabled={deleting}>
-              {deleting ? <span className={styles.spinner} /> : 'Delete Broker'}
-            </button>
-          )}
-          <button className={styles.btnCancel} onClick={onClose}>
-            Cancel <CloseIcon color="#fff" size={14} />
-          </button>
+          <ActionButtons
+            onSave={handleSubmit}
+            onCancel={onClose}
+            onDelete={handleDelete}
+            loading={loading}
+            deleting={deleting}
+            saveText={isAdd ? 'Add Broker' : 'Save Changes'}
+            deleteText="Delete Broker"
+            showDelete={!isAdd}
+          />
         </div>
       </div>
     </div>

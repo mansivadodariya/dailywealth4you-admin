@@ -11,22 +11,28 @@ export default function AuthButton({
   onClick,
   outline,
   disabled,
+  loading = false,
 }) {
   return (
     <div
       className={classNames(
         styles.authbutton,
-        outline ? styles.outlineButton : ''
+        outline ? styles.outlineButton : '',
+        loading ? styles.loading : ''
       )}
     >
       <button
         aria-label={text}
         type={type}
         onClick={onClick}
-        disabled={disabled}
+        disabled={disabled || loading}
       >
-        {text}
-        {icon && <img src={icon} alt={icon} />}
+        {loading ? <span className={styles.spinner} /> : (
+          <>
+            {text}
+            {icon && <img src={icon} alt={icon} />}
+          </>
+        )}
       </button>
     </div>
   );

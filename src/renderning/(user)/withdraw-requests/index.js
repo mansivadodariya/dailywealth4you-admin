@@ -23,7 +23,7 @@ export default function WithdrawRequests() {
   const [activeFilters, setActiveFilters] = useState({});
   const [showApprove, setShowApprove] = useState(false);
   const [selectedRequest, setSelectedRequest] = useState(null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState(null); // { id, action }
 
   const handleSearchChange = (val) => {
     setSearch(val);
@@ -48,15 +48,17 @@ export default function WithdrawRequests() {
       return;
     }
     // Direct reject or other status updates
+    setActionLoading({ id, action: status });
     dispatch(updateTransaction({ id, status })).then(() => {
+      setActionLoading(null);
       dispatch(fetchWithdrawRequests({ search, page, limit: 10, ...activeFilters }));
     });
   };
 
   const confirmApproval = (id, file) => {
-    setActionLoading(true);
+    setActionLoading({ id, action: 'approved' });
     dispatch(updateTransaction({ id, status: 'approved', file })).then((res) => {
-      setActionLoading(false);
+      setActionLoading(null);
       if (!res.error) {
         setShowApprove(false);
         setSelectedRequest(null);
@@ -124,15 +126,21 @@ export default function WithdrawRequests() {
             <>
               <button
                 className={styles.btnApprove}
+                disabled={actionLoading?.id === r.id}
                 onClick={() => handleAction(r.id, 'approved')}
               >
                 Approve
               </button>
               <button
                 className={styles.btnReject}
+                disabled={actionLoading?.id === r.id}
                 onClick={() => handleAction(r.id, 'rejected')}
               >
-                Reject
+                {actionLoading?.id === r.id && actionLoading?.action === 'rejected' ? (
+                  <span className={styles.btnSpinner} />
+                ) : (
+                  'Reject'
+                )}
               </button>
             </>
           ) : r.status === 'approved' || r.status === 'completed' ? (
@@ -201,7 +209,7 @@ export default function WithdrawRequests() {
       {showApprove && selectedRequest && (
         <ApproveWithdrawModal
           request={selectedRequest}
-          loading={actionLoading}
+          loading={actionLoading?.id === selectedRequest.id && actionLoading?.action === 'approved'}
           onClose={() => {
             setShowApprove(false);
             setSelectedRequest(null);

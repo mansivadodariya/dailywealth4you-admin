@@ -5,6 +5,8 @@ import { usePathname } from 'next/navigation';
 import { useSelector } from 'react-redux';
 import styles from './header.module.scss';
 import NotificationDropdown from '@/components/modal/NotificationDropdown';
+import { getUserFromCookie } from '@/service/cookies';
+import { toast } from 'react-toastify';
 
 const BellIcon = '/assets/icons/bell.svg';
 
@@ -37,6 +39,31 @@ export default function Header() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const unreadCount = useSelector((state) => state.login.unreadCount);
+  const user = getUserFromCookie();
+  const referralCode = user?.referralCode || '—';
+  const [baseUrl, setBaseUrl] = useState('https://dailywealth4you-user.vercel.app');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.origin.includes('localhost')) {
+      // Keep hardcoded for now as requested, but we could use window.location.origin if needed
+    }
+  }, []);
+
+  const handleCopyReferral = () => {
+    if (referralCode && referralCode !== '—') {
+      navigator.clipboard.writeText(referralCode);
+      toast.success('Referral code copied to clipboard!');
+    }
+  };
+
+  const handleShareReferral = (e) => {
+    e.stopPropagation();
+    if (referralCode && referralCode !== '—') {
+      const shareUrl = `https://dailywealth4you-user.vercel.app/signup/${referralCode}`;
+      navigator.clipboard.writeText(shareUrl);
+      toast.success('Referral link copied to clipboard!');
+    }
+  };
 
   useEffect(() => {
     function handleClickOutside(e) {
@@ -52,6 +79,21 @@ export default function Header() {
     <header className={styles.header}>
       <h2>{pageTitle}</h2>
       <div className={styles.rightAlignment}>
+        <div className={styles.referralBox}>
+          <div className={styles.codeSection} onClick={handleCopyReferral} title="Click to copy referral code">
+            <span className={styles.referralLabel}>Referral Code:</span>
+            <span className={styles.referralValue}>{referralCode}</span>
+            <img src="/assets/icons/Copy.svg" alt="Copy" className={styles.copyIcon} />
+          </div>
+          <div className={styles.shareIconWrap} onClick={handleShareReferral} title="Copy referral link">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className={styles.shareIcon}>
+              <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" />
+              <polyline points="16 6 12 2 8 6" />
+              <line x1="12" y1="2" x2="12" y2="15" />
+            </svg>
+          </div>
+        </div>
+
         <div className={styles.bellWrapper} ref={dropdownRef}>
           <button
             className={styles.bellBtn}

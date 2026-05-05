@@ -1,13 +1,19 @@
 .wrapper {
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
 }
 
 .tableWrapper {
+  overflow-y: auto;
   overflow-x: auto;
   border-radius: 12px;
   position: relative;
-  overflow: hidden;
   flex: 1;
+  min-height: 0;
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .table {
@@ -17,7 +23,10 @@
 }
 
 .thead {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #030f0f;
 
   &::after {
     content: '';

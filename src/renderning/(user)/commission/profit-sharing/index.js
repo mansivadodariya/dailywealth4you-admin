@@ -172,11 +172,6 @@ export default function ProfitSharing() {
       },
     },
     {
-      key: 'referralProfitPercentage',
-      label: 'Referral %',
-      render: (row) => `${row.referralProfitPercentage ?? '0'}%`,
-    },
-    {
       key: 'adminProfit',
       label: 'My Profit Share',
       render: (t) => (
