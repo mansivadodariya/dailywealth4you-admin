@@ -143,8 +143,8 @@ export default function Dashboard() {
   const statCards = [
     { label: 'Total Deposits', value: `$${totalDeposit.toLocaleString()}` },
     { label: 'Total Profit', value: `$${totalProfit.toLocaleString()}`, badge: '24 Hours', change: '+12%' },
-    { label: 'Generated Profit', value: `$${generatedProfit.toLocaleString()}`, badge: '24 Hours', change: '+12%' },
-    { label: 'Profit Sharing Paid', value: `$${totalInvestorShare.toLocaleString()}`, badge: '30 Days' },
+    { label: 'Generated Profit', value: `$${totalInvestorShare.toLocaleString()}`, badge: '24 Hours', change: '+12%' },
+    { label: 'Profit Sharing Paid', value: `$${generatedProfit.toLocaleString()}`, badge: '30 Days' },
     { label: 'Total Users', value: String(totalUsers) },
     { label: 'All Users Account Balance', value: `$${allUserAccountBalance.toLocaleString()}` },
     { label: 'IB Commission Paid', value: `$${totalIbCommission.toLocaleString()}`, badge: '30 Days' },
