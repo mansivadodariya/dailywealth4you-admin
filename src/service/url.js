@@ -69,3 +69,11 @@ export const GET_ADMIN_DASHBOARD_STATS = '/tradesHistory/getAdminDashboardUseDep
 export const GET_ADMIN_PROFIT_AND_IB_COMMISSION = '/tradesHistory/getAdminProfitAndIbcommission';
 export const GET_ADMIN_DASHBOARD_PROFIT = '/tradesHistory/getAdminDashboardProfit';
 export const UPLOAD_MANUAL_TRADE_HISTORY = '/tradesHistory/uploadManuallyTradeHistory';
+
+// Performance APIs
+export const GET_ALL_USER_ACC_PERFORMANCE = '/performance/getAllUserAccPerformance';
+export const GET_ALL_PERFORMANCE_USER = '/performance/getTopTenUserPerformance';
+export const CREATE_NEW_PERFORMANCE = '/performance/createNewPerformance';
+export const DELETE_PERFORMANCE_USER = '/performance/deleteUserPerformance';
+export const CREATE_FAKE_PERFORMANCE = '/performance/createFakePerformance';
+

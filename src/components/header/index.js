@@ -21,6 +21,7 @@ const routeTitles = {
   '/economic-calendar': 'Economic Calendar',
   '/ib-requests': 'IB Requests',
   '/kyc-requests': 'KYC Requests',
+  '/performance': 'Performance Dashboard',
 };
 
 function getTitleFromPath(pathname) {

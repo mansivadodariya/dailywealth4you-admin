@@ -10,7 +10,8 @@ import RightIcon from '@/icons/rightIcon';
 const SidebarLogo = '/assets/logo/sidebar-logo.svg';
 
 export const sidebarData = [
-  { id: 'dashboard',            label: 'Dashboard',           icon: '/assets/icons/dashboard.svg',             route: '/dashboard' },
+  { id: 'dashboard', label: 'Dashboard', icon: '/assets/icons/dashboard.svg', route: '/dashboard' },
+  { id: 'performance', label: 'Performance Dashboard', icon: '/assets/icons/dashboard.svg', route: '/performance' },
   { id: 'users',                label: 'Users',               icon: '/assets/icons/Users.svg',                 route: '/users' },
   {
     id: 'commission',
@@ -19,6 +20,15 @@ export const sidebarData = [
     children: [
       { id: 'profit-sharing', label: 'Profit Sharing', icon: '/assets/icons/ProfitSharing.svg', route: '/commission/profit-sharing' },
       { id: 'ib-income',      label: 'IB Income',      icon: '/assets/icons/IBIncome.svg',      route: '/commission/ib-income' },
+    ],
+  },
+  {
+    id: 'social',
+    label: 'Social',
+    icon: '/assets/icons/Commission.svg',
+    children: [
+      { id: 'trading-pool', label: 'Trading Pool', icon: '/assets/icons/ProfitSharing.svg', route: '/social/trading-pool' },
+      { id: 'trade-history', label: 'Trade History', icon: '/assets/icons/IBIncome.svg', route: '/social/trade-history' },
     ],
   },
   { id: 'withdraw-requests',    label: 'Withdraw Requests',   icon: '/assets/icons/WithdrawRequests.svg',     route: '/withdraw-requests' },

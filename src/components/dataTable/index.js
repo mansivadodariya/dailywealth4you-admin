@@ -45,11 +45,11 @@ export default function DataTable({
               </td>
             </tr>
           ) : (
-            data.map((row) => (
+            data.map((row, index) => (
               <tr key={getKey(row)}>
                 {columns.map((col) => (
                   <td key={col.key}>
-                    {col.render ? col.render(row) : row[col.key] ?? '—'}
+                    {col.render ? col.render(row, undefined, index) : row[col.key] ?? '—'}
                   </td>
                 ))}
               </tr>
