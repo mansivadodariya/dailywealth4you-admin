@@ -51,6 +51,12 @@ import contentReducer, {
   createTutorial,
   updateTutorial,
   deleteTutorial,
+  fetchSocialPools,
+  createSocialPool,
+  updateSocialPool,
+  deleteSocialPool,
+  fetchPoolTradesHistory,
+  createPoolTrade,
 } from '@/store/slice/contentSlice';
 
 const reducer = combineReducers({
@@ -106,6 +112,12 @@ export {
   createTutorial,
   updateTutorial,
   deleteTutorial,
+  fetchSocialPools,
+  createSocialPool,
+  updateSocialPool,
+  deleteSocialPool,
+  fetchPoolTradesHistory,
+  createPoolTrade,
 };
 
 export default reducer;

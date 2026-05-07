@@ -142,7 +142,7 @@ export default function PerformanceDashboard() {
       label: 'User',
       render: (row) => (
         <div className={styles.userInfo}>
-          <p className={styles.userName}>{`${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—'}</p>
+          <p className={styles.userName}>{`${row.user?.firstName ?? ''} ${row.user?.lastName ?? ''}`.trim() || '—'}{row?.isFake && <span className={styles.dot}>•</span>}</p>
           <p className={styles.userEmail}>{row.user?.email || '—'}</p>
         </div>
       )
@@ -220,7 +220,7 @@ export default function PerformanceDashboard() {
       variant: 'primary'
     },
     {
-      label: 'Add Fake User',
+      label: 'Add User',
       onClick: () => setShowFakeModal(true),
       variant: 'secondary'
     },

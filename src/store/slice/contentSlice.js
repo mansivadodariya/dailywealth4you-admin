@@ -11,6 +11,12 @@ import {
   UPDATE_TUTORIAL,
   DELETE_TUTORIAL,
   UPLOAD_IMAGE,
+  CREATE_SOCIAL_POOL,
+  UPDATE_SOCIAL_POOL,
+  GET_ALL_SOCIAL_POOL,
+  DELETE_SOCIAL_POOL,
+  GET_ALL_POOL_TRADES_HISTORY,
+  CREATE_POOL_TRADE,
 } from '@/service/url';
 
 // ─── Brokers ────────────────────────────────────────────────────────────────
@@ -195,6 +201,88 @@ export const deleteTutorial = createAsyncThunk(
   }
 );
 
+// ─── Social Pool ─────────────────────────────────────────────────────────────
+
+export const fetchSocialPools = createAsyncThunk(
+  'content/fetchSocialPools',
+  async ({ page = 1, limit = 12, search = '' } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams({ page, limit });
+      if (search) params.append('search', search);
+      return await api.get(`${GET_ALL_SOCIAL_POOL}?${params.toString()}`);
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const createSocialPool = createAsyncThunk(
+  'content/createSocialPool',
+  async (fields, thunkApi) => {
+    try {
+      const response = await api.post(CREATE_SOCIAL_POOL, fields);
+      toast.success('Social pool created.');
+      return response;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateSocialPool = createAsyncThunk(
+  'content/updateSocialPool',
+  async ({ id, ...fields }, thunkApi) => {
+    try {
+      const response = await api.put(`${UPDATE_SOCIAL_POOL}?id=${id}`, fields);
+      toast.success('Social pool updated.');
+      return response;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const deleteSocialPool = createAsyncThunk(
+  'content/deleteSocialPool',
+  async (id, thunkApi) => {
+    try {
+      await api.delete(`${DELETE_SOCIAL_POOL}?id=${id}`);
+      toast.success('Social pool deleted.');
+      return id;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+// ─── Pool Trades History ─────────────────────────────────────────────────────
+
+export const fetchPoolTradesHistory = createAsyncThunk(
+  'content/fetchPoolTradesHistory',
+  async ({ page = 1, limit = 12, search = '' } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams({ page, limit });
+      if (search) params.append('search', search);
+      return await api.get(`${GET_ALL_POOL_TRADES_HISTORY}?${params.toString()}`);
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const createPoolTrade = createAsyncThunk(
+  'content/createPoolTrade',
+  async (fields, thunkApi) => {
+    try {
+      const response = await api.post(CREATE_POOL_TRADE, fields);
+      toast.success('Pool trade created.');
+      return response;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
 // ─── Slice ────────────────────────────────────────────────────────────────────
 
 const contentSlice = createSlice({
@@ -204,6 +292,10 @@ const contentSlice = createSlice({
     brokersTotalPages: 1,
     tutorials: [],
     tutorialsTotalPages: 1,
+    socialPools: [],
+    socialPoolsTotalPages: 1,
+    poolTradesHistory: [],
+    poolTradesHistoryTotalPages: 1,
     loading: false,
     error: null,
   },
@@ -261,7 +353,34 @@ const contentSlice = createSlice({
         state.loading = false;
         state.tutorials = state.tutorials.filter((t) => t.id !== action.payload);
       })
-      .addCase(deleteTutorial.rejected, rejected);
+      .addCase(deleteTutorial.rejected, rejected)
+
+      .addCase(fetchSocialPools.pending, pending)
+      .addCase(fetchSocialPools.fulfilled, listFulfilled('socialPools', 'socialPoolsTotalPages'))
+      .addCase(fetchSocialPools.rejected, rejected)
+
+      .addCase(createSocialPool.pending, pending)
+      .addCase(createSocialPool.fulfilled, (state) => { state.loading = false; })
+      .addCase(createSocialPool.rejected, rejected)
+
+      .addCase(updateSocialPool.pending, pending)
+      .addCase(updateSocialPool.fulfilled, (state) => { state.loading = false; })
+      .addCase(updateSocialPool.rejected, rejected)
+
+      .addCase(deleteSocialPool.pending, pending)
+      .addCase(deleteSocialPool.fulfilled, (state, action) => {
+        state.loading = false;
+        state.socialPools = state.socialPools.filter((s) => s.id !== action.payload);
+      })
+      .addCase(deleteSocialPool.rejected, rejected)
+
+      .addCase(fetchPoolTradesHistory.pending, pending)
+      .addCase(fetchPoolTradesHistory.fulfilled, listFulfilled('poolTradesHistory', 'poolTradesHistoryTotalPages'))
+      .addCase(fetchPoolTradesHistory.rejected, rejected)
+
+      .addCase(createPoolTrade.pending, pending)
+      .addCase(createPoolTrade.fulfilled, (state) => { state.loading = false; })
+      .addCase(createPoolTrade.rejected, rejected);
   },
 });
 

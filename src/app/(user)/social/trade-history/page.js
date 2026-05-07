@@ -1,4 +1,9 @@
+import TradeHistoryManagement from '@/renderning/(user)/social/trade-history';
 
-export default function Page() {
-  return "Coming";
+export const metadata = {
+  title: 'Pool Trade History | DailyWeath4U',
+};
+
+export default function TradeHistoryPage() {
+  return <TradeHistoryManagement />;
 }

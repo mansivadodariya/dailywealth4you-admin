@@ -76,4 +76,15 @@ export const GET_ALL_PERFORMANCE_USER = '/performance/getTopTenUserPerformance';
 export const CREATE_NEW_PERFORMANCE = '/performance/createNewPerformance';
 export const DELETE_PERFORMANCE_USER = '/performance/deleteUserPerformance';
 export const CREATE_FAKE_PERFORMANCE = '/performance/createFakePerformance';
+export const UPDATE_FAKE_PERFORMANCE = '/performance/updateFakePerformance';
+
+// Social Pool
+export const CREATE_SOCIAL_POOL = '/socialPool/createNewSocialPool';
+export const UPDATE_SOCIAL_POOL = '/socialPool/updateSocialPool';
+export const GET_ALL_SOCIAL_POOL = '/socialPool/getAllSocialPool';
+export const DELETE_SOCIAL_POOL = '/socialPool/deleteSocialPool';
+
+// Pool Trades History
+export const GET_ALL_POOL_TRADES_HISTORY = '/poolTradesHistory/getAllPoolTradesHistory';
+export const CREATE_POOL_TRADE = '/poolTradesHistory/createNewTrade';
 

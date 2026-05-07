@@ -221,6 +221,35 @@
     }
   }
 
+  select, .selectInput {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%2302df82' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 32px;
+
+    &:focus {
+      border-color: #02df82;
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    option {
+      background: #0d1212;
+      color: #fff;
+      padding: 8px;
+    }
+  }
+
   .error {
     color: #ff4d4f;
     font-size: 11px;

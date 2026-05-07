@@ -10,8 +10,8 @@ import RightIcon from '@/icons/rightIcon';
 const SidebarLogo = '/assets/logo/sidebar-logo.svg';
 
 export const sidebarData = [
-  { id: 'dashboard', label: 'Dashboard', icon: '/assets/icons/dashboard.svg', route: '/dashboard' },
   { id: 'performance', label: 'Performance Dashboard', icon: '/assets/icons/dashboard.svg', route: '/performance' },
+  { id: 'dashboard', label: 'Dashboard', icon: '/assets/icons/dashboard.svg', route: '/dashboard' },
   { id: 'users',                label: 'Users',               icon: '/assets/icons/Users.svg',                 route: '/users' },
   {
     id: 'commission',
@@ -27,7 +27,7 @@ export const sidebarData = [
     label: 'Social',
     icon: '/assets/icons/Commission.svg',
     children: [
-      { id: 'trading-pool', label: 'Trading Pool', icon: '/assets/icons/ProfitSharing.svg', route: '/social/trading-pool' },
+      { id: 'social-pool', label: 'Social Pool', icon: '/assets/icons/ProfitSharing.svg', route: '/social/social-pool' },
       { id: 'trade-history', label: 'Trade History', icon: '/assets/icons/IBIncome.svg', route: '/social/trade-history' },
     ],
   },

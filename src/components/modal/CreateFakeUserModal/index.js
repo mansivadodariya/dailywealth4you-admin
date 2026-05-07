@@ -1,33 +1,54 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './CreateFakeUserModal.module.scss';
 import Image from 'next/image';
 import api from '@/service/api';
-import { CREATE_FAKE_PERFORMANCE, UPLOAD_IMAGE } from '@/service/url';
+import { CREATE_FAKE_PERFORMANCE, GET_ALL_BROKERS_ADMIN, UPDATE_FAKE_PERFORMANCE } from '@/service/url';
 import { toast } from 'react-toastify';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
 
-export default function CreateFakeUserModal({ onClose, onSuccess }) {
+export default function CreateFakeUserModal({ onClose, onSuccess, editData }) {
   const [loading, setLoading] = useState(false);
-  const [logoLoading, setLogoLoading] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(editData?.createdAt ? new Date(editData.createdAt) : new Date());
+  const [brokers, setBrokers] = useState([]);
+  const [brokersLoading, setBrokersLoading] = useState(false);
+
+  // Fetch brokers on mount
+  useEffect(() => {
+    const loadBrokers = async () => {
+      setBrokersLoading(true);
+      try {
+        const res = await api.get(`${GET_ALL_BROKERS_ADMIN}?page=1&limit=100`);
+        // Handle various response structures (root.payload.data, root.payload.payload.data, root.data, etc.)
+        const root = res?.payload ?? res?.data ?? res;
+        const inner = root?.payload ?? root?.data ?? root;
+        const data = Array.isArray(inner?.data) ? inner.data : (Array.isArray(inner) ? inner : []);
+        setBrokers(data);
+      } catch (err) {
+        console.error('Failed to fetch brokers:', err);
+      } finally {
+        setBrokersLoading(false);
+      }
+    };
+    loadBrokers();
+  }, []);
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    createdAt: new Date().toISOString().split('T')[0],
-    investment: 0,
-    currentBalance: 0,
-    totalProfit: 0,
-    profitPercentage: 0,
-    mt5LoginId: '',
-    password: '',
-    server: '',
-    brokerName: '',
-    logo: ''
+    firstName: editData?.user?.firstName || '',
+    lastName: editData?.user?.lastName || '',
+    email: editData?.user?.email || '',
+    createdAt: editData?.createdAt ? editData.createdAt.split('T')[0] : new Date().toISOString().split('T')[0],
+    investment: editData?.investment ?? '',
+    currentBalance: editData?.currentBalance ?? '',
+    totalProfit: editData?.totalProfit ?? '',
+    profitPercentage: editData?.profitPercentage ?? '',
+    mt5LoginId: editData?.mt5LoginId || '',
+    password: editData?.password || '',
+    server: editData?.server || '',
+    brokerName: editData?.broker?.name || '',
+    logo: editData?.broker?.logo || ''
   });
 
 
@@ -39,23 +60,22 @@ export default function CreateFakeUserModal({ onClose, onSuccess }) {
     if (!formData.lastName) newErrors.lastName = 'Last name is required';
     if (!formData.email) newErrors.email = 'Email address is required';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Please enter a valid email address';
-    
+
     if (!formData.mt5LoginId) newErrors.mt5LoginId = 'MT5 Login ID is required';
-    if (!formData.brokerName) newErrors.brokerName = 'Broker name is required';
+    if (!formData.brokerName) newErrors.brokerName = 'Please select a broker';
     if (!formData.password) newErrors.password = 'Password is required';
     if (!formData.server) newErrors.server = 'Server name is required';
-    if (!formData.logo) newErrors.logo = 'Please upload a broker logo';
 
     if (formData.investment === '' || formData.investment === null) newErrors.investment = 'Investment amount is required';
     if (formData.currentBalance === '' || formData.currentBalance === null) newErrors.currentBalance = 'Current balance is required';
     if (formData.totalProfit === '' || formData.totalProfit === null) newErrors.totalProfit = 'Total profit is required';
-    
+
     if (formData.profitPercentage === '' || formData.profitPercentage === null) {
       newErrors.profitPercentage = 'Profit percentage is required';
     } else if (Number(formData.profitPercentage) > 100) {
       newErrors.profitPercentage = 'Profit percentage cannot exceed 100%';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -66,33 +86,23 @@ export default function CreateFakeUserModal({ onClose, onSuccess }) {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: (name === 'investment' || name === 'currentBalance' || name === 'totalProfit' || name === 'profitPercentage') 
-        ? Number(value) 
-        : value
+      [name]: value
     }));
   };
 
-  const handleLogoUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-
-    setLogoLoading(true);
-    const formDataUpload = new FormData();
-    formDataUpload.append('image', file);
-
-    try {
-      const res = await api.post(UPLOAD_IMAGE, formDataUpload, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
-      // Handle payload as either direct URL string or payload.data
-      const url = typeof res.payload === 'string' ? res.payload : (res.payload?.url || res.data?.url || res.payload);
-      setFormData(prev => ({ ...prev, logo: url }));
-      toast.success('Logo uploaded successfully');
-    } catch (error) {
-      console.error('Error uploading logo:', error);
-      toast.error('Failed to upload logo');
-    } finally {
-      setLogoLoading(false);
+  const handleBrokerSelect = (e) => {
+    const selectedName = e.target.value;
+    if (!selectedName) {
+      setFormData(prev => ({ ...prev, brokerName: '', logo: '' }));
+      return;
+    }
+    const broker = brokers.find(b => b.name === selectedName);
+    if (broker) {
+      setFormData(prev => ({
+        ...prev,
+        brokerName: broker.name || '',
+        logo: broker.logo || ''
+      }));
     }
   };
 
@@ -102,13 +112,63 @@ export default function CreateFakeUserModal({ onClose, onSuccess }) {
 
     setLoading(true);
     try {
-      await api.post(CREATE_FAKE_PERFORMANCE, formData);
-      toast.success('Fake user created successfully');
+      const submitData = {
+        ...formData,
+        investment: Number(formData.investment),
+        currentBalance: Number(formData.currentBalance),
+        totalProfit: Number(formData.totalProfit),
+        profitPercentage: Number(formData.profitPercentage),
+      };
+
+      if (editData) {
+        const id = editData.id || editData._id || editData.tradingAccountId;
+
+        // Diffing to send only changed fields
+        const changedFields = {};
+        const initialMap = {
+          firstName: editData?.user?.firstName || '',
+          lastName: editData?.user?.lastName || '',
+          email: editData?.user?.email || '',
+          createdAt: editData?.createdAt ? editData.createdAt.split('T')[0] : new Date().toISOString().split('T')[0],
+          investment: Number(editData?.investment ?? 0),
+          currentBalance: Number(editData?.currentBalance ?? 0),
+          totalProfit: Number(editData?.totalProfit ?? 0),
+          profitPercentage: Number(editData?.profitPercentage ?? 0),
+          mt5LoginId: editData?.mt5LoginId || '',
+          password: editData?.password || '',
+          server: editData?.server || '',
+          brokerName: editData?.broker?.name || '',
+          logo: editData?.broker?.logo || ''
+        };
+
+        Object.keys(submitData).forEach(key => {
+          let currentVal = submitData[key];
+          let initialVal = initialMap[key];
+
+          // Special handling for date strings if needed, but split('T')[0] should match
+          if (currentVal !== initialVal) {
+            changedFields[key] = currentVal;
+          }
+        });
+
+        if (Object.keys(changedFields).length === 0) {
+          toast.info('No changes made');
+          setLoading(false);
+          onClose();
+          return;
+        }
+
+        await api.put(`${UPDATE_FAKE_PERFORMANCE}?id=${id}`, changedFields);
+        toast.success('Fake user updated successfully');
+      } else {
+        await api.post(CREATE_FAKE_PERFORMANCE, submitData);
+        toast.success('Fake user created successfully');
+      }
       onSuccess();
-    } catch (error) {
-      console.error('Error creating fake user:', error);
-      toast.error(error?.response?.data?.message || 'Failed to create fake user');
-    } finally {
+      } catch (error) {
+        console.error('Error saving fake user:', error);
+        toast.error(error?.response?.data?.message || `Failed to ${editData ? 'update' : 'create'} fake user`);
+      } finally {
       setLoading(false);
     }
   };
@@ -117,7 +177,7 @@ export default function CreateFakeUserModal({ onClose, onSuccess }) {
     <div className={styles.overlay}>
       <div className={styles.modal}>
         <div className={styles.header}>
-          <h2>Add Fake Performance User</h2>
+          <h2>{editData ? 'Edit Performance User' : 'Add Performance User'}</h2>
           <button className={styles.closeBtn} onClick={onClose}>
             <Image src="/assets/icons/WhiteClose.svg" alt="close" width={24} height={24} />
           </button>
@@ -144,23 +204,23 @@ export default function CreateFakeUserModal({ onClose, onSuccess }) {
               <label>Joined Date</label>
               <div className={styles.dateWrapper}>
 
-              <DatePicker
-                selected={selectedDate}
-                onChange={(date) => {
-                  setSelectedDate(date);
-                  setFormData(prev => ({
-                    ...prev,
-                    createdAt: date ? date.toISOString() : ''
-                  }));
-                }}
-                dateFormat="dd/MM/yyyy"
-                placeholderText="Select date"
-                maxDate={new Date()}
-                className={styles.input}
-                calendarClassName={styles.calendar}
-                popperClassName={styles.popper}
-                dropdownMode="select"
-              />
+                <DatePicker
+                  selected={selectedDate}
+                  onChange={(date) => {
+                    setSelectedDate(date);
+                    setFormData(prev => ({
+                      ...prev,
+                      createdAt: date ? date.toISOString() : ''
+                    }));
+                  }}
+                  dateFormat="dd/MM/yyyy"
+                  placeholderText="Select date"
+                  maxDate={new Date()}
+                  className={styles.input}
+                  calendarClassName={styles.calendar}
+                  popperClassName={styles.popper}
+                  dropdownMode="select"
+                />
               </div>
             </div>
 
@@ -184,26 +244,28 @@ export default function CreateFakeUserModal({ onClose, onSuccess }) {
             </div>
             <div className={styles.inputGroup}>
               <label>Broker Name</label>
-              <input name="brokerName" value={formData.brokerName} onChange={handleChange} placeholder="Broker Name" />
+              <select
+                className={styles.selectInput}
+                value={formData.brokerName || ''}
+                onChange={handleBrokerSelect}
+              >
+                <option value="">{brokersLoading ? 'Loading brokers...' : 'Select Broker'}</option>
+                {brokers.map(broker => (
+                  <option key={broker._id || broker.id} value={broker.name}>
+                    {broker.name}
+                  </option>
+                ))}
+              </select>
               {errors.brokerName && <span className={styles.error}>{errors.brokerName}</span>}
             </div>
-            <div className={styles.inputGroup}>
-              <label>Broker Logo</label>
-              <div className={styles.uploadBox}>
-                {formData.logo ? (
-                  <div className={styles.previewWrap}>
-                    <img src={formData.logo} alt="Logo" className={styles.logoPreview} />
-                    <button type="button" className={styles.removeImg} onClick={() => setFormData(prev => ({ ...prev, logo: '' }))}>×</button>
-                  </div>
-                ) : (
-                  <label className={styles.uploadLabel}>
-                    <input type="file" accept="image/*" onChange={handleLogoUpload} hidden />
-                    <span>{logoLoading ? 'Uploading...' : 'Choose Logo'}</span>
-                  </label>
-                )}
+            {formData.logo && (
+              <div className={styles.inputGroup}>
+                <label>Broker Logo</label>
+                <div className={styles.previewWrap}>
+                  <img src={formData.logo} alt="Logo" className={styles.logoPreview} />
+                </div>
               </div>
-              {errors.logo && <span className={styles.error}>{errors.logo}</span>}
-            </div>
+            )}
 
             <div className={styles.divider}>Financials</div>
 
@@ -234,7 +296,7 @@ export default function CreateFakeUserModal({ onClose, onSuccess }) {
           <div className={styles.footer}>
             <button type="button" className={styles.cancelBtn} onClick={onClose}>Cancel</button>
             <button type="submit" className={styles.saveBtn} disabled={loading}>
-              {loading ? 'Creating...' : 'Create Fake User'}
+              {loading ? (editData ? 'Updating...' : 'Creating...') : (editData ? 'Update Fake User' : 'Create Fake User')}
             </button>
           </div>
         </form>
