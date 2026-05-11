@@ -59,12 +59,11 @@ export default function SocialPoolManagement() {
               <div key={pool.id || pool._id} className={styles.card}>
                 <div className={styles.cardHeader}>
                   <h3>{pool.title}</h3>
-                  <div className={styles.statusBadge}>Active</div>
                 </div>
                 
                 <p className={styles.subTitle}>{pool.shortDescription}</p>
                 
-                <div className={styles.stats}>
+                {/* <div className={styles.stats}>
                   <div className={styles.statItem}>
                     <label>Deposit Amount</label>
                     <span>${pool.minDeposit}</span>
@@ -73,7 +72,7 @@ export default function SocialPoolManagement() {
                     <label>Current Balance</label>
                     <span>${pool.minDeposit}</span>
                   </div>
-                </div>
+                </div> */}
 
                 <div className={styles.dateInfo}>
                   <label>Joined Date</label>

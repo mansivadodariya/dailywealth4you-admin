@@ -40,11 +40,15 @@ export default function TradeHistoryManagement() {
     { 
       key: 'profitLoss', 
       label: 'Profit/Loss', 
-      render: (row) => (
-        <span className={Number(row.profitLoss) >= 0 ? styles.profit : styles.loss}>
-          {Number(row.profitLoss) >= 0 ? '+' : ''}${row.profitLoss || '0.00'}
-        </span>
-      ) 
+      render: (row) => {
+        const val = Number(row.profitLoss) || 0;
+        const isPositive = val >= 0;
+        return (
+          <span className={isPositive ? styles.profit : styles.loss}>
+            {isPositive ? '+' : '-'}${Math.abs(val).toFixed(0)}
+          </span>
+        );
+      } 
     },
     { 
       key: 'tradingDate', 
@@ -69,7 +73,7 @@ export default function TradeHistoryManagement() {
         search={search} 
         onSearchChange={handleSearchChange} 
         actions={topBarActions}
-        searchPlaceholder="Search trades..."
+        searchPlaceholder="Search"
       />
 
       <DataTable 

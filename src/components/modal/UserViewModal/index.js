@@ -18,8 +18,8 @@ export default function UserViewModal({ user, onClose }) {
   const fileInputRef = useRef(null);
 
   const accounts = user?.tradingAccount || [];
-  const selectedAccount = accounts.length === 1 ? accounts[0] : accounts.find(acc => acc.id === openAccountId);
-  const isAccountSelected = accounts.length > 0 && selectedAccount != null;
+  const selectedAccount = accounts.find(acc => acc.id === openAccountId) || accounts[0];
+  const isAccountSelected = accounts.length > 0;
 
   const handleUploadClick = () => {
     fileInputRef.current?.click();
@@ -44,6 +44,7 @@ export default function UserViewModal({ user, onClose }) {
       setUploading(true);
       await api.post(UPLOAD_TRADE_HISTORY, formData);
       toast.success('Trade history uploaded successfully');
+      onClose();
     } catch {
       // error toast handled by api interceptor
     } finally {
@@ -162,7 +163,7 @@ export default function UserViewModal({ user, onClose }) {
               style={{ display: 'none' }}
               onChange={handleFileChange}
             />
-            {isAccountSelected && (
+            {isAccountSelected &&  (
               <>
                 <button className={styles.btnUpload} onClick={handleUploadClick} disabled={uploading}>
                   {uploading ? 'Uploading...' : 'Upload Excel'} <Image src="/assets/icons/Uploadblack.svg" alt="upload" width={18} height={18} />
@@ -177,7 +178,7 @@ export default function UserViewModal({ user, onClose }) {
         </div>
       </div>
 
-      {showManual && <ManualEntryModal userId={user?.id} accounts={accounts} onClose={() => setShowManual(false)} />}
+      {showManual && <ManualEntryModal userId={user?.id} accounts={accounts} onClose={() => setShowManual(false)} onSuccess={onClose} />}
       {showBlock && <BlockUserModal user={user} onClose={() => setShowBlock(false)} onBlocked={onClose} />}
     </>
   );

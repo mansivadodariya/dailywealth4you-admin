@@ -21,7 +21,7 @@ const TYPE_OPTIONS = [
 
 
 
-export default function ManualEntryModal({ userId, accounts = [], onClose }) {
+export default function ManualEntryModal({ userId, accounts = [], onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const [values, setValues] = useState({
     orderId: '',
@@ -92,6 +92,7 @@ export default function ManualEntryModal({ userId, accounts = [], onClose }) {
 
       await api.post(UPLOAD_MANUAL_TRADE_HISTORY, payload);
       toast.success('Manual trade history uploaded successfully');
+      onSuccess?.();
       onClose();
     } catch (error) {
       // Error handled by interceptor

@@ -248,8 +248,8 @@ export default function Dashboard() {
                         cornerRadius={12}
                         paddingAngle={4}
                         dataKey="value"
-                          strokeWidth={0}
-                          style={{ outline: 'none' }}
+                        strokeWidth={0}
+                        style={{ outline: 'none' }}
                       >
                         {donutData.map((d, i) => (
                           <Cell
