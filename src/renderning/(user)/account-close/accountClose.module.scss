@@ -1,0 +1,136 @@
+.wrapper {
+  padding: 8px 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0;
+}
+
+.tab {
+  padding: 10px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: -1px;
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.75);
+  }
+
+  &.active {
+    color: #02df82;
+    border-bottom-color: #02df82;
+  }
+}
+
+.badge {
+  padding: 3px 12px;
+  border-radius: 99px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+
+  &.active {
+    background: rgba(2, 223, 130, 0.12);
+    color: #02df82;
+    border: 1px solid #02df82;
+  }
+
+  &.pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+    border: 1px solid rgba(255, 193, 7, 0.6);
+  }
+
+  &.closed {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ff5050;
+    border: 1px solid #ff5050;
+  }
+
+  &.approved {
+    background: rgba(2, 223, 130, 0.12);
+    color: #fcfcfc;
+    border: 1px solid #02df82;
+  }
+
+  &.rejected {
+    background: rgba(255, 80, 80, 0.12);
+    color: #ffffff;
+    border: 1px solid #ff5050;
+  }
+}
+
+.actionBtns {
+  display: flex;
+  gap: 8px;
+}
+
+.btnApprove {
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--Primary, #02df82);
+  background: rgba(2, 223, 130, 0.1);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: rgba(2, 223, 130, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.btnReject {
+  padding: 4px 14px;
+  border-radius: 99px;
+  border: 1px solid rgba(255, 80, 80, 0.6);
+  background: rgba(255, 80, 80, 0.1);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover:not(:disabled) {
+    background: rgba(255, 80, 80, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+}
+
+.btnSpinner {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

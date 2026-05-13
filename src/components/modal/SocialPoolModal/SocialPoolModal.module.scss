@@ -102,6 +102,62 @@
     margin-top: 4px;
     margin-left: 4px;
   }
+
+  .quillWrapper {
+    :global(.ql-toolbar.ql-snow) {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+      border-bottom: none;
+      
+      .ql-stroke { stroke: rgba(255, 255, 255, 0.6); }
+      .ql-fill { fill: rgba(255, 255, 255, 0.6); }
+      .ql-picker { color: rgba(255, 255, 255, 0.6); }
+
+      button:hover .ql-stroke, .ql-picker-label:hover .ql-stroke { stroke: #fff; }
+      button:hover .ql-fill, .ql-picker-label:hover .ql-fill { fill: #fff; }
+      button.ql-active .ql-stroke { stroke: #02df82; }
+      button.ql-active .ql-fill { fill: #02df82; }
+    }
+
+    :global(.ql-container.ql-snow) {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: none;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+    }
+    
+    :global(.ql-editor) {
+      min-height: 120px;
+      max-height: 250px;
+      overflow-y: auto;
+      &.ql-blank::before {
+        color: rgba(255, 255, 255, 0.2);
+        font-style: normal;
+      }
+    }
+
+    .charCounter {
+      display: flex;
+      justify-content: flex-end;
+      padding: 8px 12px;
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: none;
+      border-bottom-left-radius: 10px;
+      border-bottom-right-radius: 10px;
+      font-weight: 500;
+
+      &.overLimit {
+        color: #ff4d4f;
+      }
+    }
+  }
 }
 
 .footer {

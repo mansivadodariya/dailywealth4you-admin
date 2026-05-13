@@ -75,11 +75,19 @@ export default function SocialPoolManagement() {
                 </div> */}
 
                 <div className={styles.dateInfo}>
-                  <label>Joined Date</label>
+                  <label>Created Date</label>
                   <span>{pool.createdAt ? new Date(pool.createdAt).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A'}</span>
                 </div>
 
-                <p className={styles.description}>{pool.description}</p>
+                <div className={styles.descriptionWrap}>
+                  <div className={styles.description} dangerouslySetInnerHTML={{ __html: pool.description }} />
+                  <button
+                    className={styles.viewMoreBtn}
+                    onClick={() => setModal({ mode: 'edit', pool })}
+                  >
+                    View More
+                  </button>
+                </div>
 
                 <div className={styles.cardActions}>
                   <button 

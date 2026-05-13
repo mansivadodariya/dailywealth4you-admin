@@ -43,29 +43,57 @@
 
     .children {
       margin-bottom: 12px;
+      padding-left: 15px;
 
       .childRow {
         display: flex;
-        align-items: stretch;
-        padding-left: 15px;
+        align-items: center;
+        position: relative;
+        margin-bottom: 12px;
 
-        .treeLine {
-          flex-shrink: 0;
-          width: 16px;
-          border-left: 1px solid rgba(255, 255, 255, 0.15);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-          border-radius: 0 0 0 6px;
-          margin-bottom: 12px;
-          margin-top: -6px;
+        // vertical line running down the left side
+        &::before {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          bottom: -12px; // extends into the gap between rows
+          width: 1.4px;
+          background: #8E8E8E;
+        }
 
-          &.treeLineLast {
-            border-left: 1px solid rgba(255, 255, 255, 0.15);
-          }
+        // last child: vertical line only goes to center of the row
+        &:last-child::before {
+          bottom: 57%;
+        }
+
+        // horizontal connector with arrow
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0px;
+          width: 13px;
+          height: 13px;
+          background-image: url('/assets/icons/sidebar-arrow.svg');
+          background-repeat: no-repeat;
+          background-size: contain;
+          opacity: 1;
+          transform: translateX(0px);
         }
 
         .menu {
           flex: 1;
-          margin-bottom: 12px;
+          margin-bottom: 0 !important;
+          margin-left: 16px !important;
+
+          &::before {
+            display: none;
+          }
+
+          &.active,
+          &:hover {
+            box-shadow: none;
+          }
         }
       }
     }
@@ -139,6 +167,10 @@
         justify-content: space-between;
         color: #8e8e8e;
         transition: all 0.3s ease-in-out;
+
+        &.rotated {
+          transform: rotate(90deg);
+        }
       }
 
       .leftAlignment {

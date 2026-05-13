@@ -10,9 +10,9 @@ import RightIcon from '@/icons/rightIcon';
 const SidebarLogo = '/assets/logo/sidebar-logo.svg';
 
 export const sidebarData = [
-  { id: 'performance', label: 'Performance Dashboard', icon: '/assets/icons/dashboard.svg', route: '/performance' },
-  { id: 'dashboard', label: 'Dashboard', icon: '/assets/icons/dashboard.svg', route: '/dashboard' },
-  { id: 'users',                label: 'Users',               icon: '/assets/icons/Users.svg',                 route: '/users' },
+  { id: 'performance',             label: 'Performance Dashboard',   icon: '/assets/icons/performance.svg',     route: '/performance' },
+  { id: 'dashboard',               label: 'Dashboard',               icon: '/assets/icons/dashboard.svg',       route: '/dashboard' },
+  { id: 'users',                   label: 'Users',                   icon: '/assets/icons/Users.svg',           route: '/users' },
   {
     id: 'commission',
     label: 'Commission',
@@ -25,21 +25,22 @@ export const sidebarData = [
   {
     id: 'social',
     label: 'Social',
-    icon: '/assets/icons/Commission.svg',
+    icon: '/assets/icons/Social.svg',
     children: [
-      { id: 'social-pool', label: 'Social Pool', icon: '/assets/icons/ProfitSharing.svg', route: '/social/social-pool' },
-      { id: 'trade-history', label: 'Trade History', icon: '/assets/icons/IBIncome.svg', route: '/social/trade-history' },
+      { id: 'social-pool',       label: 'Social Pool',       icon: '/assets/icons/pool.svg',    route: '/social/social-pool' },
+      { id: 'trade-history',     label: 'Trade History',     icon: '/assets/icons/Trading.svg', route: '/social/trade-history' },
     ],
   },
-  { id: 'withdraw-requests',    label: 'Withdraw Requests',   icon: '/assets/icons/WithdrawRequests.svg',     route: '/withdraw-requests' },
+  { id: 'withdraw-requests',    label: 'Withdraw Requests',   icon: '/assets/icons/WithdrawRequests.svg',      route: '/withdraw-requests' },
   { id: 'deposits',             label: 'Deposits',            icon: '/assets/icons/Deposits.svg',              route: '/deposits' },
   { id: 'ib-requests',          label: 'IB Requests',         icon: '/assets/icons/IBRequests.svg',            route: '/ib-requests' },
   { id: 'send-notifications',   label: 'Send Notifications',  icon: '/assets/icons/SendNotifications.svg',     route: '/send-notifications' },
   { id: 'kyc-requests',         label: 'KYC Requests',        icon: '/assets/icons/KYCRequests.svg',           route: '/kyc-requests' },
   { id: 'sub-admins',           label: 'Sub-Admins',          icon: '/assets/icons/Sub-Admins.svg',            route: '/sub-admins' },
-  { id: 'contact-us',           label: 'Contact Us',          icon: '/assets/icons/Contact.svg',              route: '/contact-us' },
+  { id: 'contact-us',           label: 'Contact Us',          icon: '/assets/icons/Contact.svg',               route: '/contact-us' },
   { id: 'manage-tutorials',     label: 'Manage Tutorials',    icon: '/assets/icons/ManageTutorials.svg',       route: '/manage-tutorials' },
   { id: 'manage-brokers',       label: 'Manage Brokers',      icon: '/assets/icons/ManageBrokers.svg',         route: '/manage-brokers' },
+  { id: 'Account-close',     label: 'Account Close',     icon: '/assets/icons/Trading.svg', route: '/account-close' },
   { id: 'settings',             label: 'Settings',            icon: '/assets/icons/Settings.svg',              route: '/settings' },
 ];
 
@@ -88,21 +89,24 @@ export default function Sidebar() {
   };
 
   useEffect(() => {
+    const lowerPathname = pathname.toLowerCase();
     // find active among flat items and children
     for (const item of visibleSidebarData) {
       if (item.children) {
-        const child = item.children.find((c) => pathname.includes(c.id));
+        const child = item.children.find((c) => lowerPathname.includes(c.id.toLowerCase()));
         if (child) {
           setActiveTab(child.id);
           setOpenParent(item.id);
           return;
         }
-      } else if (pathname.includes(item.id)) {
+      } else if (lowerPathname.includes(item.id.toLowerCase())) {
         setActiveTab(item.id);
+        setOpenParent(null);
         return;
       }
     }
     setActiveTab('dashboard');
+    setOpenParent(null);
   }, [pathname, visibleSidebarData]);
 
   const handleNavigation = (route) => {
@@ -138,15 +142,14 @@ export default function Sidebar() {
                       <img src={item.icon} alt={item.label} />
                       <span>{item.label}</span>
                     </div>
-                    <div className={styles.rightAlignment}>
+                    <div className={`${styles.rightAlignment} ${openParent === item.id ? styles.rotated : ''}`}>
                       <RightIcon />
                     </div>
                   </div>
                   {openParent === item.id && (
                     <div className={styles.children}>
-                      {item.children.map((child, idx) => (
+                      {item.children.map((child) => (
                         <div key={child.id} className={styles.childRow}>
-                          <div className={`${styles.treeLine} ${idx === item.children.length - 1 ? styles.treeLineLast : ''}`} />
                           <div
                             className={`${styles.menu} ${activeTab === child.id ? styles.active : ''}`}
                             onClick={() => { setActiveTab(child.id); handleNavigation(child.route); }}
@@ -171,7 +174,7 @@ export default function Sidebar() {
               <div
                 key={item.id}
                 className={`${styles.menu} ${activeTab === item.id ? styles.active : ''}`}
-                onClick={() => { setActiveTab(item.id); handleNavigation(item.route); }}
+                onClick={() => { setActiveTab(item.id); setOpenParent(null); handleNavigation(item.route); }}
               >
                 <div className={styles.leftAlignment}>
                   <img src={item.icon} alt={item.label} />

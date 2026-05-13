@@ -105,7 +105,7 @@ export default function Header() {
             aria-label="Notifications"
           >
             <img src={BellIcon} alt="Notifications" />
-            {unreadCount > 0 && <span className={styles.redDot} />}
+            {unreadCount > 0 && <span className={styles.redDot} >{unreadCount > 9 ? '9+' : unreadCount}</span>}
           </button>
 
           {dropdownOpen && (

@@ -28,6 +28,8 @@ import {
   GET_ADMIN_DASHBOARD_STATS,
   GET_ADMIN_PROFIT_AND_IB_COMMISSION,
   GET_ADMIN_DASHBOARD_PROFIT,
+  GET_ALL_CLOSE_REQUESTS,
+  UPDATE_CLOSE_REQUEST,
 } from '@/service/url';
 
 export const fetchAllUsers = createAsyncThunk(
@@ -448,6 +450,35 @@ export const fetchAdminProfitAndIbCommission = createAsyncThunk(
     }
   }
 );
+export const fetchCloseRequests = createAsyncThunk(
+  'admin/fetchCloseRequests',
+  async ({ search = '', page, limit, type } = {}, thunkApi) => {
+    try {
+      const params = new URLSearchParams();
+      if (search) params.append('search', encodeURIComponent(search));
+      if (type) params.append('type', type);
+      if (page) params.append('page', page);
+      params.append('limit', limit || 10);
+      return await api.get(`${GET_ALL_CLOSE_REQUESTS}?${params.toString()}`);
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
+export const updateCloseRequest = createAsyncThunk(
+  'admin/updateCloseRequest',
+  async ({ id, status }, thunkApi) => {
+    try {
+      const response = await api.put(`${UPDATE_CLOSE_REQUEST}?id=${id}`, { status });
+      toast.success('Close request updated.');
+      return response;
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+
 export const fetchAdminDashboardProfit = createAsyncThunk(
   'admin/fetchAdminDashboardProfit',
   async (_, thunkApi) => {
@@ -491,6 +522,8 @@ const adminSlice = createSlice({
     dashboardStats: null,
     adminProfitAndIbCommission: null,
     dashboardProfit: null,
+    closeRequests: null,
+    closeRequestsTotalPages: 1,
   },
   reducers: {
     clearAdminState: (state) => {
@@ -773,6 +806,29 @@ const adminSlice = createSlice({
         state.dashboardProfit = action.payload?.payload || action.payload?.data || action.payload || null;
       })
       .addCase(fetchAdminDashboardProfit.rejected, rejected)
+
+      .addCase(fetchCloseRequests.pending, pending)
+      .addCase(fetchCloseRequests.fulfilled, (state, action) => {
+        state.loading = false;
+        const res = action.payload;
+        const inner = res?.payload ?? res?.data ?? res;
+        const data = inner?.data ?? (Array.isArray(inner) ? inner : []);
+        const count = inner?.count ?? inner?.total ?? inner?.totalCount ?? res?.count ?? null;
+        const limit = inner?.limit ?? inner?.perPage ?? res?.limit ?? 10;
+        state.closeRequests = Array.isArray(data) ? data : [];
+        state.closeRequestsTotalPages = (count != null ? Math.ceil(count / limit) : inner?.totalPages) || 1;
+      })
+      .addCase(fetchCloseRequests.rejected, rejected)
+
+      .addCase(updateCloseRequest.pending, pending)
+      .addCase(updateCloseRequest.fulfilled, (state, action) => {
+        state.loading = false;
+        const updated = action.payload?.payload?.data || action.payload?.data || action.payload;
+        if (updated?.id) {
+          state.closeRequests = (state.closeRequests || []).map((r) => r.id === updated.id ? updated : r);
+        }
+      })
+      .addCase(updateCloseRequest.rejected, rejected)
 
       // updateTransaction is already handled above in fetchWithdrawRequests section
       // .addCase(updateTransaction.pending, pending) ...

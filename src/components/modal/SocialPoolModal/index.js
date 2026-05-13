@@ -5,6 +5,10 @@ import { useDispatch } from 'react-redux';
 import { createSocialPool, updateSocialPool } from '@/store/reducers';
 import styles from './SocialPoolModal.module.scss';
 import Image from 'next/image';
+import dynamic from 'next/dynamic';
+
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+import 'react-quill-new/dist/quill.snow.css';
 
 export default function SocialPoolModal({ mode, data, onClose, onSuccess }) {
   const dispatch = useDispatch();
@@ -16,6 +20,7 @@ export default function SocialPoolModal({ mode, data, onClose, onSuccess }) {
     profitPercentage: '',
     minDeposit: '',
   });
+  const MAX_DESC_LENGTH = 1000;
 
   const [errors, setErrors] = useState({});
 
@@ -38,6 +43,7 @@ export default function SocialPoolModal({ mode, data, onClose, onSuccess }) {
     if (!formData.shortDescription) newErrors.shortDescription = 'Short description is required';
     if (!formData.profitPercentage) newErrors.profitPercentage = 'Profit percentage is required';
     if (!formData.minDeposit) newErrors.minDeposit = 'Minimum deposit is required';
+    if (formData.description?.length > MAX_DESC_LENGTH) newErrors.description = `Description must be less than ${MAX_DESC_LENGTH} characters`;
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -61,7 +67,17 @@ export default function SocialPoolModal({ mode, data, onClose, onSuccess }) {
       };
 
       if (mode === 'edit') {
-        await dispatch(updateSocialPool({ id: data.id || data._id, ...payload }));
+        const changedFields = {};
+        Object.keys(payload).forEach(key => {
+          const originalValue = data[key] === null || data[key] === undefined ? '' : data[key];
+          if (payload[key] !== originalValue) {
+            changedFields[key] = payload[key];
+          }
+        });
+
+        if (Object.keys(changedFields).length > 0) {
+          await dispatch(updateSocialPool({ id: data.id || data._id, ...changedFields }));
+        }
       } else {
         await dispatch(createSocialPool(payload));
       }
@@ -128,18 +144,30 @@ export default function SocialPoolModal({ mode, data, onClose, onSuccess }) {
                 value={formData.minDeposit} 
                 onChange={handleChange} 
                 placeholder="100"
+                onKeyDown={(e) => ['e', 'E', '+', '-', '.'].includes(e.key) && e.preventDefault()}
               />
               {errors.minDeposit && <span className={styles.error}>{errors.minDeposit}</span>}
             </div>
 
             <div className={`${styles.inputGroup} ${styles.fullWidth}`}>
               <label>Full Description</label>
-              <textarea 
-                name="description" 
-                value={formData.description} 
-                onChange={handleChange} 
-                placeholder="Detailed information about this social pool..."
-              />
+              <div className={styles.quillWrapper}>
+                <ReactQuill
+                  theme="snow"
+                  
+                  value={formData.description}
+                  onChange={(content) => setFormData(prev => ({ ...prev, description: content }))}
+                  modules={{
+                    toolbar: [
+                      ['bold', 'italic', 'underline'],
+                      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    ],
+                  }}
+                />
+                <div className={`${styles.charCounter} ${formData.description?.length > MAX_DESC_LENGTH ? styles.overLimit : ''}`}>
+                  {formData.description?.length || 0} / {MAX_DESC_LENGTH}
+                </div>
+              </div>
               {errors.description && <span className={styles.error}>{errors.description}</span>}
             </div>
           </div>

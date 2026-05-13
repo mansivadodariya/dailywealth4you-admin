@@ -84,7 +84,11 @@ export const UPDATE_SOCIAL_POOL = '/socialPool/updateSocialPool';
 export const GET_ALL_SOCIAL_POOL = '/socialPool/getAllSocialPool';
 export const DELETE_SOCIAL_POOL = '/socialPool/deleteSocialPool';
 
+// Account Close
+export const GET_ALL_CLOSE_REQUESTS = '/accountClose/getAllCloseRequests';
+export const UPDATE_CLOSE_REQUEST = '/accountClose/updateCloseRequest';
+
 // Pool Trades History
 export const GET_ALL_POOL_TRADES_HISTORY = '/poolTradesHistory/getAllPoolTradesHistory';
 export const CREATE_POOL_TRADE = '/poolTradesHistory/createNewTrade';
-
+
